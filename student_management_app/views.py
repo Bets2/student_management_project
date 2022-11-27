@@ -82,10 +82,10 @@ def doRegistration(request):
 
     if user_type is None:
         messages.error(
-            request, "Please use valid format for the email id: '<username>.<staff|student|hod>@<college_domain>'")
+            request, "Please use valid format for the email id: '<username>.<staff|student|hod>@<domain>'")
         return render(request, 'registration.html')
 
-    username = email_id.split('@')[0].split('.')[0]
+    # username = email_id.split('@')[0].split('.')[0]
 
     if CustomUser.objects.filter(username=username).exists():
         messages.error(
