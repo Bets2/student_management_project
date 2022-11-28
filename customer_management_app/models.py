@@ -66,16 +66,69 @@ class Subjects(models.Model):
     objects = models.Manager()
 
 
+BEE_LEVEL_DATA = (('Level_1', "Level 1"), ('Level_2', "Level 2"), ('Level_3', "Level 3"), ('Level_4', "Level 4"),
+                  ('Level_5', "Level 5"), ('Level_6', "Level 6"), ('Level_7', "Level 7"), ('Level_8', "Level 8"), ('None', "None"))
+CUSTOMER_TYPE_DATA = (('Collector', "Collector"),
+                      ('Recycler', "Recycler"), ('Quality', "Quality"))
+
+PROVINCE_DATA = (('Gauteng', "Gauteng"), ('Mpumalanga', "Mpumalanga"), ('KZN', "KZN"), ('KZN', "KZN"), ('KZN', "KZN"), ('North_West', "North West"),
+                 ('Limpopo', "Limpopo"), ('Western_Cape', "Western Cape"), ('Free_State', "Free State"), ('Eastern_Cape', "Eastern Cape"), ('Northern_Cape', "Northern Cape"))
+
+
 class Customers(models.Model):
     id = models.AutoField(primary_key=True)
     admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     gender = models.CharField(max_length=50)
-    profile_pic = models.FileField()
+    profile_pic = models.FileField(null=True)
     address = models.TextField()
     course_id = models.ForeignKey(
         Courses, on_delete=models.DO_NOTHING, default=1)
     session_year_id = models.ForeignKey(SessionYearModel, null=True,
                                         on_delete=models.CASCADE)
+    bee_level = models.CharField(
+        choices=BEE_LEVEL_DATA, max_length=64, blank=True, null=True)
+    province = models.CharField(
+        choices=PROVINCE_DATA, max_length=64, null=True, blank=True)
+    city = models.CharField(max_length=64, null=True, blank=True)
+    contact_person = models.CharField(max_length=255, null=True)
+    email = models.EmailField(null=True)
+    comment = models.TextField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    objects = models.Manager()
+
+
+# BETS ADDED: Model Disbursements
+
+DISBURSEMENT_TYPES_DATA = (('Loan', "Loan"), ('Grant', "Grant"))
+DISBURSEMENT_ALLOTMENT_DATA = (('First_Allotment', "First Allotment"), (
+    'Second_Allotment', "Second Allotment"), ('Third_Allotment', "Third Allotment"))
+
+
+class Disbursements(models.Model):
+    id = models.AutoField(primary_key=True)
+    disbursement_code = models.CharField(max_length=255, null=True, blank=True)
+    disbursement_description = models.CharField(
+        max_length=255, null=True, blank=True)
+    disbursement_application_id = models.CharField(
+        max_length=255, null=True, blank=True)
+    disbursement_reason = models.CharField(
+        max_length=255, null=True, blank=True)
+    disbursement_type = models.CharField(
+        choices=DISBURSEMENT_TYPES_DATA, max_length=10)
+    disbursement_date = models.DateField(null=True, blank=True)
+    disbursement_amount = models.FloatField(default=0)
+    contract_signed_date = models.DateField(null=True, blank=True)
+    disbursement_allotment = models.CharField(
+        choices=DISBURSEMENT_ALLOTMENT_DATA, max_length=64)
+    disbursement_interest_rate = models.FloatField(default=0)
+    repayment_term = models.IntegerField(blank=True)
+    total_target = models.FloatField(default=0)
+    monthly_target = models.FloatField(default=0)
+    target_measurement_unit = models.CharField(max_length=64, default='Tone')
+    customer_id = models.ForeignKey(
+        Customers, on_delete=models.CASCADE, default=1)
+    application_contract_document = models.FileField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
