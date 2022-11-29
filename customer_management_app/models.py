@@ -74,17 +74,25 @@ CUSTOMER_TYPE_DATA = (('Collector', "Collector"),
 PROVINCE_DATA = (('Gauteng', "Gauteng"), ('Mpumalanga', "Mpumalanga"), ('KZN', "KZN"), ('KZN', "KZN"), ('KZN', "KZN"), ('North_West', "North West"),
                  ('Limpopo', "Limpopo"), ('Western_Cape', "Western Cape"), ('Free_State', "Free State"), ('Eastern_Cape', "Eastern Cape"), ('Northern_Cape', "Northern Cape"))
 
+CUSTOMER_STATUS_DATA = (('Active', "Active"), ('Cancelled', "Cancelled"), ('Contract_Complete',
+                        "Contract Complete"), ('Business_Closed', "Business Closed"), ('Other', "Other"))
+
 
 class Customers(models.Model):
     id = models.AutoField(primary_key=True)
-    admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    gender = models.CharField(max_length=50)
-    profile_pic = models.FileField(null=True)
+    # models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    admin = models.OneToOneField(
+        CustomUser, on_delete=models.CASCADE, null=True, blank=True)
+    customer_name = models.CharField(max_length=255, default="Not Provided")
+    gender = models.CharField(max_length=50, null=True, blank=True)
+    profile_pic = models.FileField(null=True, blank=True)
     address = models.TextField()
     course_id = models.ForeignKey(
         Courses, on_delete=models.DO_NOTHING, default=1)
     session_year_id = models.ForeignKey(SessionYearModel, null=True,
                                         on_delete=models.CASCADE)
+    customer_type = models.CharField(
+        choices=CUSTOMER_TYPE_DATA, max_length=64, null=True)
     bee_level = models.CharField(
         choices=BEE_LEVEL_DATA, max_length=64, blank=True, null=True)
     province = models.CharField(
@@ -93,6 +101,8 @@ class Customers(models.Model):
     contact_person = models.CharField(max_length=255, null=True)
     email = models.EmailField(null=True)
     comment = models.TextField(null=True)
+    customer_status = models.CharField(
+        choices=CUSTOMER_STATUS_DATA, max_length=64, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
@@ -117,8 +127,9 @@ class Disbursements(models.Model):
     disbursement_type = models.CharField(
         choices=DISBURSEMENT_TYPES_DATA, max_length=10)
     disbursement_date = models.DateField(null=True, blank=True)
-    disbursement_amount = models.FloatField(default=0)
+    disbursement_amount = models.DecimalField(max_digits=10, decimal_places=2)
     contract_signed_date = models.DateField(null=True, blank=True)
+    disbursement_end = models.DateField(null=True, blank=True)
     disbursement_allotment = models.CharField(
         choices=DISBURSEMENT_ALLOTMENT_DATA, max_length=64)
     disbursement_interest_rate = models.FloatField(default=0)
@@ -127,8 +138,36 @@ class Disbursements(models.Model):
     monthly_target = models.FloatField(default=0)
     target_measurement_unit = models.CharField(max_length=64, default='Tone')
     customer_id = models.ForeignKey(
-        Customers, on_delete=models.CASCADE, default=1)
+        Customers, on_delete=models.DO_NOTHING, default=1)
     application_contract_document = models.FileField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    objects = models.Manager()
+
+
+PAYMENT_TYPE_DATA = (('Monthly_Repayment', "Monthly Repayment"),
+                     ('Impairment', "Impairment"), ('Other', "Other"))
+
+
+class Repayments(models.Model):
+    id = models.AutoField(primary_key=True)
+    payment_code = models.CharField(max_length=255, null=True, blank=True)
+    payment_description = models.CharField(
+        max_length=255, null=True, blank=True)
+    payment_reason = models.CharField(
+        max_length=255, null=True, blank=True)
+    payment_type = models.CharField(
+        choices=PAYMENT_TYPE_DATA, max_length=64)
+    payment_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_date = models.DateField()
+    current_balance = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True)
+    actual_tonnage = models.FloatField(null=True, blank=True)
+    payment_documentation = models.FileField(null=True, blank=True)
+    disbursement_id = models.ForeignKey(
+        Disbursements, on_delete=models.DO_NOTHING, default=1)
+    customer_id = models.ForeignKey(
+        Customers, on_delete=models.DO_NOTHING, default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
