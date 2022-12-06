@@ -79,6 +79,16 @@
                 </p>
               </a>
             </li>
+            <li class="nav-item">
+              {% url 'manage_disbursement' as manage_disbursement %}
+              {% url 'edit_disbursement' disbursement_id=id as edit_disbursement %}
+              <a href="{{ manage_disbursement }}" class="nav-link {% if request.path == manage_disbursement %} active {% endif %} {% if request.path == edit_disbursement %} active {% endif %}">
+                <i class="nav-icon fas fa-chalkboard"></i>
+                <p>
+                  Manage Disbursements
+                </p>
+              </a>
+            </li>
 
             <li class="nav-item">
               {% url 'manage_course' as manage_course %}

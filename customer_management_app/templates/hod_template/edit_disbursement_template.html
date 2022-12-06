@@ -1,0 +1,162 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+    Edit Disbursement |  Disbursement code: {{disbursements.disbursement_code}} | #ID : {{disbursements.id}} 
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Edit Disbursement</h3>
+                    </div>
+                    <!-- /.card-header -->
+                     <!-- form start -->
+                     
+
+                     
+                        <form role="form" method="POST" action="{% url 'edit_disbursement_save' %}">
+
+                            {% csrf_token %}
+
+                            
+                                    {% comment %} Display Messages {% endcomment %}
+                                    {% if messages %}
+                                    <div class="form-group">
+                                    <div class="col-12">
+                                        {% for message in messages %}
+                                        {% if message.tags == "error" %}
+                                            <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                            {{ message }}
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            </div>
+                                        {% elif message.tags == "success" %}
+                                            <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                            {{ message }}
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            </div>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    </div>
+                                    {% endif %}
+                                
+
+                            <div class="card-body">
+
+                                <div class="form-group">
+                                    <label>Disbursement Code</label>
+                                    <input type="text" class="form-control" name="disbursement_code" value="{{ disbursements.disbursement_code }}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Disbursement Description</label>
+                                    <input type="text" class="form-control" name="disbursement_description" value="{{ disbursements.disbursement_description }}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Disbursement Application Id</label>
+                                    <input type="text" class="form-control" name="disbursement_application_id" value="{{ disbursements.disbursement_application_id }}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Disbursement Reason</label>
+                                    <input type="text" class="form-control" name="disbursement_reason" value="{{ disbursements.disbursement_reason }}">
+                                </div>
+                                <div class="form-group col-2">
+                                    <label>Disbursement Type</label>
+                                    <select class="form-control" name="disbursement_type">                                        
+                                            <option value="{{ disbursements.disbursement_type }}" {% if disbursements.id == disbursement_id %} selected {% endif %}>{{ disbursements.disbursement_type }}</option>
+                                            <option value="Grant">Grant</option>
+                                            <option value="Loan">Loan</option>
+                                    </select>    
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Customer </label>
+                                    <select class="form-control" name="customer_id"> 
+                                        <option value="{{ cust.id }}" {% if  disbursements.customer_id.id == cust.id %} selected {% endif %}>{{ disbursements.customer_id.customer_name }}</option>                                               
+                                        {% for cust in customer %}                                                                                          
+                                            <option value="{{ cust.id }}">{{ cust.customer_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-2">
+                                    <label>Disbursement Date </label>
+                                    <input type="date" class="form-control" name="disbursement_date"   value="{{ disbursements.disbursement_date|date:'Y-m-d' }}" min="2015-01-01" max="2090-12-31">
+                                </div>
+                                <div class="form-group col-2">
+                                    <label>Disbursement Amount </label>
+                                    <input type="number" class="form-control" name="disbursement_amount" value="{{ disbursements.disbursement_amount }}">
+                                </div>
+                                <div class="form-group col-2">
+                                    <label>Contract Signed Date </label>
+                                    <input type="date" class="form-control" name="contract_signed_date" value="{{ disbursements.contract_signed_date|date:'Y-m-d' }}">
+                                </div>
+                                <div class="form-group col-2">
+                                    <label>Disbursement End Date</label>
+                                    <input type="date" class="form-control" name="disbursement_end" value="{{ disbursements.disbursement_end|date:'Y-m-d' }}">
+                                </div>
+                                
+                                <div class="form-group col-2">
+                                    <label>Disbursement Allotment</label>
+                                    <input type="text" class="form-control" name="disbursement_allotment" value="{{ disbursements.disbursement_allotment }}">
+                                </div>
+                                <div class="form-group col-2">
+                                    <label>Disbursement Interest Rate</label>
+                                    <input type="number" class="form-control" name="disbursement_interest_rate" value="{{ disbursements.disbursement_interest_rate }}" step="0.01">
+                                </div>
+                                <div class="form-group col-2">
+                                    <label>Repayment Terms (Number of Month)</label>
+                                    <input type="number" class="form-control" name="repayment_term" value="{{ disbursements.repayment_term }}">
+                                </div>
+                                <div class="form-group col-2">
+                                    <label>Total Target</label>
+                                    <input type="number" class="form-control" name="total_target" value="{{ disbursements.total_target }}" step="0.01">
+                                </div>                                
+                                <div class="form-group col-2">
+                                    <label>Monthly Target</label>
+                                    <input type="number" class="form-control" name="monthly_target" value="{{ disbursements.monthly_target }}" step="0.01">
+                                </div>                                
+                                <div class="form-group col-2">
+                                    <label>Target Measurement Unit</label>
+                                    <input type="text" class="form-control" name="target_measurement_unit" value="{{ disbursements.target_measurement_unit }}">
+                                </div>         
+                                                     
+                                <div class="form-group col-6">
+                                    <label>Application Contract Document</label>
+                                    <p>Current Document: <b>{{ disbursements.application_contract_document}}</b>  </p>
+                                    <p><i>Attache a new document below if you want to replace the above file.</i></p>
+                                    <input type="file" class="form-control" name="application_contract_document"   value="{{ disbursements.application_contract_document }}">
+                                </div>
+
+                            </div>
+                            <!-- /.card-body -->
+
+                            <div class="card-footer">
+
+                                <input type="hidden" class="form-control" name="disbursement_id" value="{{ disbursements.id }}">
+                                <button type="submit" class="btn btn-primary">Update Disbursement</button>
+                            </div>
+                        </form>
+
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+  {% endblock main_content %}

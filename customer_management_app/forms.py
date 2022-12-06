@@ -1,5 +1,5 @@
 from django import forms
-from .models import Courses, SessionYearModel
+from .models import Courses, SessionYearModel, Customers
 
 
 class DateInput(forms.DateInput):
@@ -124,3 +124,134 @@ class EditCustomerForm(forms.Form):
     profile_pic = forms.FileField(label="Profile Pic",
                                   required=False,
                                   widget=forms.FileInput(attrs={"class": "form-control"}))
+
+
+class AddDisbursementForm(forms.Form):
+
+    disbursement_code = forms.CharField(label="disbursement_code",
+                                        max_length=128,
+                                        widget=forms.TextInput(attrs={"class": "form-control"}))
+    disbursement_description = forms.CharField(label="disbursement_description",
+                                               required=False,
+                                               max_length=255,
+                                               widget=forms.TextInput(attrs={"class": "form-control"}))
+    disbursement_application_id = forms.CharField(label="disbursement_application_id",
+                                                  required=False,
+                                                  max_length=128,
+                                                  widget=forms.TextInput(attrs={"class": "form-control"}))
+    disbursement_reason = forms.CharField(label="disbursement_reason",
+                                          required=False,
+                                          max_length=255,
+                                          widget=forms.TextInput(attrs={"class": "form-control"}))
+
+    disbursement_type_list = (('Loan', 'Loan'), ('Grant', 'Grant'))
+    disbursement_type = forms.ChoiceField(label="Disbursement Type",
+                                          choices=disbursement_type_list,
+                                          widget=forms.Select(attrs={"class": "form-control"}))
+    disbursement_date = forms.DateField(label="disbursement_date",
+                                        widget=forms.SelectDateWidget(attrs={"class": "form-control"}))
+    disbursement_amount = forms.DecimalField(label="disbursement_amount",
+                                             max_digits=10,
+                                             decimal_places=2,
+                                             widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
+    contract_signed_date = forms.DateField(label="contract_signed_date",
+                                           widget=forms.SelectDateWidget(attrs={"class": "form-control"}))
+    disbursement_end = forms.DateField(label="disbursement_end",
+                                       widget=forms.SelectDateWidget(attrs={"class": "form-control"}))
+    disbursement_allotment = forms.CharField(label="disbursement_allotment",
+                                             required=False,  max_length=128,
+                                             widget=forms.TextInput(attrs={"class": "form-control"}))
+    disbursement_interest_rate = forms.FloatField(label="disbursement_interest_rate",
+                                                  required=False,
+                                                  widget=forms.TextInput(attrs={"class": "form-control"}))
+    repayment_term = forms.IntegerField(label="repayment_term",
+                                        widget=forms.TextInput(attrs={"class": "form-control"}))
+    total_target = forms.FloatField(label="total_target",
+                                    widget=forms.NumberInput(attrs={'id': 'form_homework', 'step': "0.01"}))
+    monthly_target = forms.FloatField(label="monthly_target",
+                                      widget=forms.NumberInput(attrs={'id': 'form_homework', 'step': "0.01"}))
+    target_measurement_unit = forms.CharField(label="target_measurement_unit",
+                                              required=False, max_length=128,
+                                              widget=forms.TextInput(attrs={"class": "form-control"}))
+    application_contract_document = forms.FileField(label="Application Contract Document",
+                                                    required=False,
+                                                    widget=forms.FileInput(attrs={"class": "form-control"}))
+
+    # For Displaying customers inside Disbursment form
+    try:
+        customers = Customers.objects.all()
+        customer_list = []
+        for customer in customers:
+            single_customer = (customer.id, customer.name)
+            customer_list.append(single_customer)
+    except:
+        customer_list = []
+
+    customer_id = forms.ChoiceField(
+        label="Customer",   choices=customer_list, widget=forms.Select(attrs={"class": "form-control"}))
+
+
+class EditDisbursementForm(forms.Form):
+
+    disbursement_code = forms.CharField(label="disbursement_code",
+                                        max_length=128,
+                                        widget=forms.TextInput(attrs={"class": "form-control"}))
+
+    disbursement_description = forms.CharField(label="disbursement_description",
+                                               required=False,
+                                               max_length=255,
+                                               widget=forms.TextInput(attrs={"class": "form-control"}))
+    disbursement_application_id = forms.CharField(label="disbursement_application_id",
+                                                  required=False,
+                                                  max_length=128,
+                                                  widget=forms.TextInput(attrs={"class": "form-control"}))
+    disbursement_reason = forms.CharField(label="disbursement_reason",
+                                          required=False,
+                                          max_length=255,
+                                          widget=forms.TextInput(attrs={"class": "form-control"}))
+
+    disbursement_type_list = (('Loan', 'Loan'), ('Grant', 'Grant'))
+    disbursement_type = forms.ChoiceField(label="Disbursement Type",
+                                          choices=disbursement_type_list,
+                                          widget=forms.Select(attrs={"class": "form-control"}))
+    disbursement_date = forms.DateField(label="disbursement_date",
+                                        widget=forms.SelectDateWidget(attrs={"class": "form-control"}))
+    disbursement_amount = forms.DecimalField(label="disbursement_amount",
+                                             max_digits=10,
+                                             decimal_places=2, widget=forms.NumberInput())
+    contract_signed_date = forms.DateField(label="contract_signed_date",
+                                           widget=forms.SelectDateWidget(attrs={"class": "form-control"}))
+    disbursement_end = forms.DateField(label="disbursement_end",
+                                       widget=forms.SelectDateWidget(attrs={"class": "form-control"}))
+    disbursement_allotment = forms.CharField(label="disbursement_allotment",
+                                             required=False,
+                                             max_length=128,
+                                             widget=forms.TextInput(attrs={"class": "form-control"}))
+    disbursement_interest_rate = forms.FloatField(label="disbursement_interest_rate",
+                                                  required=False,
+                                                  widget=forms.TextInput(attrs={"class": "form-control"}))
+    repayment_term = forms.IntegerField(label="repayment_term",
+                                        widget=forms.TextInput(attrs={"class": "form-control"}))
+    total_target = forms.FloatField(label="total_target",
+                                    widget=forms.NumberInput(attrs={'id': 'form_homework', 'step': "0.01"}))
+    monthly_target = forms.FloatField(label="monthly_target",
+                                      widget=forms.NumberInput(attrs={'id': 'form_homework', 'step': "0.01"}))
+    target_measurement_unit = forms.CharField(label="target_measurement_unit",
+                                              required=False, max_length=128,
+                                              widget=forms.TextInput(attrs={"class": "form-control"}))
+    application_contract_document = forms.FileField(label="Application Contract Document",
+                                                    required=False,
+                                                    widget=forms.FileInput(attrs={"class": "form-control"}))
+
+    # For Displaying customers inside Disbursment form
+    try:
+        customers = Customers.objects.all()
+        customer_list = []
+        for customer in customers:
+            single_customer = (customer.id, customer.name)
+            customer_list.append(single_customer)
+    except:
+        customer_list = []
+
+    customer_id = forms.ChoiceField(
+        label="Customer",   choices=customer_list, widget=forms.Select(attrs={"class": "form-control"}))

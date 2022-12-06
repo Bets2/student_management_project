@@ -103,6 +103,21 @@ urlpatterns = [
     path('manage_customer/', HodViews.manage_customer, name="manage_customer"),
     path('delete_customer/<customer_id>/',
          HodViews.delete_customer, name="delete_customer"),
+
+    # URLS for Disbursements
+    path('add_disbursement/', HodViews.add_disbursement, name="add_disbursement"),
+    path('add_disbursement_save/', HodViews.add_disbursement_save,
+         name="add_disbursement_save"),
+    path('edit_disbursement/<disbursement_id>',
+         HodViews.edit_disbursement, name="edit_disbursement"),
+    path('edit_disbursement_save/', HodViews.edit_disbursement_save,
+         name="edit_disbursement_save"),
+    path('manage_disbursement/', HodViews.manage_disbursement,
+         name="manage_disbursement"),
+    path('delete_disbursement/<disbursement_id>/',
+         HodViews.delete_disbursement, name="delete_disbursement"),
+
+
     path('add_subject/', HodViews.add_subject, name="add_subject"),
     path('add_subject_save/', HodViews.add_subject_save,
          name="add_subject_save"),

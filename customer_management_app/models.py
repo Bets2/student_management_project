@@ -82,7 +82,7 @@ class Customers(models.Model):
     id = models.AutoField(primary_key=True)
     # models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     admin = models.OneToOneField(
-        CustomUser, on_delete=models.CASCADE, null=True, blank=True)
+        CustomUser, on_delete=models.CASCADE)
     customer_name = models.CharField(max_length=255, default="Not Provided")
     gender = models.CharField(max_length=50, null=True, blank=True)
     profile_pic = models.FileField(null=True, blank=True)
@@ -126,20 +126,21 @@ class Disbursements(models.Model):
         max_length=255, null=True, blank=True)
     disbursement_type = models.CharField(
         choices=DISBURSEMENT_TYPES_DATA, max_length=10)
-    disbursement_date = models.DateField(null=True, blank=True)
+    disbursement_date = models.DateField(blank=True, null=True)
     disbursement_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    contract_signed_date = models.DateField(null=True, blank=True)
-    disbursement_end = models.DateField(null=True, blank=True)
+    contract_signed_date = models.DateField(blank=True, null=True)
+    disbursement_end = models.DateField(blank=True, null=True)
     disbursement_allotment = models.CharField(
         choices=DISBURSEMENT_ALLOTMENT_DATA, max_length=64)
-    disbursement_interest_rate = models.FloatField(default=0)
+    disbursement_interest_rate = models.DecimalField(
+        decimal_places=2, max_digits=10)
     repayment_term = models.IntegerField(blank=True)
-    total_target = models.FloatField(default=0)
-    monthly_target = models.FloatField(default=0)
+    total_target = models.DecimalField(decimal_places=2, max_digits=10)
+    monthly_target = models.DecimalField(decimal_places=2, max_digits=10)
     target_measurement_unit = models.CharField(max_length=64, default='Tone')
     customer_id = models.ForeignKey(
         Customers, on_delete=models.DO_NOTHING, default=1)
-    application_contract_document = models.FileField()
+    application_contract_document = models.FileField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
@@ -162,7 +163,8 @@ class Repayments(models.Model):
     payment_date = models.DateField()
     current_balance = models.DecimalField(
         max_digits=10, decimal_places=2, null=True)
-    actual_tonnage = models.FloatField(null=True, blank=True)
+    actual_tonnage = models.DecimalField(
+        decimal_places=2, max_digits=10, default=0)
     payment_documentation = models.FileField(null=True, blank=True)
     disbursement_id = models.ForeignKey(
         Disbursements, on_delete=models.DO_NOTHING, default=1)

@@ -1,0 +1,109 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+    Manage Disbursements
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <a class="btn btn-primary" href="{% url 'add_disbursement' %}" role="button">+ Add Disbursement</a> <br/>&nbsp;
+            
+            {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+
+            <div class="row">
+
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Disbursement Details</h3>
+
+                            <div class="card-tools">
+                            <div class="input-group input-group-sm" style="width: 150px;">
+                                <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                                <div class="input-group-append">
+                                <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                            <thead>
+                                <tr>
+                                <th>ID</th>
+                                <th>Customer</th>
+                                <th>Disbursement Reason</th>
+                                <th>Disbursement Application ID</th>
+                                <th>Disbursement Type</th>
+                                <th>Disbursement Date</th>
+                                <th>Amount</th>
+                                <th>Total Targets</th>
+                                <th>Contract Signed Date</th>
+                                <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for disbursement in disbursements %}
+                                <tr>
+                                <td>{{ disbursement.id }}</td>
+                                <td>{{ disbursement.customer_id.customer_name }}</td>
+                                <td>{{ disbursement.disbursement_reason  }}</td>
+                                <td>{{ disbursement.disbursement_application_id }}</td>
+                                <td>{{ disbursement.disbursement_type }}</td>
+                                <td>{{ disbursement.disbursement_date }}</td>
+                                <td>{{ disbursement.disbursement_amount }}</td>
+                                <td>{{ disbursement.total_target }}</td>
+                                <td>{{ disbursement.contract_signed_date }}</td>
+                                 
+ 
+                                <td>
+                                    <a href="{% url 'edit_disbursement' disbursement.id %}" class="btn btn-success">Edit</a> 
+                                    <a href="{% url 'delete_disbursement' disbursement.id %}" class="btn btn-danger">Delete</a>
+                                </td>
+                                </tr>
+                                {% endfor %}
+                                
+                            </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                        </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+  {% endblock main_content %}

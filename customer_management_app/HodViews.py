@@ -6,9 +6,9 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-from .forms import AddCustomerForm, EditCustomerForm
+from .forms import AddCustomerForm, EditCustomerForm, AddDisbursementForm, EditDisbursementForm
 
-from .models import CustomUser, Staffs, Courses, Subjects, Customers, SessionYearModel, FeedBackCustomer, FeedBackStaffs, LeaveReportCustomer, LeaveReportStaff, Attendance, AttendanceReport
+from .models import CustomUser, Staffs, Courses, Subjects, Customers, SessionYearModel, FeedBackCustomer, FeedBackStaffs, LeaveReportCustomer, LeaveReportStaff, Attendance, AttendanceReport, Disbursements
 
 
 def admin_home(request):
@@ -21,6 +21,7 @@ def admin_home(request):
     course_name_list = []
     subject_count_list = []
     customer_count_list_in_course = []
+    all_disbursement_count = Disbursements.objects.all().count()
 
     for course in course_all:
         subjects = Subjects.objects.filter(course_id=course.id).count()
@@ -496,6 +497,183 @@ def delete_customer(request, customer_id):
     except:
         messages.error(request, "Failed to Delete Customer.")
         return redirect('manage_customer')
+
+
+# BETS ADDED Disbursment related views here ***************************************************
+
+def add_disbursement(request):
+    form = AddDisbursementForm()
+    context = {
+        "form": form
+    }
+    return render(request, 'hod_template/add_disbursement_template.html', context)
+
+
+def add_disbursement_save(request):
+    if request.method != "POST":
+        messages.error(request, "Invalid Method")
+        return redirect('add_disbursement')
+    else:
+
+        disbursement_code = request.POST.get('disbursement_code')
+        disbursement_description = request.POST.get('disbursement_description')
+        disbursement_application_id = request.POST.get(
+            'disbursement_application_id')
+        disbursement_reason = request.POST.get('disbursement_reason')
+        disbursement_type = request.POST.get('disbursement_type')
+        disbursement_date = request.POST.get('disbursement_date')
+        disbursement_amount = request.POST.get('disbursement_amount')
+        contract_signed_date = request.POST.get('contract_signed_date')
+        disbursement_end = request.POST.get('disbursement_end')
+        disbursement_allotment = request.POST.get('disbursement_allotment')
+        disbursement_interest_rate = request.POST.get(
+            'disbursement_interest_rate')
+        repayment_term = request.POST.get('repayment_term')
+        total_target = request.POST.get('total_target')
+        monthly_target = request.POST.get('monthly_target')
+        target_measurement_unit = request.POST.get('target_measurement_unit')
+        application_contract_document = request.POST.get(
+            'application_contract_document')
+        customer_id = request.POST.get('customer')
+        customer = Customers.objects.get(id=customer_id)
+
+        try:
+            disbursement = Disbursements(disbursement_code=disbursement_code,
+                                         customer_id=customer)
+            disbursement.save()
+            messages.success(request, "Disbursement Added Successfully!")
+            return redirect('add_disbursement')
+        except:
+            messages.error(request, "Failed to Add Disbursement Details")
+            return redirect('add_disbursement')
+
+
+def manage_disbursement(request):
+    disbursements = Disbursements.objects.all()
+    context = {
+        "disbursements": disbursements
+    }
+    return render(request, 'hod_template/manage_disbursement_template.html', context)
+
+
+def edit_disbursement(request, disbursement_id):
+
+    disbursement = Disbursements.objects.get(id=disbursement_id)
+    customer = Customers.objects.all()
+
+    form = EditDisbursementForm(request.POST or None)
+
+    # Filling the form with Data from Database
+    form.fields['disbursement_code'].initial = disbursement.disbursement_code
+    form.fields['disbursement_description'].initial = disbursement.disbursement_description
+    form.fields['disbursement_application_id'].initial = disbursement.disbursement_application_id
+    form.fields['disbursement_reason'].initial = disbursement.disbursement_reason
+    form.fields['disbursement_type'].initial = disbursement.disbursement_type
+    form.fields['disbursement_date'].initial = disbursement.disbursement_date
+    form.fields['disbursement_amount'].initial = disbursement.disbursement_amount
+    form.fields['contract_signed_date'].initial = disbursement.contract_signed_date
+    form.fields['disbursement_end'].initial = disbursement.disbursement_end
+    form.fields['disbursement_allotment'].initial = disbursement.disbursement_allotment
+    form.fields['disbursement_interest_rate'].initial = disbursement.disbursement_interest_rate
+    form.fields['repayment_term'].initial = disbursement.repayment_term
+    form.fields['total_target'].initial = disbursement.total_target
+    form.fields['monthly_target'].initial = disbursement.monthly_target
+    form.fields['target_measurement_unit'].initial = disbursement.target_measurement_unit
+    form.fields['application_contract_document'].initial = disbursement.application_contract_document
+    form.fields['customer_id'].initial = disbursement.customer_id.id
+
+    context = {
+        'disbursements': disbursement,
+        "id": disbursement_id,
+        "customer": customer,
+        "form": form
+
+    }
+    return render(request, "hod_template/edit_disbursement_template.html", context)
+
+
+def edit_disbursement_save(request):
+    if request.method != "POST":
+        return HttpResponse("Invalied Method.")
+    else:
+        disbursement_id = request.POST.get('disbursement_id')
+        if disbursement_id == None:
+            return redirect('/manage_disbursement')
+
+        else:
+            disbursement_code = request.POST.get('disbursement_code')
+            disbursement_description = request.POST.get(
+                'disbursement_description')
+            disbursement_application_id = request.POST.get(
+                'disbursement_application_id')
+            disbursement_reason = request.POST.get('disbursement_reason')
+            disbursement_type = request.POST.get('disbursement_type')
+            disbursement_date = request.POST.get('disbursement_date') or None
+            disbursement_amount = request.POST.get('disbursement_amount')
+            contract_signed_date = request.POST.get(
+                'contract_signed_date') or None
+            disbursement_end = request.POST.get('disbursement_end') or None
+            disbursement_allotment = request.POST.get('disbursement_allotment')
+            disbursement_interest_rate = request.POST.get(
+                'disbursement_interest_rate')
+            repayment_term = request.POST.get('repayment_term')
+            total_target = request.POST.get('total_target')
+            monthly_target = request.POST.get('monthly_target')
+            target_measurement_unit = request.POST.get(
+                'target_measurement_unit')
+            # application_contract_document = request.POST.get('application_contract_document')
+            customer_id = request.POST.get('customer_id')
+            if len(request.FILES) != 0:
+                application_contract_document = request.FILES(
+                    'application_contract_document')
+                fs = FileSystemStorage()
+                filename = fs.save(
+                    application_contract_document.name, application_contract_document)
+                application_contract_document_url = fs.url(filename)
+            else:
+                application_contract_document_url = None
+
+            disbursement = Disbursements.objects.get(id=disbursement_id)
+            disbursement.disbursement_code = disbursement_code
+            disbursement.disbursement_description = disbursement_description
+            disbursement.disbursement_application_id = disbursement_application_id
+            disbursement.disbursement_reason = disbursement_reason
+            disbursement.disbursement_type = disbursement_type
+            disbursement.disbursement_date = disbursement_date
+            disbursement.disbursement_amount = disbursement_amount
+            disbursement.contract_signed_date = contract_signed_date
+            disbursement.disbursement_end = disbursement_end
+            disbursement.disbursement_allotment = disbursement_allotment
+            disbursement.disbursement_interest_rate = disbursement_interest_rate
+            disbursement.repayment_term = repayment_term
+            disbursement.total_target = total_target
+            disbursement.monthly_target = monthly_target
+            disbursement.target_measurement_unit = target_measurement_unit
+            if application_contract_document_url != None:
+                disbursement.application_contract_document = application_contract_document
+            # disbursement.application_contract_document = application_contract_document
+            disbursement.customer_id.id = customer_id
+
+            # Save Disbursements table
+            disbursement.save()
+            messages.success(
+                request, "Disbursement details updated Successfully.")
+            return redirect("/edit_disbursement/"+disbursement_id)
+            # except:
+            #     messages.error(
+            #         request, "BETS....Failed to Update Disbursement details.")
+            #     return redirect('/edit_disbursement/'+disbursement_id)
+
+
+def delete_disbursement(request, disbursement_id):
+    disbursement = Disbursements.objects.get(id=disbursement_id)
+    try:
+        disbursement.delete()
+        messages.success(request, "Disbursement Deleted Successfully.")
+        return redirect('manage_disbursement')
+    except:
+        messages.error(request, "Failed to Delete Disbursement.")
+        return redirect('manage_disbursement')
 
 
 def add_subject(request):
