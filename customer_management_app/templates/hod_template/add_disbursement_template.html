@@ -14,15 +14,139 @@
             <div class="row">
                 <div class="col-md-12">
                     <!-- general form elements -->
-                    <div class="card card-primary">
+                    <div class="card card-success">
                     <div class="card-header">
                         <h3 class="card-title">Add Disbursemnt</h3>
                     </div>
                     <!-- /.card-header -->
                     <!-- form start -->
-                    {% url 'add_disbursement_save' as action_path %}
-                    {% include 'hod_template/form_template.html' with messages=messages form=form action_path=action_path button_text="Add Disbursement" %}
+                    <form role="form" method="POST" action="{% url 'add_disbursement_save' %}">
 
+                        {% csrf_token %}
+
+                        
+                                {% comment %} Display Messages {% endcomment %}
+                                {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+                            
+
+                        <div class="card-body">
+
+                            <div class="form-group">
+                                <label>Disbursement Code</label>
+                                <input type="text" class="form-control" name="disbursement_code" placeholder="Enter Disbursement Code" >
+                            </div>
+                            <div class="form-group">
+                                <label>Disbursement Description</label>
+                                <input type="text" class="form-control" name="disbursement_description" placeholder="Enter Description">
+                            </div>
+                            <div class="form-group">
+                                <label>Disbursement Application Id</label>
+                                <input type="text" class="form-control" name="disbursement_application_id" placeholder="Enter Description Application ID">
+                            </div>
+                            <div class="form-group">
+                                <label>Disbursement Reason</label>
+                                <input type="text" class="form-control" name="disbursement_reason" placeholder="Enter Reason for funding">
+                            </div>
+                            <div class="form-group col-2">
+                                <label>Disbursement Type</label>
+                                <select class="form-control" name="disbursement_type">                                        
+                                        <option value="Grant">Grant</option>
+                                        <option value="Loan">Loan</option>
+                                </select>    
+                            </div>
+  
+     
+                            <div class="form-group">
+                                <label>Customer </label>
+                          
+                                <select class="form-control" name="customer_id"> 
+                                    {% for cust in customer %}                                                                                          
+                                        <option value="{{ cust.id }}">{{ cust.customer_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+        
+
+                            <div class="form-group col-3">
+                                <label>Disbursement Date </label>
+                                <input type="date" class="form-control" name="disbursement_date"   placeholder="Disbursement Start Date">
+                            </div>
+                            <div class="form-group col-3">
+                                <label>Disbursement Amount </label>
+                                <input type="number" class="form-control" name="disbursement_amount" placeholder="Disbursement Amount in Rands">
+                            </div>
+                            <div class="form-group col-3">
+                                <label>Contract Signed Date </label>
+                                <input type="date" class="form-control" name="contract_signed_date" placeholder="Disbursement Contract Signed Date">
+                            </div>
+                            <div class="form-group col-3">
+                                <label>Disbursement End Date</label>
+                                <input type="date" class="form-control" name="disbursement_end" >
+                            </div>
+                            
+                            <div class="form-group col-3">
+                                <label>Disbursement Allotment</label>
+                                <input type="text" class="form-control" name="disbursement_allotment" placeholder="Disbursement Allotment if applicable">
+                            </div>
+                            <div class="form-group col-3">
+                                <label>Disbursement Interest Rate</label>
+                                <input type="number" class="form-control" name="disbursement_interest_rate">
+                            </div>
+                            <div class="form-group col-3">
+                                <label>Repayment Terms (Number of Month)</label>
+                                <input type="number" class="form-control" name="repayment_term" >
+                            </div>
+                            <div class="form-group col-3">
+                                <label>Total Target</label>
+                                <input type="number" class="form-control" name="total_target">
+                            </div>                                
+                            <div class="form-group col-3">
+                                <label>Monthly Target</label>
+                                <input type="number" class="form-control" name="monthly_target">
+                            </div>                                
+                            <div class="form-group col-3">
+                                <label>Target Measurement Unit</label>
+                                <input type="text" class="form-control" name="target_measurement_unit">
+                            </div>         
+                                                 
+                            <div class="form-group col-6">
+                                <label>Application Contract Document</label>
+                                <p>Current Document: <b>{{ disbursements.application_contract_document}}</b>  </p>
+                                <p><i>Attache a new document below if you want to replace the above file.</i></p>
+                                <input type="file" class="form-control" name="application_contract_document" >
+                            </div>
+
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+
+                            <button type="submit" class="btn btn-success">Add Disbursement</button>
+                        </div>
+                    </form>
                     </div>
                     <!-- /.card -->
 

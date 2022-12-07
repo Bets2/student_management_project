@@ -502,8 +502,10 @@ def delete_customer(request, customer_id):
 # BETS ADDED Disbursment related views here ***************************************************
 
 def add_disbursement(request):
+    customer = Customers.objects.all()
     form = AddDisbursementForm()
     context = {
+        "customer": customer,
         "form": form
     }
     return render(request, 'hod_template/add_disbursement_template.html', context)
@@ -513,39 +515,93 @@ def add_disbursement_save(request):
     if request.method != "POST":
         messages.error(request, "Invalid Method")
         return redirect('add_disbursement')
-    else:
 
+    else:
+        # form = AddDisbursementForm(request.POST, request.FILES)
+        # disbursement_id = request.POST.get('id')
+        # if disbursement_id == None:
+        #     messages.error(request, "BETS>>> OUR ID IS NONE...")
+        #     return redirect('/manage_disbursement')
         disbursement_code = request.POST.get('disbursement_code')
-        disbursement_description = request.POST.get('disbursement_description')
+        disbursement_description = request.POST.get(
+            'disbursement_description')
         disbursement_application_id = request.POST.get(
             'disbursement_application_id')
         disbursement_reason = request.POST.get('disbursement_reason')
         disbursement_type = request.POST.get('disbursement_type')
-        disbursement_date = request.POST.get('disbursement_date')
+        disbursement_date = request.POST.get('disbursement_date') or None
         disbursement_amount = request.POST.get('disbursement_amount')
-        contract_signed_date = request.POST.get('contract_signed_date')
-        disbursement_end = request.POST.get('disbursement_end')
+        contract_signed_date = request.POST.get(
+            'contract_signed_date') or None
+        disbursement_end = request.POST.get('disbursement_end') or None
         disbursement_allotment = request.POST.get('disbursement_allotment')
         disbursement_interest_rate = request.POST.get(
             'disbursement_interest_rate')
         repayment_term = request.POST.get('repayment_term')
         total_target = request.POST.get('total_target')
         monthly_target = request.POST.get('monthly_target')
-        target_measurement_unit = request.POST.get('target_measurement_unit')
-        application_contract_document = request.POST.get(
-            'application_contract_document')
-        customer_id = request.POST.get('customer')
-        customer = Customers.objects.get(id=customer_id)
+        target_measurement_unit = request.POST.get(
+            'target_measurement_unit')
+        # application_contract_document = request.FILES['application_contract_document']
+        # customer = request.POST.get('customer')
+        customer_id = request.POST.get('customer_id')
+        if len(request.FILES) != 0:
+            application_contract_document = request.FILES(
+                'application_contract_document')
+            fs = FileSystemStorage()
+            filename = fs.save(
+                application_contract_document.name, application_contract_document)
+            application_contract_document_url = fs.url(filename)
+        else:
+            application_contract_document_url = None
 
-        try:
-            disbursement = Disbursements(disbursement_code=disbursement_code,
-                                         customer_id=customer)
-            disbursement.save()
-            messages.success(request, "Disbursement Added Successfully!")
-            return redirect('add_disbursement')
-        except:
-            messages.error(request, "Failed to Add Disbursement Details")
-            return redirect('add_disbursement')
+            # disbursement = Disbursements.objects.get(id)
+
+        disbursement_code = disbursement_code
+        disbursement_description = disbursement_description
+        disbursement_application_id = disbursement_application_id
+        disbursement_reason = disbursement_reason
+        disbursement_type = disbursement_type
+        disbursement_date = disbursement_date
+        disbursement_amount = disbursement_amount
+        contract_signed_date = contract_signed_date
+        disbursement_end = disbursement_end
+        disbursement_allotment = disbursement_allotment
+        disbursement_interest_rate = disbursement_interest_rate
+        repayment_term = repayment_term
+        total_target = total_target
+        monthly_target = monthly_target
+        target_measurement_unit = target_measurement_unit
+        if application_contract_document_url != None:
+            application_contract_document = application_contract_document
+        # customer_id = customer_id
+        customer_id = Customers.objects.get(
+            id=customer_id)
+
+        # disbursement.application_contract_document = application_contract_document
+        disbursement = Disbursements.objects.create(disbursement_code=disbursement_code,
+                                                    disbursement_description=disbursement_description,
+                                                    disbursement_application_id=disbursement_application_id,
+                                                    disbursement_reason=disbursement_reason,
+                                                    disbursement_type=disbursement_type,
+                                                    disbursement_date=disbursement_date,
+                                                    disbursement_amount=disbursement_amount,
+                                                    contract_signed_date=contract_signed_date,
+                                                    disbursement_end=disbursement_end,
+                                                    disbursement_allotment=disbursement_allotment,
+                                                    disbursement_interest_rate=disbursement_interest_rate,
+                                                    repayment_term=repayment_term,
+                                                    total_target=total_target,
+                                                    monthly_target=monthly_target,
+                                                    target_measurement_unit=target_measurement_unit,
+                                                    application_contract_document=application_contract_document_url,
+                                                    customer_id=customer_id)
+
+    # Save Disbursements table
+    disbursement.save()
+    messages.success(
+        request, disbursement_code + "Disbursement details added Successfully.")
+    return redirect("/manage_disbursement")
 
 
 def manage_disbursement(request):
@@ -561,7 +617,7 @@ def edit_disbursement(request, disbursement_id):
     disbursement = Disbursements.objects.get(id=disbursement_id)
     customer = Customers.objects.all()
 
-    form = EditDisbursementForm(request.POST or None)
+    form = EditDisbursementForm(request.POST or None, request.FILES)
 
     # Filling the form with Data from Database
     form.fields['disbursement_code'].initial = disbursement.disbursement_code
@@ -579,7 +635,9 @@ def edit_disbursement(request, disbursement_id):
     form.fields['total_target'].initial = disbursement.total_target
     form.fields['monthly_target'].initial = disbursement.monthly_target
     form.fields['target_measurement_unit'].initial = disbursement.target_measurement_unit
+    # To Do: BETS finish this here uploading file
     form.fields['application_contract_document'].initial = disbursement.application_contract_document
+
     form.fields['customer_id'].initial = disbursement.customer_id.id
 
     context = {
@@ -621,7 +679,8 @@ def edit_disbursement_save(request):
             monthly_target = request.POST.get('monthly_target')
             target_measurement_unit = request.POST.get(
                 'target_measurement_unit')
-            # application_contract_document = request.POST.get('application_contract_document')
+            application_contract_document = request.POST.get(
+                'application_contract_document')
             customer_id = request.POST.get('customer_id')
             if len(request.FILES) != 0:
                 application_contract_document = request.FILES(
