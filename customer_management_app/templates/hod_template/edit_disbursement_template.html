@@ -58,7 +58,7 @@
 
                                 <div class="form-group">
                                     <label>Disbursement Code</label>
-                                    <input type="text" class="form-control" name="disbursement_code" value="{{ disbursements.disbursement_code }}">
+                                    <input type="text" class="form-control" name="disbursement_code" value="{{ disbursements.disbursement_code }}" required>
                                 </div>
                                 <div class="form-group">
                                     <label>Disbursement Description</label>
@@ -97,7 +97,7 @@
                                 </div>
                                 <div class="form-group col-3">
                                     <label>Disbursement Amount </label>
-                                    <input type="number" class="form-control" name="disbursement_amount" value="{{ disbursements.disbursement_amount }}">
+                                    <input type="number" class="form-control" name="disbursement_amount" value="{{ disbursements.disbursement_amount }}" required  step="0.01">
                                 </div>
                                 <div class="form-group col-3">
                                     <label>Contract Signed Date </label>
@@ -114,7 +114,7 @@
                                 </div>
                                 <div class="form-group col-3">
                                     <label>Disbursement Interest Rate</label>
-                                    <input type="number" class="form-control" name="disbursement_interest_rate" value="{{ disbursements.disbursement_interest_rate }}" step="0.01">
+                                    <input type="number" class="form-control" name="disbursement_interest_rate" value="{{ disbursements.disbursement_interest_rate }}" placeholder="0.00" required step="0.01">
                                 </div>
                                 <div class="form-group col-3">
                                     <label>Repayment Terms (Number of Month)</label>
@@ -122,11 +122,11 @@
                                 </div>
                                 <div class="form-group col-3">
                                     <label>Total Target</label>
-                                    <input type="number" class="form-control" name="total_target" value="{{ disbursements.total_target }}" step="0.01">
+                                    <input type="number" class="form-control" name="total_target" value="{{ disbursements.total_target }}" step="0.01" required>
                                 </div>                                
                                 <div class="form-group col-3">
                                     <label>Monthly Target</label>
-                                    <input type="number" class="form-control" name="monthly_target" value="{{ disbursements.monthly_target }}" step="0.01">
+                                    <input type="number" class="form-control" name="monthly_target" value="{{ disbursements.monthly_target }}" step="0.01" required>
                                 </div>                                
                                 <div class="form-group col-3">
                                     <label>Target Measurement Unit</label>
@@ -147,6 +147,7 @@
 
                                 <input type="hidden" class="form-control" name="disbursement_id" value="{{ disbursements.id }}">
                                 <button type="submit" class="btn btn-primary">Update Disbursement</button>
+                                <a href="{% url 'manage_disbursement' %}" class="btn btn-secondary">Cancel</a>
                             </div>
                         </form>
 

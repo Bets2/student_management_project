@@ -71,7 +71,7 @@ BEE_LEVEL_DATA = (('Level_1', "Level 1"), ('Level_2', "Level 2"), ('Level_3', "L
 CUSTOMER_TYPE_DATA = (('Collector', "Collector"),
                       ('Recycler', "Recycler"), ('Quality', "Quality"))
 
-PROVINCE_DATA = (('Gauteng', "Gauteng"), ('Mpumalanga', "Mpumalanga"), ('KZN', "KZN"), ('KZN', "KZN"), ('KZN', "KZN"), ('North_West', "North West"),
+PROVINCE_DATA = (('Gauteng', "Gauteng"), ('Mpumalanga', "Mpumalanga"), ('KZN', "KZN"), ('North_West', "North West"),
                  ('Limpopo', "Limpopo"), ('Western_Cape', "Western Cape"), ('Free_State', "Free State"), ('Eastern_Cape', "Eastern Cape"), ('Northern_Cape', "Northern Cape"))
 
 CUSTOMER_STATUS_DATA = (('Active', "Active"), ('Cancelled', "Cancelled"), ('Contract_Complete',
@@ -83,7 +83,7 @@ class Customers(models.Model):
     # models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     admin = models.OneToOneField(
         CustomUser, on_delete=models.CASCADE)
-    customer_name = models.CharField(max_length=255, default="Not Provided")
+    customer_name = models.CharField(max_length=255)
     gender = models.CharField(max_length=50, null=True, blank=True)
     profile_pic = models.FileField(null=True, blank=True)
     address = models.TextField()
@@ -100,7 +100,7 @@ class Customers(models.Model):
     city = models.CharField(max_length=64, null=True, blank=True)
     contact_person = models.CharField(max_length=255, null=True)
     email = models.EmailField(null=True)
-    comment = models.TextField(null=True)
+    comment = models.TextField(null=True, blank=True)
     customer_status = models.CharField(
         choices=CUSTOMER_STATUS_DATA, max_length=64, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -133,10 +133,12 @@ class Disbursements(models.Model):
     disbursement_allotment = models.CharField(
         choices=DISBURSEMENT_ALLOTMENT_DATA, max_length=64)
     disbursement_interest_rate = models.DecimalField(
-        decimal_places=2, max_digits=10)
+        max_digits=10, decimal_places=2)
     repayment_term = models.IntegerField(blank=True)
-    total_target = models.DecimalField(decimal_places=2, max_digits=10)
-    monthly_target = models.DecimalField(decimal_places=2, max_digits=10)
+    total_target = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=False, default=0)
+    monthly_target = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=False, default=0)
     target_measurement_unit = models.CharField(max_length=64, default='Tone')
     customer_id = models.ForeignKey(
         Customers, on_delete=models.DO_NOTHING, default=1)

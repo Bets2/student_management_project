@@ -380,7 +380,7 @@ def add_customer_save(request):
                 user.customers.profile_pic = profile_pic_url
                 user.save()
                 messages.success(request, "Customer Added Successfully!")
-                return redirect('add_customer')
+                return redirect('manage_customer')
             except:
                 messages.error(request, "Failed to Add Customer!")
                 return redirect('add_customer')
@@ -405,8 +405,18 @@ def edit_customer(request, customer_id):
     form = EditCustomerForm()
 
     # Filling the form with Data from Database
+    form.fields['customer_name'].initial = customer.customer_name
+    form.fields['customer_type'].initial = customer.customer_type
+    form.fields['address'].initial = customer.address
+    form.fields['city'].initial = customer.city
+    form.fields['province'].initial = customer.province
+    form.fields['contact_person'].initial = customer.contact_person
+    form.fields['customer_status'].initial = customer.customer_status
+    form.fields['comment'].initial = customer.comment
+
     form.fields['email'].initial = customer.admin.email
     form.fields['username'].initial = customer.admin.username
+    # form.fields['password'].initial = customer.admin.password
     form.fields['first_name'].initial = customer.admin.first_name
     form.fields['last_name'].initial = customer.admin.last_name
     form.fields['address'].initial = customer.address
@@ -432,6 +442,15 @@ def edit_customer_save(request):
 
         form = EditCustomerForm(request.POST, request.FILES)
         if form.is_valid():
+            customer_name = form.cleaned_data['customer_name']
+            customer_type = form.cleaned_data['customer_type']
+            address = form.cleaned_data['address']
+            city = form.cleaned_data['city']
+            province = form.cleaned_data['province']
+            contact_person = form.cleaned_data['contact_person']
+            customer_status = form.cleaned_data['customer_status']
+            comment = form.cleaned_data['comment']
+
             email = form.cleaned_data['email']
             username = form.cleaned_data['username']
             first_name = form.cleaned_data['first_name']
@@ -463,7 +482,15 @@ def edit_customer_save(request):
 
                 # Then Update Customers Table
                 customer_model = Customers.objects.get(admin=customer_id)
+
+                customer_model.customer_name = customer_name
+                customer_model.customer_type = customer_type
                 customer_model.address = address
+                customer_model.city = city
+                customer_model.province = province
+                customer_model.contact_person = contact_person
+                customer_model.customer_status = customer_status
+                customer_model.comment = comment
 
                 course = Courses.objects.get(id=course_id)
                 customer_model.course_id = course

@@ -55,7 +55,7 @@
 
                             <div class="form-group">
                                 <label>Disbursement Code</label>
-                                <input type="text" class="form-control" name="disbursement_code" placeholder="Enter Disbursement Code" >
+                                <input type="text" class="form-control" name="disbursement_code" placeholder="Enter Disbursement Code" required >
                             </div>
                             <div class="form-group">
                                 <label>Disbursement Description</label>
@@ -96,7 +96,7 @@
                             </div>
                             <div class="form-group col-3">
                                 <label>Disbursement Amount </label>
-                                <input type="number" class="form-control" name="disbursement_amount" placeholder="Disbursement Amount in Rands">
+                                <input type="number" class="form-control" name="disbursement_amount" placeholder="Disbursement Amount in Rands" required  step="0.01">
                             </div>
                             <div class="form-group col-3">
                                 <label>Contract Signed Date </label>
@@ -113,7 +113,7 @@
                             </div>
                             <div class="form-group col-3">
                                 <label>Disbursement Interest Rate</label>
-                                <input type="number" class="form-control" name="disbursement_interest_rate">
+                                <input type="number" class="form-control" name="disbursement_interest_rate" placeholder="0.00" required step="0.01">
                             </div>
                             <div class="form-group col-3">
                                 <label>Repayment Terms (Number of Month)</label>
@@ -121,11 +121,11 @@
                             </div>
                             <div class="form-group col-3">
                                 <label>Total Target</label>
-                                <input type="number" class="form-control" name="total_target">
+                                <input type="number" class="form-control" name="total_target" required>
                             </div>                                
                             <div class="form-group col-3">
                                 <label>Monthly Target</label>
-                                <input type="number" class="form-control" name="monthly_target">
+                                <input type="number" class="form-control" name="monthly_target" required>
                             </div>                                
                             <div class="form-group col-3">
                                 <label>Target Measurement Unit</label>
@@ -145,6 +145,8 @@
                         <div class="card-footer">
 
                             <button type="submit" class="btn btn-success">Add Disbursement</button>
+                            <a href="{% url 'manage_disbursement' %}" class="btn btn-secondary">Cancel</a>
+
                         </div>
                     </form>
                     </div>
