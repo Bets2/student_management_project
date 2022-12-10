@@ -43,9 +43,9 @@
               {% url 'manage_customer' as manage_customer %}
               {% url 'edit_customer' customer_id=id as edit_customer %}
               <a href="{{ manage_customer }}" class="nav-link {% if request.path == manage_customer %} active {% endif %} {% if request.path == edit_customer %} active {% endif %}">
-                <i class="nav-icon fas fa-users-list"></i>
+                <i class="nav-icon fas fa-globe"></i>
                 <p>
-                  Manage Customer
+                  Manage Customers
                 </p>
               </a>
             </li>
@@ -53,7 +53,7 @@
             <li class="nav-item">
               {% url 'add_customer' as add_customer %}
               <a href="{{ add_customer }}" class="nav-link {% if request.path == add_customer %} active {% endif %}">
-                <i class="nav-icon fas fa-ion-person"></i>
+                <i class="nav-icon far fa-address-book"></i>
                 <p>
                   Add Customer
                 </p>
@@ -63,7 +63,7 @@
               {% url 'manage_disbursement' as manage_disbursement %}
               {% url 'edit_disbursement' disbursement_id=id as edit_disbursement %}
               <a href="{{ manage_disbursement }}" class="nav-link {% if request.path == manage_disbursement %} active {% endif %} {% if request.path == edit_disbursement %} active {% endif %}">
-                <i class="nav-icon fas fa-chalkboard"></i>
+                <i class="nav-icon fas fa-money-bill-alt  "></i>
                 <p>
                   Manage Disbursements
                 </p>
@@ -74,7 +74,7 @@
               {% url 'manage_repayment' as manage_repayment %}
               {% url 'edit_repayment' repayment_id=id as edit_repayment %}
               <a href="{{ manage_repayment }}" class="nav-link {% if request.path == manage_repayment %} active {% endif %} {% if request.path == edit_repayment %} active {% endif %}">
-                <i class="nav-icon fas fa-chalkboard"></i>
+                <i class="nav-icon fas fa-chart-line"></i>
                 <p>
                   Manage Repayments
                 </p>

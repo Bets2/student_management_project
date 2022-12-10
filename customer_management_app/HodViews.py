@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-from .forms import AddCustomerForm, EditCustomerForm, AddDisbursementForm, EditDisbursementForm
+from .forms import AddCustomerForm, EditCustomerForm, AddDisbursementForm, EditDisbursementForm, AddRepaymentForm, EditRepaymentForm
 
 from .models import CustomUser, Staffs, Courses, Subjects, Customers, SessionYearModel, FeedBackCustomer, FeedBackStaffs, LeaveReportCustomer, LeaveReportStaff, Attendance, AttendanceReport, Disbursements, Repayments
 
@@ -807,7 +807,7 @@ def manage_repayment(request):
     context = {
         "repayments": repayments
     }
-    return render(request, 'hod_template/manage_repayments_template.html', context)
+    return render(request, 'hod_template/manage_repayment_template.html', context)
 
 
 def add_repayment(request):
@@ -879,7 +879,7 @@ def add_repayment_save(request):
     return redirect("/manage_repayment")
 
 
-def edit_disbursement(request, repayment_id):
+def edit_repayment(request, repayment_id):
 
     repayment = Repayments.objects.get(id=repayment_id)
     customer = Customers.objects.all()

@@ -361,32 +361,32 @@ class EditDisbursementForm(forms.Form):
 class AddRepaymentForm(forms.Form):
     repayment_code = forms.CharField(label="Repayment Code",
                                      max_length=128,
-                                     widget=forms.TextInput(attr={"class": "form-control"}))
+                                     widget=forms.TextInput(attrs={"class": "form-control"}))
     repayment_type_list = (('Amortization', 'Amortization'),
                            ('Impairment', 'Impairment'))
     repayment_type = forms.ChoiceField(label="Repayment Type",
                                        choices=repayment_type_list,
-                                       widget=forms.TextInput(attr={"class": "form-control"}))
+                                       widget=forms.TextInput(attrs={"class": "form-control"}))
     repayment_description = forms.CharField(label="Repayment Description ",
                                             max_length=255,
-                                            widget=forms.TextInput(attr={"class": "form-control"}))
+                                            widget=forms.TextInput(attrs={"class": "form-control"}))
     repayment_amount = forms.DecimalField(label="Repayment Amount",
                                           max_digits=10,
                                           decimal_places=2,
-                                          widget=forms.NumberInput(attr={'id': 'form-control', 'step': "0.01"}))
+                                          widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
     repayment_date = forms.CharField(label="Repayment Date",
                                      max_length=128,
-                                     widget=forms.TextInput(attr={"class": "form-control"}))
+                                     widget=forms.TextInput(attrs={"class": "form-control"}))
     actual_volume_tone = forms.DecimalField(label="Actual Volume Tone",
                                             max_digits=10,
                                             decimal_places=2,
-                                            widget=forms.NumberInput(attr={'id': 'form-control', 'step': "0.01"}))
+                                            widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
     comment = forms.CharField(label="Comment if any",
                               max_length=255,
-                              widget=forms.TextInput(attr={"class": "form-control"}))
+                              widget=forms.TextInput(attrs={"class": "form-control"}))
     payment_documentation = forms.FileField(label="Payment Documentation",
                                             max_length=128,
-                                            widget=forms.FileInput(attr={"class": "form-control"}))
+                                            widget=forms.FileInput(attrs={"class": "form-control"}))
 
     # For Displaying Disbursement Codes inside Create Repayments form
     try:
@@ -419,32 +419,32 @@ class AddRepaymentForm(forms.Form):
 class EditRepaymentForm(forms.Form):
     repayment_code = forms.CharField(label="Repayment Code",
                                      max_length=128,
-                                     widget=forms.TextInput(attr={"class": "form-control"}))
+                                     widget=forms.TextInput(attrs={"class": "form-control"}))
     repayment_type_list = (('Amortization', 'Amortization'),
                            ('Impairment', 'Impairment'))
     repayment_type = forms.ChoiceField(label="Repayment Type",
                                        choices=repayment_type_list,
-                                       widget=forms.TextInput(attr={"class": "form-control"}))
+                                       widget=forms.TextInput(attrs={"class": "form-control"}))
     repayment_description = forms.CharField(label="Repayment Description ",
                                             max_length=255,
-                                            widget=forms.TextInput(attr={"class": "form-control"}))
+                                            widget=forms.TextInput(attrs={"class": "form-control"}))
     repayment_amount = forms.DecimalField(label="Repayment Amount",
                                           max_digits=10,
                                           decimal_places=2,
-                                          widget=forms.NumberInput(attr={'id': 'form-control', 'step': "0.01"}))
+                                          widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
     repayment_date = forms.CharField(label="Repayment Date",
                                      max_length=128,
-                                     widget=forms.TextInput(attr={"class": "form-control"}))
+                                     widget=forms.TextInput(attrs={"class": "form-control"}))
     actual_volume_tone = forms.DecimalField(label="Actual Volume Tone",
                                             max_digits=10,
                                             decimal_places=2,
-                                            widget=forms.NumberInput(attr={'id': 'form-control', 'step': "0.01"}))
+                                            widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
     comment = forms.CharField(label="Comment if any",
                               max_length=255,
-                              widget=forms.TextInput(attr={"class": "form-control"}))
+                              widget=forms.TextInput(attrs={"class": "form-control"}))
     payment_documentation = forms.FileField(label="Payment Documentation",
                                             max_length=128,
-                                            widget=forms.FileInput(attr={"class": "form-control"}))
+                                            widget=forms.FileInput(attrs={"class": "form-control"}))
     # For Displaying Disbursement Codes inside Create Repayments form
     try:
         disbursements = Disbursements.objects.all()
