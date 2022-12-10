@@ -52,9 +52,18 @@
                             
 
                         <div class="card-body">
+                            <div class="form-group">
+                                <label>Select Customer </label>
+                          
+                                <select class="form-control" name="customer_id"> 
+                                    {% for cust in customer %}                                                                                          
+                                        <option value="{{ cust.id }}">{{ cust.customer_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
 
                             <div class="form-group">
-                                <label>Disbursement Code</label>
+                                <label>Disbursement Code <small>This should be unique. All repayments will be linked to this code. </small></label>
                                 <input type="text" class="form-control" name="disbursement_code" placeholder="Enter Disbursement Code" required >
                             </div>
                             <div class="form-group">
@@ -128,7 +137,7 @@
                                 <input type="number" class="form-control" name="total_target" required>
                             </div>                                
                             <div class="form-group col-3">
-                                <label>Monthly Target</label>
+                                <label>Monthly Volume Target</label>
                                 <input type="number" class="form-control" name="monthly_target" required>
                             </div>                                
                             <div class="form-group col-3">
@@ -138,7 +147,6 @@
                                                  
                             <div class="form-group col-6">
                                 <label>Application Contract Document</label>
-                                <p>Current Document: <b>{{ disbursements.application_contract_document}}</b>  </p>
                                 <p><i>Attache a new document below if you want to replace the above file.</i></p>
                                 <input type="file" class="form-control" name="application_contract_document" >
                             </div>

@@ -1,0 +1,137 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+    Add Repayment
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">Add/Capture Disbursemnt</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form role="form" method="POST" action="{% url 'add_repayment_save' %}">
+
+                        {% csrf_token %}
+
+                        
+                                {% comment %} Display Messages {% endcomment %}
+                                {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+                            
+
+                        <div class="card-body">
+
+                            <div class="form-group">
+                                <label>Select Customer </label>
+                          
+                                <select class="form-control" name="customer_id"> 
+                                    {% for cust in customer %}                                                                                          
+                                        <option value="{{ cust.id }}">{{ cust.customer_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Select Disbursement Code: </label>
+                                <p><small>All payments need to be allocated to a particular disbursement code</small></p>
+                          
+                                <select class="form-control" name="disbursement_id"> 
+                                    {% for disb in disbursement %}                                                                                          
+                                        <option value="{{ disb.id }}">{{ disb.disbursement_code }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Repayment Code</label>
+                                <input type="text" class="form-control" name="repayment_code" placeholder="Enter Repayment Code" required >
+                            </div>
+                            <div class="form-group col-2">
+                                <label>Repayment Type</label>
+                                <select class="form-control" name="repayment_type">                                        
+                                        <option value="Amortization">Grant</option>
+                                        <option value="Impairment">Loan</option>
+                                </select>    
+                            </div>
+                            <div class="form-group">
+                                <label>Repayment Description</label>
+                                <input type="text" class="form-control" name="repayment_description" placeholder="Enter Description">
+                            </div>
+                            <div class="form-group col-3">
+                                <label>Repayment Amount </label>
+                                <input type="number" class="form-control" name="repayment_amount" placeholder="Repayment Amount in Rands" required  step="0.01">
+                            </div>
+                            <div class="form-group col-3">
+                                <label>Repayment Date </label>
+                                <input type="date" class="form-control" name="repayment_date"   placeholder="Repayment Date">
+                            </div>
+                            <div class="form-group col-3">
+                                <label>Actual Volumen Tone </label>
+                                <input type="number" class="form-control" name="actual_volume_tone" placeholder="Volume in tones" required  step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label>Any Comment on payment</label>
+                                <input type="text" class="form-control" name="comment" placeholder="Comment if any">
+                            </div>
+                            <div class="form-group col-6">
+                                <label>Payment documentation (if any)</label>
+
+                                <p><i>Upload any payment confirmation if needed.</i></p>
+                                <input type="file" class="form-control" name="payment_documentation" >
+                            </div>
+
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-success">Add/Save Repayment</button>
+                            <a href="{% url 'manage_repayment' %}" class="btn btn-secondary">Cancel</a>
+
+                        </div>
+                    </form>
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+  {% endblock main_content %}
+
+  {% block custom_js %}
+    {% comment %} Checking if email and username already exists or not usin Ajax {% endcomment %}
+
+  {% endblock custom_js %}

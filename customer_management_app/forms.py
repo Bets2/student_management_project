@@ -381,6 +381,9 @@ class AddRepaymentForm(forms.Form):
                                             max_digits=10,
                                             decimal_places=2,
                                             widget=forms.NumberInput(attr={'id': 'form-control', 'step': "0.01"}))
+    comment = forms.CharField(label="Comment if any",
+                              max_length=255,
+                              widget=forms.TextInput(attr={"class": "form-control"}))
     payment_documentation = forms.FileField(label="Payment Documentation",
                                             max_length=128,
                                             widget=forms.FileInput(attr={"class": "form-control"}))
@@ -436,6 +439,9 @@ class EditRepaymentForm(forms.Form):
                                             max_digits=10,
                                             decimal_places=2,
                                             widget=forms.NumberInput(attr={'id': 'form-control', 'step': "0.01"}))
+    comment = forms.CharField(label="Comment if any",
+                              max_length=255,
+                              widget=forms.TextInput(attr={"class": "form-control"}))
     payment_documentation = forms.FileField(label="Payment Documentation",
                                             max_length=128,
                                             widget=forms.FileInput(attr={"class": "form-control"}))

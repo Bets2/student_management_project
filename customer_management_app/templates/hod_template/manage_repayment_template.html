@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Manage Disbursements
+    Manage Repayments
 {% endblock page_title %}
 
 {% block main_content %}
@@ -11,7 +11,7 @@
 <section class="content">
         <div class="container-fluid">
 
-            <a class="btn btn-primary" href="{% url 'add_disbursement' %}" role="button">+ Add Disbursement</a> <br/>&nbsp;
+            <a class="btn btn-primary" href="{% url 'add_repayment' %}" role="button">+ Add Repayment</a> <br/>&nbsp;
             
             {% if messages %}
                                 <div class="form-group">
@@ -43,7 +43,7 @@
                     <!-- general form elements -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Disbursement Details</h3>
+                            <h3 class="card-title">Repayment Details</h3>
 
                             <div class="card-tools">
                             <div class="input-group input-group-sm" style="width: 150px;">
@@ -61,35 +61,38 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Customer</th>
+                                    <th>Customer Name</th>
     
-                                    <th>Disbursement Code</th>
-                                    <th>Disbursement Type</th>
-                                    <th>Disbursement Date</th>
+                                    <th>Repayment Code</th>
+                                    <th>Repayment Type</th>
+                                    <th>Repayment Date</th>
                                     <th>Amount</th>
-                                    <th>Total Targets</th>
-                                    <th>Contract Signed Date</th>
+                                    <th>Loan/Grant Amt<th>
+                                    <th>Actual Volume tone</th>
+                                    <th>Target Monthly Vol.<th>
+                                    
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for disbursement in disbursements %}
+                                {% for repayment in repayments %}
                                 <tr>
-                                    <td>{{ disbursement.id }}</td>
-                                    <td>{{ disbursement.customer_id.customer_name }}</td>
+                                    <td>{{ repayment.id }}</td>
+                                    <td>{{ repayment.customer_id.customer_name }}</td>
     
-                                    <td>{{ disbursement.disbursement_code }}</td>
-                                    <td>{{ disbursement.disbursement_type }}</td>
-                                    <td>{{ disbursement.disbursement_date }}</td>
-                                    <td>{{ disbursement.disbursement_amount }}</td>
-                                    <td>{{ disbursement.total_target }}</td>
-                                    <td>{{ disbursement.contract_signed_date }}</td>
-                                 
- 
-                                <td>
-                                    <a href="{% url 'edit_disbursement' disbursement.id %}" class="btn btn-success">Edit</a> 
-                                    <a href="{% url 'delete_disbursement' disbursement.id %}" class="btn btn-danger">Delete</a>
-                                </td>
+                                    <td>{{ repayment.repayment_code }}</td>
+                                    <td>{{ repayment.repayment_type }}</td>
+                                    <td>{{ repayment.repayment_date }}</td>
+                                    <td>{{ repayment.repayment_amount }}</td>
+                                    <td>{{ repayment.disbursement_id.disbursement_amount }}</td>
+                                    <td>{{ repayment.actual_volume_tone }}</td>
+                                    <td>{{ repayment.disbursement_id.monthly_target }}</td>
+                                    
+    
+                                    <td>
+                                        <a href="{% url 'edit_repayment' repayment.id %}" class="btn btn-success">Edit</a> 
+                                        <a href="{% url 'delete_repayment' repayment.id %}" class="btn btn-danger">Delete</a>
+                                    </td>
                                 </tr>
                                 {% endfor %}
                                 

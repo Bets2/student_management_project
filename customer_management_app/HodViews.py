@@ -833,6 +833,7 @@ def add_repayment_save(request):
         repayment_amount = request.POST.get('repayment_amount')
         repayment_date = request.POST.get('repayment_date')
         actual_volume_tone = request.POST.get('actual_volume_tone')
+        comment = request.POST.get('comment')
         # payment_documentation   = requiest.POST.get('payment_documentation')
         disbursement_id = request.POST.get('disbursement_id')
         customer_id = request.POST.get('customer_id')
@@ -852,6 +853,7 @@ def add_repayment_save(request):
         repayment_amount = repayment_amount
         repayment_date = repayment_date
         actual_volume_tone = actual_volume_tone
+        comment = comment
         if payment_documentation_url != None:
             payment_documentation = payment_documentation
         # payment_documentation  = payment_documentation
@@ -859,14 +861,15 @@ def add_repayment_save(request):
         disbursement_id = Disbursements.objects.get(id=disbursement_id)
         customer_id = Customers.objects.get(id=customer_id)
 
-        repayment = Repayments.objects.create(repayment_code=repayment_code
-                                              repayment_type=repayment_type
-                                              repayment_description=repayment_description
-                                              repayment_amount=repayment_amount
-                                              repayment_date=repayment_date
-                                              actual_volume_tone=actual_volume_tone
-                                              payment_documentation=payment_documentation
-                                              disbursement_id=disbursement_id
+        repayment = Repayments.objects.create(repayment_code=repayment_code,
+                                              repayment_type=repayment_type,
+                                              repayment_description=repayment_description,
+                                              repayment_amount=repayment_amount,
+                                              repayment_date=repayment_date,
+                                              actual_volume_tone=actual_volume_tone,
+                                              comment=comment,
+                                              payment_documentation=payment_documentation,
+                                              disbursement_id=disbursement_id,
                                               customer_id=customer_id)
 
     # Save Repayments table
@@ -891,6 +894,7 @@ def edit_disbursement(request, repayment_id):
     form.fields['repayment_amount'].initial = repayment.repayment_amount
     form.fields['repayment_date'].initial = repayment.repayment_date
     form.fields['actual_volume_tone'].initial = repayment.actual_volume_tone
+    form.fields['comment'].initial = repayment.comment
     form.fields['payment_documentation '].initial = repayment.payment_documentation
     form.fields['disbursement_id'].initial = repayment.disbursement_id
     form.fields['customer_id'].initial = repayment.customer_id
@@ -919,6 +923,7 @@ def edit_repayment_save(request):
             repayment_amount = request.POST.get('repayment_amount')
             repayment_date = request.POST.get('repayment_date')
             actual_volume_tone = request.POST.get('actual_volume_tone')
+            comment = request.POST.get('comment')
             payment_documentation = request.POST.get('payment_documentation')
             disbursement_id = request.POST.get('disbursement_id')
             customer_id = request.POST.get('customer_id')
@@ -941,6 +946,7 @@ def edit_repayment_save(request):
             repayment.repayment_amount = repayment_amount
             repayment.repayment_date = repayment_date
             repayment.actual_volume_tone = actual_volume_tone
+            repayment.comment = comment
             repayment.payment_documentation = payment_documentation
             repayment.disbursement_id = disbursement_id
             repayment.customer_id = customer_id

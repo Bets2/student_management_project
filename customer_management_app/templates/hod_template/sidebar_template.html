@@ -38,6 +38,51 @@
               </a>
             </li>
 
+
+            <li class="nav-item">
+              {% url 'manage_customer' as manage_customer %}
+              {% url 'edit_customer' customer_id=id as edit_customer %}
+              <a href="{{ manage_customer }}" class="nav-link {% if request.path == manage_customer %} active {% endif %} {% if request.path == edit_customer %} active {% endif %}">
+                <i class="nav-icon fas fa-users-list"></i>
+                <p>
+                  Manage Customer
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'add_customer' as add_customer %}
+              <a href="{{ add_customer }}" class="nav-link {% if request.path == add_customer %} active {% endif %}">
+                <i class="nav-icon fas fa-ion-person"></i>
+                <p>
+                  Add Customer
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              {% url 'manage_disbursement' as manage_disbursement %}
+              {% url 'edit_disbursement' disbursement_id=id as edit_disbursement %}
+              <a href="{{ manage_disbursement }}" class="nav-link {% if request.path == manage_disbursement %} active {% endif %} {% if request.path == edit_disbursement %} active {% endif %}">
+                <i class="nav-icon fas fa-chalkboard"></i>
+                <p>
+                  Manage Disbursements
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'manage_repayment' as manage_repayment %}
+              {% url 'edit_repayment' repayment_id=id as edit_repayment %}
+              <a href="{{ manage_repayment }}" class="nav-link {% if request.path == manage_repayment %} active {% endif %} {% if request.path == edit_repayment %} active {% endif %}">
+                <i class="nav-icon fas fa-chalkboard"></i>
+                <p>
+                  Manage Repayments
+                </p>
+              </a>
+            </li>
+
+
+
             <li class="nav-item">
               {% url 'manage_staff' as manage_staff %}
               {% url 'edit_staff' staff_id=id as edit_staff %}
@@ -59,38 +104,7 @@
               </a>
             </li>
 
-            <li class="nav-item">
-              {% url 'manage_customer' as manage_customer %}
-              {% url 'edit_customer' customer_id=id as edit_customer %}
-              <a href="{{ manage_customer }}" class="nav-link {% if request.path == manage_customer %} active {% endif %} {% if request.path == edit_customer %} active {% endif %}">
-                <i class="nav-icon fas fa-user-graduate"></i>
-                <p>
-                  Manage Customer
-                </p>
-              </a>
-            </li>
-
-            <li class="nav-item">
-              {% url 'add_customer' as add_customer %}
-              <a href="{{ add_customer }}" class="nav-link {% if request.path == add_customer %} active {% endif %}">
-                <i class="nav-icon fas fa-th"></i>
-                <p>
-                  Add Customer
-                </p>
-              </a>
-            </li>
-            <li class="nav-item">
-              {% url 'manage_disbursement' as manage_disbursement %}
-              {% url 'edit_disbursement' disbursement_id=id as edit_disbursement %}
-              <a href="{{ manage_disbursement }}" class="nav-link {% if request.path == manage_disbursement %} active {% endif %} {% if request.path == edit_disbursement %} active {% endif %}">
-                <i class="nav-icon fas fa-chalkboard"></i>
-                <p>
-                  Manage Disbursements
-                </p>
-              </a>
-            </li>
-
-            <li class="nav-item">
+            {% comment %} <li class="nav-item">
               {% url 'manage_course' as manage_course %}
               {% url 'edit_course' course_id=id as edit_course %}
               <a href="{{ manage_course }}" class="nav-link {% if request.path == manage_course %} active {% endif %} {% if request.path == edit_course %} active {% endif %}">
@@ -109,9 +123,9 @@
                   Add Course
                 </p>
               </a>
-            </li>
+            </li> {% endcomment %}
 
-            <li class="nav-item">
+            {% comment %} <li class="nav-item">
               {% url 'manage_subject' as manage_subject %}
               {% url 'edit_subject' subject_id=id as edit_subject %}
               <a href="{{ manage_subject }}" class="nav-link {% if request.path == manage_subject %} active {% endif %} {% if request.path == edit_subject %} active {% endif %}">
@@ -130,10 +144,10 @@
                   Add Subject
                 </p>
               </a>
-            </li>
+            </li> {% endcomment %}
 
 
-            <li class="nav-item">
+            {% comment %} <li class="nav-item">
               {% url 'manage_session' as manage_session %}
               {% url 'edit_session' session_id=id as edit_session %}
               <a href="{{ manage_session }}" class="nav-link {% if request.path == manage_session %} active {% endif %} {% if request.path == edit_session %} active {% endif %}">
@@ -163,7 +177,7 @@
                   View Attendance
                 </p>
               </a>
-            </li>
+            </li> {% endcomment %}
 
             <li class="nav-item">
               {% url 'customer_feedback_message' as customer_feedback_message %}
