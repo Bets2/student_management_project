@@ -8,7 +8,7 @@ import json
 
 from .forms import AddCustomerForm, EditCustomerForm, AddDisbursementForm, EditDisbursementForm
 
-from .models import CustomUser, Staffs, Courses, Subjects, Customers, SessionYearModel, FeedBackCustomer, FeedBackStaffs, LeaveReportCustomer, LeaveReportStaff, Attendance, AttendanceReport, Disbursements
+from .models import CustomUser, Staffs, Courses, Subjects, Customers, SessionYearModel, FeedBackCustomer, FeedBackStaffs, LeaveReportCustomer, LeaveReportStaff, Attendance, AttendanceReport, Disbursements, Repayments
 
 
 def admin_home(request):
@@ -342,12 +342,24 @@ def add_customer_save(request):
         form = AddCustomerForm(request.POST, request.FILES)
 
         if form.is_valid():
+
+            customer_name = form.fields['customer_name']
+            customer_type = form.fields['customer_type']
+            address = form.fields['address']
+            city = form.fields['city']
+            province = form.fields['province']
+            contact_person = form.fields['contact_person']
+            customer_status = form.fields['customer_status']
+            phone = form.fields['phone']
+            comment = form.fields['comment']
+
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
             username = form.cleaned_data['username']
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             address = form.cleaned_data['address']
+            phone = form.cleaned_data['phone']
             session_year_id = form.cleaned_data['session_year_id']
             course_id = form.cleaned_data['course_id']
             gender = form.cleaned_data['gender']
@@ -367,7 +379,19 @@ def add_customer_save(request):
                                                       first_name=first_name,
                                                       last_name=last_name,
                                                       user_type=3)
+
+                user.customers.customer_name = customer_name
+                user.customers.customer_type = customer_type
                 user.customers.address = address
+                user.customers.city = city
+                user.customers.province = province
+                user.customers.contact_person = contact_person
+                user.customers.customer_status = customer_status
+                user.customers.phone = phone
+                user.customers.comment = comment
+
+                user.customers.address = address
+                user.customers.phone = phone
 
                 course_obj = Courses.objects.get(id=course_id)
                 user.customers.course_id = course_obj
@@ -412,6 +436,7 @@ def edit_customer(request, customer_id):
     form.fields['province'].initial = customer.province
     form.fields['contact_person'].initial = customer.contact_person
     form.fields['customer_status'].initial = customer.customer_status
+    form.fields['phone'].initial = customer.phone
     form.fields['comment'].initial = customer.comment
 
     form.fields['email'].initial = customer.admin.email
@@ -449,6 +474,7 @@ def edit_customer_save(request):
             province = form.cleaned_data['province']
             contact_person = form.cleaned_data['contact_person']
             customer_status = form.cleaned_data['customer_status']
+            phone = form.cleaned_data['phone']
             comment = form.cleaned_data['comment']
 
             email = form.cleaned_data['email']
@@ -490,6 +516,7 @@ def edit_customer_save(request):
                 customer_model.province = province
                 customer_model.contact_person = contact_person
                 customer_model.customer_status = customer_status
+                customer_model.phone = phone
                 customer_model.comment = comment
 
                 course = Courses.objects.get(id=course_id)
@@ -527,6 +554,13 @@ def delete_customer(request, customer_id):
 
 
 # BETS ADDED Disbursment related views here ***************************************************
+def manage_disbursement(request):
+    disbursements = Disbursements.objects.all()
+    context = {
+        "disbursements": disbursements
+    }
+    return render(request, 'hod_template/manage_disbursement_template.html', context)
+
 
 def add_disbursement(request):
     customer = Customers.objects.all()
@@ -544,11 +578,7 @@ def add_disbursement_save(request):
         return redirect('add_disbursement')
 
     else:
-        # form = AddDisbursementForm(request.POST, request.FILES)
-        # disbursement_id = request.POST.get('id')
-        # if disbursement_id == None:
-        #     messages.error(request, "BETS>>> OUR ID IS NONE...")
-        #     return redirect('/manage_disbursement')
+
         disbursement_code = request.POST.get('disbursement_code')
         disbursement_description = request.POST.get(
             'disbursement_description')
@@ -560,6 +590,8 @@ def add_disbursement_save(request):
         disbursement_amount = request.POST.get('disbursement_amount')
         contract_signed_date = request.POST.get(
             'contract_signed_date') or None
+        disbursement_monthly_repayment_amount = request.POST.get(
+            'disbursement_monthly_repayment_amount')
         disbursement_end = request.POST.get('disbursement_end') or None
         disbursement_allotment = request.POST.get('disbursement_allotment')
         disbursement_interest_rate = request.POST.get(
@@ -591,6 +623,7 @@ def add_disbursement_save(request):
         disbursement_type = disbursement_type
         disbursement_date = disbursement_date
         disbursement_amount = disbursement_amount
+        disbursement_monthly_repayment_amount = disbursement_monthly_repayment_amount
         contract_signed_date = contract_signed_date
         disbursement_end = disbursement_end
         disbursement_allotment = disbursement_allotment
@@ -613,6 +646,7 @@ def add_disbursement_save(request):
                                                     disbursement_type=disbursement_type,
                                                     disbursement_date=disbursement_date,
                                                     disbursement_amount=disbursement_amount,
+                                                    disbursement_monthly_repayment_amount=disbursement_monthly_repayment_amount,
                                                     contract_signed_date=contract_signed_date,
                                                     disbursement_end=disbursement_end,
                                                     disbursement_allotment=disbursement_allotment,
@@ -631,14 +665,6 @@ def add_disbursement_save(request):
     return redirect("/manage_disbursement")
 
 
-def manage_disbursement(request):
-    disbursements = Disbursements.objects.all()
-    context = {
-        "disbursements": disbursements
-    }
-    return render(request, 'hod_template/manage_disbursement_template.html', context)
-
-
 def edit_disbursement(request, disbursement_id):
 
     disbursement = Disbursements.objects.get(id=disbursement_id)
@@ -654,6 +680,7 @@ def edit_disbursement(request, disbursement_id):
     form.fields['disbursement_type'].initial = disbursement.disbursement_type
     form.fields['disbursement_date'].initial = disbursement.disbursement_date
     form.fields['disbursement_amount'].initial = disbursement.disbursement_amount
+    form.fields['disbursement_monthly_repayment_amount'].initial = disbursement.disbursement_monthly_repayment_amount
     form.fields['contract_signed_date'].initial = disbursement.contract_signed_date
     form.fields['disbursement_end'].initial = disbursement.disbursement_end
     form.fields['disbursement_allotment'].initial = disbursement.disbursement_allotment
@@ -695,6 +722,8 @@ def edit_disbursement_save(request):
             disbursement_type = request.POST.get('disbursement_type')
             disbursement_date = request.POST.get('disbursement_date') or None
             disbursement_amount = request.POST.get('disbursement_amount')
+            disbursement_monthly_repayment_amount = request.POST.get(
+                'disbursement_monthly_repayment_amount')
             contract_signed_date = request.POST.get(
                 'contract_signed_date') or None
             disbursement_end = request.POST.get('disbursement_end') or None
@@ -727,6 +756,7 @@ def edit_disbursement_save(request):
             disbursement.disbursement_type = disbursement_type
             disbursement.disbursement_date = disbursement_date
             disbursement.disbursement_amount = disbursement_amount
+            disbursement.disbursement_monthly_repayment_amount = disbursement_monthly_repayment_amount
             disbursement.contract_signed_date = contract_signed_date
             disbursement.disbursement_end = disbursement_end
             disbursement.disbursement_allotment = disbursement_allotment
@@ -738,13 +768,21 @@ def edit_disbursement_save(request):
             if application_contract_document_url != None:
                 disbursement.application_contract_document = application_contract_document
             # disbursement.application_contract_document = application_contract_document
-            disbursement.customer_id.id = customer_id
+
+            # disbursement.customer_id = Customers.objects.get(id=customer_id)
+
+            if disbursement.customer_id == None:
+                disbursement.customer_id = customer_id
+            else:
+                disbursement.customer_id = Customers.objects.get(
+                    id=customer_id)
 
             # Save Disbursements table
             disbursement.save()
             messages.success(
                 request, "Disbursement details updated Successfully.")
-            return redirect("/edit_disbursement/"+disbursement_id)
+            return redirect("/manage_disbursement/")
+            # return redirect("/edit_disbursement/"+disbursement_id)
             # except:
             #     messages.error(
             #         request, "BETS....Failed to Update Disbursement details.")
@@ -761,6 +799,184 @@ def delete_disbursement(request, disbursement_id):
         messages.error(request, "Failed to Delete Disbursement.")
         return redirect('manage_disbursement')
 
+# REPAYMENTS
+
+
+def manage_repayment(request):
+    repayments = Repayments.objects.all()
+    context = {
+        "repayments": repayments
+    }
+    return render(request, 'hod_template/manage_repayments_template.html', context)
+
+
+def add_repayment(request):
+    customer = Customers.objects.all()
+    form = AddRepaymentForm()
+    context = {
+        "customer": customer,
+        "form": form
+    }
+    return render(request, 'hod_template/add_repayment_template.html', context)
+
+
+def add_repayment_save(request):
+    if request.method != "POST":
+        messages.error(request, "Invalid Method")
+        return redirect('add_repayment')
+
+    else:
+
+        repayment_code = request.POST.get('repayment_code')
+        repayment_type = request.POST.get('repayment_type')
+        repayment_description = request.POST.get('repayment_description')
+        repayment_amount = request.POST.get('repayment_amount')
+        repayment_date = request.POST.get('repayment_date')
+        actual_volume_tone = request.POST.get('actual_volume_tone')
+        # payment_documentation   = requiest.POST.get('payment_documentation')
+        disbursement_id = request.POST.get('disbursement_id')
+        customer_id = request.POST.get('customer_id')
+        if len(request.FILES) != 0:
+            payment_documentation = request.FILES(
+                'payment_documentation')
+            fs = FileSystemStorage()
+            filename = fs.save(payment_documentation.name,
+                               payment_documentation)
+            payment_documentation_url = fs.url(filename)
+        else:
+            payment_documentation_url = None
+
+        repayment_code = repayment_code
+        repayment_type = repayment_type
+        repayment_description = repayment_description
+        repayment_amount = repayment_amount
+        repayment_date = repayment_date
+        actual_volume_tone = actual_volume_tone
+        if payment_documentation_url != None:
+            payment_documentation = payment_documentation
+        # payment_documentation  = payment_documentation
+        # disbursement_id        = disbursement_id
+        disbursement_id = Disbursements.objects.get(id=disbursement_id)
+        customer_id = Customers.objects.get(id=customer_id)
+
+        repayment = Repayments.objects.create(repayment_code=repayment_code
+                                              repayment_type=repayment_type
+                                              repayment_description=repayment_description
+                                              repayment_amount=repayment_amount
+                                              repayment_date=repayment_date
+                                              actual_volume_tone=actual_volume_tone
+                                              payment_documentation=payment_documentation
+                                              disbursement_id=disbursement_id
+                                              customer_id=customer_id)
+
+    # Save Repayments table
+    repayment.save()
+    messages.success(
+        request, repayment_code + "Repayment details added Successfully.")
+    return redirect("/manage_repayment")
+
+
+def edit_disbursement(request, repayment_id):
+
+    repayment = Repayments.objects.get(id=repayment_id)
+    customer = Customers.objects.all()
+
+    form = EditRepaymentForm(request.POST or None, request.FILES)
+
+    # Filling the form with Data from Database
+
+    form.fields['repayment_code'].initial = repayment.repayment_code
+    form.fields['repayment_type'].initial = repayment.repayment_type
+    form.fields['repayment_description'].initial = repayment.repayment_description
+    form.fields['repayment_amount'].initial = repayment.repayment_amount
+    form.fields['repayment_date'].initial = repayment.repayment_date
+    form.fields['actual_volume_tone'].initial = repayment.actual_volume_tone
+    form.fields['payment_documentation '].initial = repayment.payment_documentation
+    form.fields['disbursement_id'].initial = repayment.disbursement_id
+    form.fields['customer_id'].initial = repayment.customer_id
+
+    context = {
+        'repayments': repayment,
+        "id": repayment_id,
+        "customer": customer,
+        "form": form
+    }
+    return render(request, "hod_template/edit_repayment_template.html", context)
+
+
+def edit_repayment_save(request):
+    if request.method != "POST":
+        return HttpResponse("Invalied Method.")
+    else:
+        repayment_id = request.POST.get('repayment_id')
+        if repayment_id == None:
+            return redirect('/manage_repayment')
+
+        else:
+            repayment_code = request.POST.get('repayment_code')
+            repayment_type = request.POST.get('repayment_type')
+            repayment_description = request.POST.get('repayment_description')
+            repayment_amount = request.POST.get('repayment_amount')
+            repayment_date = request.POST.get('repayment_date')
+            actual_volume_tone = request.POST.get('actual_volume_tone')
+            payment_documentation = request.POST.get('payment_documentation')
+            disbursement_id = request.POST.get('disbursement_id')
+            customer_id = request.POST.get('customer_id')
+
+            if len(request.FILES) != 0:
+                payment_documentation = request.FILES(
+                    'payment_documentation')
+                fs = FileSystemStorage()
+                filename = fs.save(
+                    payment_documentation.name, payment_documentation)
+                payment_documentation_url = fs.url(filename)
+            else:
+                payment_documentation_url = None
+
+            # try:
+            repayment = Repayments.objects.get(id=repayment_id)
+            repayment.repayment_code = repayment_code
+            repayment.repayment_type = repayment_type
+            repayment.repayment_description = repayment_description
+            repayment.repayment_amount = repayment_amount
+            repayment.repayment_date = repayment_date
+            repayment.actual_volume_tone = actual_volume_tone
+            repayment.payment_documentation = payment_documentation
+            repayment.disbursement_id = disbursement_id
+            repayment.customer_id = customer_id
+            if payment_documentation_url != None:
+                repayment.payment_documentation = payment_documentation
+
+            if repayment.customer_id == None:
+                repayment.customer_id = customer_id
+            else:
+                repayment.customer_id = Customers.objects.get(
+                    id=customer_id)
+
+            # Save Repayment table
+            repayment.save()
+            messages.success(
+                request, "Repayment details updated Successfully.")
+            return redirect("/manage_repayment/")
+            # return redirect("/edit_repayment/"+repayment_id)
+            # except:
+            #     messages.error(
+            #         request, "BETS....Failed to Update Repayment details.")
+            #     return redirect('/edit_repayment/'+repayment_id)
+
+
+def delete_repayment(request, repayment_id):
+    repayment = Repayments.objects.get(id=repayment_id)
+    try:
+        repayment.delete()
+        messages.success(request, "Repayment detail Deleted Successfully.")
+        return redirect('manage_repayment')
+    except:
+        messages.error(request, "Failed to Delete Repayment.")
+        return redirect('manage_repayment')
+
+
+# Subject
 
 def add_subject(request):
     courses = Courses.objects.all()

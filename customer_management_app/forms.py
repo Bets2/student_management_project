@@ -1,5 +1,5 @@
 from django import forms
-from .models import Courses, SessionYearModel, Customers
+from .models import Courses, SessionYearModel, Customers, Disbursements
 
 
 class DateInput(forms.DateInput):
@@ -45,7 +45,9 @@ class AddCustomerForm(forms.Form):
     customer_status = forms.ChoiceField(label="Customer Ctatus",
                                         choices=CUSTOMER_STATUS_LIST,
                                         widget=forms.Select(attrs={"class": "form-control"}))
-
+    phone = forms.CharField(label="Phone Number",
+                            max_length=128,
+                            widget=forms.TextInput(attrs={"class": "form-control"}))
     email = forms.EmailField(label="Email",
                              max_length=50,
                              widget=forms.EmailInput(attrs={"class": "form-control"}))
@@ -61,6 +63,7 @@ class AddCustomerForm(forms.Form):
     username = forms.CharField(label="Username",
                                max_length=50,
                                widget=forms.TextInput(attrs={"class": "form-control"}))
+
     # For Displaying Courses
     try:
         courses = Courses.objects.all()
@@ -147,6 +150,9 @@ class EditCustomerForm(forms.Form):
     customer_status = forms.ChoiceField(label="Customer Ctatus",
                                         choices=CUSTOMER_STATUS_LIST,
                                         widget=forms.Select(attrs={"class": "form-control"}))
+    phone = forms.CharField(label="Phone Number",
+                            max_length=128,
+                            widget=forms.TextInput(attrs={"class": "form-control"}))
 
     email = forms.EmailField(label="Email",
                              max_length=50,
@@ -235,10 +241,14 @@ class AddDisbursementForm(forms.Form):
                                           widget=forms.Select(attrs={"class": "form-control"}))
     disbursement_date = forms.DateField(label="disbursement_date",
                                         widget=forms.SelectDateWidget(attrs={"class": "form-control"}))
-    disbursement_amount = forms.DecimalField(label="disbursement_amount",
+    disbursement_amount = forms.DecimalField(label="Disbursement Amount",
                                              max_digits=10,
                                              decimal_places=2,
                                              widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
+    disbursement_monthly_repayment_amount = forms.DecimalField(label="Disbursement Monthly Repayment Amount",
+                                                               max_digits=10,
+                                                               decimal_places=2,
+                                                               widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
     contract_signed_date = forms.DateField(label="contract_signed_date",
                                            widget=forms.SelectDateWidget(attrs={"class": "form-control"}))
     disbursement_end = forms.DateField(label="disbursement_end",
@@ -304,6 +314,10 @@ class EditDisbursementForm(forms.Form):
     disbursement_amount = forms.DecimalField(label="disbursement_amount",
                                              max_digits=10,
                                              decimal_places=2, widget=forms.NumberInput())
+    disbursement_monthly_repayment_amount = forms.DecimalField(label="Disbursement Monthly Repayment Amount",
+                                                               max_digits=10,
+                                                               decimal_places=2,
+                                                               widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
     contract_signed_date = forms.DateField(label="contract_signed_date",
                                            widget=forms.SelectDateWidget(attrs={"class": "form-control"}))
     disbursement_end = forms.DateField(label="disbursement_end",
@@ -329,6 +343,117 @@ class EditDisbursementForm(forms.Form):
                                                     widget=forms.FileInput(attrs={"class": "form-control"}))
 
     # For Displaying customers inside Disbursment form
+    try:
+        customers = Customers.objects.all()
+        customer_list = []
+        for customer in customers:
+            single_customer = (customer.id, customer.name)
+            customer_list.append(single_customer)
+    except:
+        customer_list = []
+
+    customer_id = forms.ChoiceField(
+        label="Customer",   choices=customer_list, widget=forms.Select(attrs={"class": "form-control"}))
+
+# repayment forms
+
+
+class AddRepaymentForm(forms.Form):
+    repayment_code = forms.CharField(label="Repayment Code",
+                                     max_length=128,
+                                     widget=forms.TextInput(attr={"class": "form-control"}))
+    repayment_type_list = (('Amortization', 'Amortization'),
+                           ('Impairment', 'Impairment'))
+    repayment_type = forms.ChoiceField(label="Repayment Type",
+                                       choices=repayment_type_list,
+                                       widget=forms.TextInput(attr={"class": "form-control"}))
+    repayment_description = forms.CharField(label="Repayment Description ",
+                                            max_length=255,
+                                            widget=forms.TextInput(attr={"class": "form-control"}))
+    repayment_amount = forms.DecimalField(label="Repayment Amount",
+                                          max_digits=10,
+                                          decimal_places=2,
+                                          widget=forms.NumberInput(attr={'id': 'form-control', 'step': "0.01"}))
+    repayment_date = forms.CharField(label="Repayment Date",
+                                     max_length=128,
+                                     widget=forms.TextInput(attr={"class": "form-control"}))
+    actual_volume_tone = forms.DecimalField(label="Actual Volume Tone",
+                                            max_digits=10,
+                                            decimal_places=2,
+                                            widget=forms.NumberInput(attr={'id': 'form-control', 'step': "0.01"}))
+    payment_documentation = forms.FileField(label="Payment Documentation",
+                                            max_length=128,
+                                            widget=forms.FileInput(attr={"class": "form-control"}))
+
+    # For Displaying Disbursement Codes inside Create Repayments form
+    try:
+        disbursements = Disbursements.objects.all()
+        disbursement_code_list = []
+        for disbursement in disbursements:
+            single_disbursement = (
+                disbursement.id, disbursement.disbursement_code)
+            disbursement_code_list.append(single_disbursement)
+    except:
+        disbursement_code_list = []
+
+    disbursement_id = forms.ChoiceField(
+        label="Disbursement Codes",   choices=disbursement_code_list, widget=forms.Select(attrs={"class": "form-control"}))
+
+    # For Displaying customers inside Create Repayments form
+    try:
+        customers = Customers.objects.all()
+        customer_list = []
+        for customer in customers:
+            single_customer = (customer.id, customer.name)
+            customer_list.append(single_customer)
+    except:
+        customer_list = []
+
+    customer_id = forms.ChoiceField(
+        label="Customer",   choices=customer_list, widget=forms.Select(attrs={"class": "form-control"}))
+
+
+class EditRepaymentForm(forms.Form):
+    repayment_code = forms.CharField(label="Repayment Code",
+                                     max_length=128,
+                                     widget=forms.TextInput(attr={"class": "form-control"}))
+    repayment_type_list = (('Amortization', 'Amortization'),
+                           ('Impairment', 'Impairment'))
+    repayment_type = forms.ChoiceField(label="Repayment Type",
+                                       choices=repayment_type_list,
+                                       widget=forms.TextInput(attr={"class": "form-control"}))
+    repayment_description = forms.CharField(label="Repayment Description ",
+                                            max_length=255,
+                                            widget=forms.TextInput(attr={"class": "form-control"}))
+    repayment_amount = forms.DecimalField(label="Repayment Amount",
+                                          max_digits=10,
+                                          decimal_places=2,
+                                          widget=forms.NumberInput(attr={'id': 'form-control', 'step': "0.01"}))
+    repayment_date = forms.CharField(label="Repayment Date",
+                                     max_length=128,
+                                     widget=forms.TextInput(attr={"class": "form-control"}))
+    actual_volume_tone = forms.DecimalField(label="Actual Volume Tone",
+                                            max_digits=10,
+                                            decimal_places=2,
+                                            widget=forms.NumberInput(attr={'id': 'form-control', 'step': "0.01"}))
+    payment_documentation = forms.FileField(label="Payment Documentation",
+                                            max_length=128,
+                                            widget=forms.FileInput(attr={"class": "form-control"}))
+    # For Displaying Disbursement Codes inside Create Repayments form
+    try:
+        disbursements = Disbursements.objects.all()
+        disbursement_code_list = []
+        for disbursement in disbursements:
+            single_disbursement = (
+                disbursement.id, disbursement.disbursement_code)
+            disbursement_code_list.append(single_disbursement)
+    except:
+        disbursement_code_list = []
+
+    disbursement_id = forms.ChoiceField(
+        label="Disbursement Codes",   choices=disbursement_code_list, widget=forms.Select(attrs={"class": "form-control"}))
+
+    # For Displaying customers inside Create Repayments form
     try:
         customers = Customers.objects.all()
         customer_list = []

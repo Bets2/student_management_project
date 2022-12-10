@@ -100,6 +100,7 @@ class Customers(models.Model):
     city = models.CharField(max_length=64, null=True, blank=True)
     contact_person = models.CharField(max_length=255, null=True)
     email = models.EmailField(null=True)
+    phone = models.CharField(max_length=64, null=True)
     comment = models.TextField(null=True, blank=True)
     customer_status = models.CharField(
         choices=CUSTOMER_STATUS_DATA, max_length=64, null=True)
@@ -128,6 +129,8 @@ class Disbursements(models.Model):
         choices=DISBURSEMENT_TYPES_DATA, max_length=10)
     disbursement_date = models.DateField(blank=True, null=True)
     disbursement_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    disbursement_monthly_repayment_amount = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0)
     contract_signed_date = models.DateField(blank=True, null=True)
     disbursement_end = models.DateField(blank=True, null=True)
     disbursement_allotment = models.CharField(
@@ -154,27 +157,45 @@ PAYMENT_TYPE_DATA = (('Monthly_Repayment', "Monthly Repayment"),
 
 class Repayments(models.Model):
     id = models.AutoField(primary_key=True)
-    payment_code = models.CharField(max_length=255, null=True, blank=True)
-    payment_description = models.CharField(
+    repayment_code = models.CharField(max_length=255, default=1)
+    repayment_type = models.CharField(choices=PAYMENT_TYPE_DATA, max_length=64)
+    repayment_description = models.CharField(
         max_length=255, null=True, blank=True)
-    payment_reason = models.CharField(
-        max_length=255, null=True, blank=True)
-    payment_type = models.CharField(
-        choices=PAYMENT_TYPE_DATA, max_length=64)
-    payment_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    payment_date = models.DateField()
-    current_balance = models.DecimalField(
-        max_digits=10, decimal_places=2, null=True)
-    actual_tonnage = models.DecimalField(
-        decimal_places=2, max_digits=10, default=0)
+    repayment_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    repayment_date = models.DateField()
+    actual_volume_tone = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=False, default=0)
     payment_documentation = models.FileField(null=True, blank=True)
     disbursement_id = models.ForeignKey(
         Disbursements, on_delete=models.DO_NOTHING, default=1)
     customer_id = models.ForeignKey(
         Customers, on_delete=models.DO_NOTHING, default=1)
+    comment = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
+    # payment_code = models.CharField(max_length=255, null=True, blank=True)
+
+    # payment_description = models.CharField(
+    #     max_length=255, null=True, blank=True)
+    # payment_reason = models.CharField(
+    #     max_length=255, null=True, blank=True)
+    # payment_type = models.CharField(
+    #     choices=PAYMENT_TYPE_DATA, max_length=64)
+    # payment_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    # payment_date = models.DateField()
+    # current_balance = models.DecimalField(
+    #     max_digits=10, decimal_places=2, null=True)
+    # actual_tonnage = models.DecimalField(
+    #     decimal_places=2, max_digits=10, default=0)
+    # payment_documentation = models.FileField(null=True, blank=True)
+    # disbursement_id = models.ForeignKey(
+    #     Disbursements, on_delete=models.DO_NOTHING, default=1)
+    # customer_id = models.ForeignKey(
+    #     Customers, on_delete=models.DO_NOTHING, default=1)
+    # created_at = models.DateTimeField(auto_now_add=True)
+    # updated_at = models.DateTimeField(auto_now=True)
+    # objects = models.Manager()
 
 
 class Attendance(models.Model):

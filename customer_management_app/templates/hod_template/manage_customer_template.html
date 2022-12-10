@@ -61,16 +61,14 @@
                             <thead>
                                 <tr>
                                 <th>ID</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Username</th>
-                                <th>Email</th>
-                                <th>Address</th>
-                                <th>Gender</th>
-                                <th>Profile Pic</th>
-                                <th>Start Year</th>
-                                <th>End Year</th>
-                                <th>Course</th>
+                                <th>Customer Name</th>
+                                <th>Type</th>
+                                <th>Province</th>
+                                <th>Phone</th>
+                                <th>Status</th>
+ 
+                                {% comment %} <th>Profile Pic</th> {% endcomment %}
+                                <th>Customer Email</th>
                                 <th>Last Login</th>
                                 <th>Date Joined</th>
                                 <th>Action</th>
@@ -79,17 +77,15 @@
                             <tbody>
                                 {% for customer in customers %}
                                 <tr>
-                                <td>{{ customer.admin.id }}</td>
-                                <td>{{ customer.admin.first_name }}</td>
-                                <td>{{ customer.admin.last_name }}</td>
-                                <td>{{ customer.admin.username }}</td>
-                                <td>{{ customer.admin.email }}</td>
-                                <td>{{ customer.address }}</td>
-                                <td>{{ customer.gender }}</td>
-                                <td> <img src="{{ customer.profile_pic }}" style="width: 100px;" /> </td>
-                                <td>{{ customer.session_year_id.session_start_year }}</td>
-                                <td>{{ customer.session_year_id.session_end_year }}</td>
-                                <td>{{ customer.course_id.course_name }}</td>
+                                <td>{{ customer.id }}</td>
+                                <td>{{ customer.customer_name }}</td>
+                                <td>{{ customer.customer_type }}</td>
+                                <td>{{ customer.province }}</td>
+                                <td>{{ customer.phone }}</td>
+                                <td>{{ customer.customer_status }}</td>
+                                
+                                {% comment %} <td> <img src="{{ customer.profile_pic }}" style="width: 100px;" /> </td> {% endcomment %}
+                                <td>{{ customer.email }}</td>
                                 <td>{{ customer.admin.last_login }}</td>
                                 <td>{{ customer.admin.date_joined }}</td>
                                 <td>

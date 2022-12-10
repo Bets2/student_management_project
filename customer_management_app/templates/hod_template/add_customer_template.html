@@ -22,7 +22,7 @@
                     <!-- form start -->
                     {% url 'add_customer_save' as action_path %}
                     {% include 'hod_template/form_template.html' with messages=messages form=form action_path=action_path button_text="Add Customer" %}
-
+                    <a href="{% url 'manage_customer' %}" class="btn btn-secondary col-2">Cancel</a>
                     </div>
                     <!-- /.card -->
 

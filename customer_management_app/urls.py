@@ -117,6 +117,19 @@ urlpatterns = [
     path('delete_disbursement/<disbursement_id>/',
          HodViews.delete_disbursement, name="delete_disbursement"),
 
+    # URLS for Repayments
+    path('add_repayment/', HodViews.add_repayment, name="add_repayment"),
+    path('add_repayment_save/', HodViews.add_repayment_save,
+         name="add_repayment_save"),
+    path('edit_repayment/<repayment_id>',
+         HodViews.edit_repayment, name="edit_repayment"),
+    path('edit_repayment_save/', HodViews.edit_repayment_save,
+         name="edit_repayment_save"),
+    path('manage_repayment/', HodViews.manage_repayment,
+         name="manage_repayment"),
+    path('delete_repayment/<repayment_id>/',
+         HodViews.delete_repayment, name="delete_repayment"),
+
 
     path('add_subject/', HodViews.add_subject, name="add_subject"),
     path('add_subject_save/', HodViews.add_subject_save,
