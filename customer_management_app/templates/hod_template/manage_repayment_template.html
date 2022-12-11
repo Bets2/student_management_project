@@ -11,7 +11,73 @@
 <section class="content">
         <div class="container-fluid">
 
-            <a class="btn btn-primary" href="{% url 'add_repayment' %}" role="button">+ Add Repayment</a> <br/>&nbsp;
+            <!-- Small boxes (Stat box) -->
+            <div class="row">
+                <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-success">
+                    <div class="inner">
+                    <h4>R{{ total_repayment_amount }}</h4> 
+
+                    <p>Total Repayments </p>
+
+                    </div>
+                    <div class="icon">
+                    <i class="ion ion-stats-bars"></i>
+                    </div>
+                    <a href="{% url 'manage_repayment' %}" class="small-box-footer"><b>Repayments</b>     <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-success">
+                        <div class="inner">
+                        <h4>R{{ total_repayment_loan_amount }}</h4> 
+        
+                        <p>Total Loan Repayments </p>
+        
+                        </div>
+                        <div class="icon">
+                        <i class="ion ion-stats-bars"></i>
+                        </div>
+                        <a href="{% url 'manage_repayment' %}" class="small-box-footer"><b>Loans Repayments</b>     <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                    </div>
+                    <div class="col-lg-3 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-success">
+                            <div class="inner">
+                            <h4>R{{ total_repayment_grant_amount }}</h4> 
+            
+                            <p> Total Grant Repayments </p>
+            
+                            </div>
+                            <div class="icon">
+                            <i class="ion ion-stats-bars"></i>
+                            </div>
+                            <a href="{% url 'manage_repayment' %}" class="small-box-footer"><b>Grants Repayments</b>     <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-warning">
+                            <div class="inner">
+                            <h4>R{{ total_fund_balance }}</h4> 
+            
+                            <p> Fund Balance:  {{ percentage_fund_balance|floatformat:4 }}% </p>
+            
+                            </div>
+                            <div class="icon">
+                            <i class="ion ion-stats-bars"></i>
+                            </div>
+                            <a href="{% url 'manage_repayment' %}" class="small-box-footer"><b>Fund Balance</b>  <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+            </div>    <!-- ./col -->
+
+
+
+            <p><a class="btn btn-primary" href="{% url 'add_repayment' %}" role="button">+ Add Repayment</a> <br/>&nbsp;</p>
             
             {% if messages %}
                                 <div class="form-group">
@@ -67,10 +133,9 @@
                                     <th>Repayment Type</th>
                                     <th>Repayment Date</th>
                                     <th>Amount</th>
-                                    <th>Loan/Grant Amt<th>
-                                    <th>Actual Volume tone</th>
-                                    <th>Target Monthly Vol.<th>
-                                    
+                                    <th>Loan/Grant Amt</th>
+                                    <th>Actual Volume</th>
+                                    <th>Target Monthly Vol</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -83,11 +148,10 @@
                                     <td>{{ repayment.repayment_code }}</td>
                                     <td>{{ repayment.repayment_type }}</td>
                                     <td>{{ repayment.repayment_date }}</td>
-                                    <td>{{ repayment.repayment_amount }}</td>
-                                    <td>{{ repayment.disbursement_id.disbursement_amount }}</td>
-                                    <td>{{ repayment.actual_volume_tone }}</td>
-                                    <td>{{ repayment.disbursement_id.monthly_target }}</td>
-                                    
+                                    <td>R{{ repayment.repayment_amount }}</td>
+                                    <td>R{{ repayment.disbursement_id.disbursement_amount }}</td>
+                                    <td>{{ repayment.actual_volume_tone }} tones</td>
+                                    <td>{{ repayment.disbursement_id.monthly_target }} tones</td>                            
     
                                     <td>
                                         <a href="{% url 'edit_repayment' repayment.id %}" class="btn btn-success">Edit</a> 

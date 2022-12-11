@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Manage Customer
+    Manage Customers
 {% endblock page_title %}
 
 {% block main_content %}
@@ -11,7 +11,64 @@
 <section class="content">
         <div class="container-fluid">
 
-            <a class="btn btn-primary" href="{% url 'add_customer' %}" role="button">+ Add Customer</a> <br/>&nbsp;
+
+
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+            <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+                <div class="inner">
+                <h3>{{ all_customer_count }}</h3> 
+
+                <p>{{ customer_count_active }} Active </p>
+
+                </div>
+                <div class="icon">
+                <i class="ion ion-stats-bars"></i>
+                </div>
+                <a href="{% url 'manage_customer' %}" class="small-box-footer"><b>Collectors</b>     <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-info">
+                    <div class="inner">
+                    <h3>{{ customer_count_collector }}</h3> 
+    
+                    <p>Total Collectors </p>
+    
+                    </div>
+                    <div class="icon">
+                    <i class="ion ion-stats-bars"></i>
+                    </div>
+                    <a href="{% url 'manage_customer' %}" class="small-box-footer"><b>Recyclers</b>     <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                        <h3>{{ customer_count_recycler }}</h3> 
+        
+                        <p> Total Recyclers </p>
+        
+                        </div>
+                        <div class="icon">
+                        <i class="ion ion-stats-bars"></i>
+                        </div>
+                        <a href="{% url 'manage_customer' %}" class="small-box-footer"><b>Customers</b>     <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                    </div>
+        </div>    <!-- ./col -->
+
+
+
+
+
+
+
+           <p> <a class="btn btn-primary" href="{% url 'add_customer' %}" role="button">+ Add Customer</a> <br/>&nbsp;</p>
             
             {% if messages %}
                                 <div class="form-group">

@@ -2,10 +2,10 @@
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
       <!-- Brand Logo -->
-      <a href="{% url 'customer_home' %}" class="brand-link">
-        <img src="{% static 'dist/img/jecrc_logo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3 ml-5"
+      <a href="{% url 'admin_home' %}" class="brand-link">
+        <img src="{% static 'dist/img/Polyco.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3 ml-10"
             style="opacity: .8">
-        <span class="brand-text font-weight-light">JECRC</span>
+        <span class="brand-text font-weight-light">PolyCo | CRM</span>
       </a>
 
       <!-- Sidebar -->
@@ -15,7 +15,7 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
           <div class="image">
-            <img src="{% static 'dist/img/logo.png' %}" class="img-circle elevation-2 ml-5" alt="User Image" style="max-width:100%;">
+            <img src="{% static 'dist/img/user_avatar.png' %}" class="img-circle elevation-2 ml-10" alt="User Image" style="max-width:100%;">
           </div>
           <div class="info">
             <a href="{% url 'customer_profile' %}" class="d-block">{{ user.first_name }} {{ user.last_name }}</a>
@@ -45,12 +45,12 @@
               <a href="{{ manage_customer }}" class="nav-link {% if request.path == manage_customer %} active {% endif %} {% if request.path == edit_customer %} active {% endif %}">
                 <i class="nav-icon fas fa-globe"></i>
                 <p>
-                  Manage Customers
+                   Customers
                 </p>
               </a>
             </li>
 
-            <li class="nav-item">
+            {% comment %} <li class="nav-item">
               {% url 'add_customer' as add_customer %}
               <a href="{{ add_customer }}" class="nav-link {% if request.path == add_customer %} active {% endif %}">
                 <i class="nav-icon far fa-address-book"></i>
@@ -58,14 +58,14 @@
                   Add Customer
                 </p>
               </a>
-            </li>
+            </li> {% endcomment %}
             <li class="nav-item">
               {% url 'manage_disbursement' as manage_disbursement %}
               {% url 'edit_disbursement' disbursement_id=id as edit_disbursement %}
               <a href="{{ manage_disbursement }}" class="nav-link {% if request.path == manage_disbursement %} active {% endif %} {% if request.path == edit_disbursement %} active {% endif %}">
                 <i class="nav-icon fas fa-money-bill-alt  "></i>
                 <p>
-                  Manage Disbursements
+                   Disbursements
                 </p>
               </a>
             </li>
@@ -76,7 +76,7 @@
               <a href="{{ manage_repayment }}" class="nav-link {% if request.path == manage_repayment %} active {% endif %} {% if request.path == edit_repayment %} active {% endif %}">
                 <i class="nav-icon fas fa-chart-line"></i>
                 <p>
-                  Manage Repayments
+                   Repayments
                 </p>
               </a>
             </li>
@@ -89,12 +89,12 @@
               <a href="{{ manage_staff }}" class="nav-link {% if request.path == manage_staff %} active {% endif %} {% if request.path == edit_staff %} active {% endif %}">
                 <i class="nav-icon fas fa-chalkboard-teacher"></i>
                 <p>
-                  Manage Staff
+                   Staff
                 </p>
               </a>
             </li>
             
-            <li class="nav-item">
+            {% comment %} <li class="nav-item">
               {% url 'add_staff' as add_staff %}
               <a href="{{ add_staff }}" class="nav-link {% if request.path == add_staff %} active {% endif %}">
                 <i class="nav-icon fas fa-th"></i>
@@ -102,7 +102,7 @@
                   Add Staff
                 </p>
               </a>
-            </li>
+            </li> {% endcomment %}
 
             {% comment %} <li class="nav-item">
               {% url 'manage_course' as manage_course %}
@@ -194,12 +194,12 @@
               <a href="{{ staff_feedback_message }}" class="nav-link {% if request.path == staff_feedback_message %} active {% endif %}">
                 <i class="nav-icon fas fa-th"></i>
                 <p>
-                  Stafff Feedback
+                  Staff Ticket
                 </p>
               </a>
             </li>
 
-            <li class="nav-item">
+            {% comment %} <li class="nav-item">
               {% url 'customer_leave_view' as customer_leave_view %}
               <a href="{{ customer_leave_view }}" class="nav-link {% if request.path == customer_leave_view %} active {% endif %}">
                 <i class="nav-icon fas fa-th"></i>
@@ -207,9 +207,9 @@
                   Customer Leave
                 </p>
               </a>
-            </li>
+            </li> {% endcomment %}
 
-            <li class="nav-item">
+            {% comment %} <li class="nav-item">
               {% url 'staff_leave_view' as staff_leave_view %}
               <a href="{{ staff_leave_view }}" class="nav-link {% if request.path == staff_leave_view %} active {% endif %}">
                 <i class="nav-icon fas fa-th"></i>
@@ -217,10 +217,10 @@
                   Staff Leave
                 </p>
               </a>
-            </li>
+            </li> {% endcomment %}
 
           </ul>
-        </nav>
+        </nav> 
         <!-- /.sidebar-menu -->
       </div>
       <!-- /.sidebar -->

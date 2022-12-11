@@ -347,7 +347,7 @@ class EditDisbursementForm(forms.Form):
         customers = Customers.objects.all()
         customer_list = []
         for customer in customers:
-            single_customer = (customer.id, customer.name)
+            single_customer = (customer.id, customer.customer_name)
             customer_list.append(single_customer)
     except:
         customer_list = []
@@ -434,7 +434,8 @@ class EditRepaymentForm(forms.Form):
                                           widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
     repayment_date = forms.CharField(label="Repayment Date",
                                      max_length=128,
-                                     widget=forms.TextInput(attrs={"class": "form-control"}))
+                                     widget=forms.SelectDateWidget(attrs={"class": "form-control"}))
+
     actual_volume_tone = forms.DecimalField(label="Actual Volume Tone",
                                             max_digits=10,
                                             decimal_places=2,

@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Sum
 import json
 
 from .forms import AddCustomerForm, EditCustomerForm, AddDisbursementForm, EditDisbursementForm, AddRepaymentForm, EditRepaymentForm
@@ -11,9 +12,46 @@ from .forms import AddCustomerForm, EditCustomerForm, AddDisbursementForm, EditD
 from .models import CustomUser, Staffs, Courses, Subjects, Customers, SessionYearModel, FeedBackCustomer, FeedBackStaffs, LeaveReportCustomer, LeaveReportStaff, Attendance, AttendanceReport, Disbursements, Repayments
 
 
+# For Customers KPI
+all_customer_count = Customers.objects.all().count()
+customer_count_active = Customers.objects.filter(
+    customer_status='Active').count()
+customer_count_collector = Customers.objects.filter(
+    customer_type='Collector').count()
+customer_count_recycler = Customers.objects.filter(
+    customer_type='Recycler').count()
+
+# For Disbursement KPIs
+
+disbursement_all = Disbursements.objects.all()
+all_disbursement_count = Disbursements.objects.all().count()
+total_disbursement_amount = Disbursements.objects.all().aggregate(
+    Sum('disbursement_amount'))['disbursement_amount__sum'] or 0.00
+total_disbursement_loan_amount = Disbursements.objects.filter(disbursement_type='Loan').aggregate(
+    Sum('disbursement_amount'))['disbursement_amount__sum'] or 0.00
+total_disbursement_grant_amount = Disbursements.objects.filter(disbursement_type='Grant').aggregate(
+    Sum('disbursement_amount'))['disbursement_amount__sum'] or 0.00
+
+# For Repayment KPIs
+all_repayment_count = Repayments.objects.all().count()
+total_repayment_amount = Repayments.objects.all().aggregate(
+    Sum('repayment_amount'))['repayment_amount__sum'] or 0.00
+total_repayment_loan_amount = Repayments.objects.filter(repayment_type='Amortization').aggregate(
+    Sum('repayment_amount'))['repayment_amount__sum'] or 0.00
+total_repayment_grant_amount = Repayments.objects.filter(repayment_type='Impairment').aggregate(
+    Sum('repayment_amount'))['repayment_amount__sum'] or 0.00
+
+total_fund_balance = total_repayment_amount - total_disbursement_amount
+
+percentage_fund_balance = (total_repayment_amount /
+                           total_disbursement_amount)*100
+
+
 def admin_home(request):
 
-    all_customer_count = Customers.objects.all().count()
+    # all_customer_count = Customers.objects.all().count()
+    # customer_count_active = Customers.objects.filter(
+    #     customer_status='Active').count()
     subject_count = Subjects.objects.all().count()
     course_count = Courses.objects.all().count()
     staff_count = Staffs.objects.all().count()
@@ -21,7 +59,6 @@ def admin_home(request):
     course_name_list = []
     subject_count_list = []
     customer_count_list_in_course = []
-    all_disbursement_count = Disbursements.objects.all().count()
 
     for course in course_all:
         subjects = Subjects.objects.filter(course_id=course.id).count()
@@ -74,6 +111,20 @@ def admin_home(request):
 
     context = {
         "all_customer_count": all_customer_count,
+        "customer_count_active": customer_count_active,
+
+        "all_disbursement_count": all_disbursement_count,
+        "total_disbursement_amount": total_disbursement_amount,
+        "total_disbursement_loan_amount": total_disbursement_loan_amount,
+        "total_disbursement_grant_amount": total_disbursement_grant_amount,
+
+        "all_repayment_count": all_repayment_count,
+        "total_repayment_amount": total_repayment_amount,
+        "total_repayment_loan_amount": total_repayment_loan_amount,
+        "total_repayment_grant_amount": total_repayment_grant_amount,
+
+        "total_fund_balance": total_fund_balance,
+
         "subject_count": subject_count,
         "course_count": course_count,
         "staff_count": staff_count,
@@ -87,7 +138,7 @@ def admin_home(request):
         "staff_name_list": staff_name_list,
         "customer_attendance_present_list": customer_attendance_present_list,
         "customer_attendance_leave_list": customer_attendance_leave_list,
-        "customer_name_list": customer_name_list,
+        "customer_name_list": customer_name_list
     }
     return render(request, "hod_template/home_content.html", context)
 
@@ -415,7 +466,11 @@ def add_customer_save(request):
 def manage_customer(request):
     customers = Customers.objects.all()
     context = {
-        "customers": customers
+        "customers": customers,
+        "all_customer_count": all_customer_count,
+        "customer_count_active": customer_count_active,
+        "customer_count_collector": customer_count_collector,
+        "customer_count_recycler": customer_count_recycler,
     }
     return render(request, 'hod_template/manage_customer_template.html', context)
 
@@ -557,7 +612,11 @@ def delete_customer(request, customer_id):
 def manage_disbursement(request):
     disbursements = Disbursements.objects.all()
     context = {
-        "disbursements": disbursements
+        "disbursements": disbursements,
+        "all_disbursement_count": all_disbursement_count,
+        "total_disbursement_amount": total_disbursement_amount,
+        "total_disbursement_loan_amount": total_disbursement_loan_amount,
+        "total_disbursement_grant_amount": total_disbursement_grant_amount
     }
     return render(request, 'hod_template/manage_disbursement_template.html', context)
 
@@ -692,7 +751,7 @@ def edit_disbursement(request, disbursement_id):
     # To Do: BETS finish this here uploading file
     form.fields['application_contract_document'].initial = disbursement.application_contract_document
 
-    form.fields['customer_id'].initial = disbursement.customer_id.id
+    form.fields['customer_id'].initial = disbursement.customer_id
 
     context = {
         'disbursements': disbursement,
@@ -805,16 +864,23 @@ def delete_disbursement(request, disbursement_id):
 def manage_repayment(request):
     repayments = Repayments.objects.all()
     context = {
-        "repayments": repayments
+        "repayments": repayments,
+        "total_repayment_amount": total_repayment_amount,
+        "total_repayment_loan_amount": total_repayment_loan_amount,
+        "total_repayment_grant_amount": total_repayment_grant_amount,
+        "total_fund_balance": total_fund_balance,
+        "percentage_fund_balance": percentage_fund_balance
     }
     return render(request, 'hod_template/manage_repayment_template.html', context)
 
 
 def add_repayment(request):
     customer = Customers.objects.all()
+    disbursement = Disbursements.objects.all()
     form = AddRepaymentForm()
     context = {
         "customer": customer,
+        "disbursement": disbursement,
         "form": form
     }
     return render(request, 'hod_template/add_repayment_template.html', context)
@@ -834,7 +900,7 @@ def add_repayment_save(request):
         repayment_date = request.POST.get('repayment_date')
         actual_volume_tone = request.POST.get('actual_volume_tone')
         comment = request.POST.get('comment')
-        # payment_documentation   = requiest.POST.get('payment_documentation')
+        # payment_documentation = request.POST.get('payment_documentation')
         disbursement_id = request.POST.get('disbursement_id')
         customer_id = request.POST.get('customer_id')
         if len(request.FILES) != 0:
@@ -868,7 +934,7 @@ def add_repayment_save(request):
                                               repayment_date=repayment_date,
                                               actual_volume_tone=actual_volume_tone,
                                               comment=comment,
-                                              payment_documentation=payment_documentation,
+                                              payment_documentation=payment_documentation_url,
                                               disbursement_id=disbursement_id,
                                               customer_id=customer_id)
 
@@ -879,10 +945,11 @@ def add_repayment_save(request):
     return redirect("/manage_repayment")
 
 
-def edit_repayment(request, repayment_id):
+def detail_repayment(request, repayment_id):
 
     repayment = Repayments.objects.get(id=repayment_id)
     customer = Customers.objects.all()
+    disbursement = Disbursements.objects.all()
 
     form = EditRepaymentForm(request.POST or None, request.FILES)
 
@@ -895,7 +962,7 @@ def edit_repayment(request, repayment_id):
     form.fields['repayment_date'].initial = repayment.repayment_date
     form.fields['actual_volume_tone'].initial = repayment.actual_volume_tone
     form.fields['comment'].initial = repayment.comment
-    form.fields['payment_documentation '].initial = repayment.payment_documentation
+    form.fields['payment_documentation'].initial = repayment.payment_documentation
     form.fields['disbursement_id'].initial = repayment.disbursement_id
     form.fields['customer_id'].initial = repayment.customer_id
 
@@ -903,6 +970,38 @@ def edit_repayment(request, repayment_id):
         'repayments': repayment,
         "id": repayment_id,
         "customer": customer,
+        "disbursement": disbursement,
+        "form": form
+    }
+    return render(request, "hod_template/edit_repayment_template.html", context)
+
+
+def edit_repayment(request, repayment_id):
+
+    repayment = Repayments.objects.get(id=repayment_id)
+    customer = Customers.objects.all()
+    disbursement = Disbursements.objects.all()
+
+    form = EditRepaymentForm(request.POST or None, request.FILES)
+
+    # Filling the form with Data from Database
+
+    form.fields['repayment_code'].initial = repayment.repayment_code
+    form.fields['repayment_type'].initial = repayment.repayment_type
+    form.fields['repayment_description'].initial = repayment.repayment_description
+    form.fields['repayment_amount'].initial = repayment.repayment_amount
+    form.fields['repayment_date'].initial = repayment.repayment_date
+    form.fields['actual_volume_tone'].initial = repayment.actual_volume_tone
+    form.fields['comment'].initial = repayment.comment
+    form.fields['payment_documentation'].initial = repayment.payment_documentation
+    form.fields['disbursement_id'].initial = repayment.disbursement_id
+    form.fields['customer_id'].initial = repayment.customer_id
+
+    context = {
+        'repayments': repayment,
+        "id": repayment_id,
+        "customer": customer,
+        "disbursement": disbursement,
         "form": form
     }
     return render(request, "hod_template/edit_repayment_template.html", context)
@@ -921,7 +1020,7 @@ def edit_repayment_save(request):
             repayment_type = request.POST.get('repayment_type')
             repayment_description = request.POST.get('repayment_description')
             repayment_amount = request.POST.get('repayment_amount')
-            repayment_date = request.POST.get('repayment_date')
+            repayment_date = request.POST.get('repayment_date') or None
             actual_volume_tone = request.POST.get('actual_volume_tone')
             comment = request.POST.get('comment')
             payment_documentation = request.POST.get('payment_documentation')
@@ -948,8 +1047,7 @@ def edit_repayment_save(request):
             repayment.actual_volume_tone = actual_volume_tone
             repayment.comment = comment
             repayment.payment_documentation = payment_documentation
-            repayment.disbursement_id = disbursement_id
-            repayment.customer_id = customer_id
+
             if payment_documentation_url != None:
                 repayment.payment_documentation = payment_documentation
 
@@ -958,6 +1056,12 @@ def edit_repayment_save(request):
             else:
                 repayment.customer_id = Customers.objects.get(
                     id=customer_id)
+
+            if repayment.disbursement_id == None:
+                repayment.disbursement_id = disbursement_id
+            else:
+                repayment.disbursement_id = Disbursements.objects.get(
+                    id=disbursement_id)
 
             # Save Repayment table
             repayment.save()

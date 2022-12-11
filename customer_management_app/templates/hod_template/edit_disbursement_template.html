@@ -57,9 +57,10 @@
                             <div class="card-body">
                                 <div class="form-group">
                                     <label>Customer </label>
+                                   
                                     <select class="form-control" name="customer_id">                                               
                                         {% for cust in customer %}                                                                                          
-                                            <option value="{{ cust.id }}" {% if cust.id == disbursements.customer_id %} selected {% endif %}>{{ cust.customer_name }}</option>
+                                            <option value="{{ cust.id }}" {% if cust.id == disbursements.customer_id.id %} selected {% endif %}>{{ cust.customer_name }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -142,13 +143,13 @@
                                     <p><i>Attache a new document below if you want to replace the above file.</i></p>
                                     <input type="file" class="form-control" name="application_contract_document"   value="{{ disbursements.application_contract_document }}">
                                 </div>
-
+                                <input type="hidden" class="form-control" name="disbursement_id" value="{{ disbursements.id }}">
                             </div>
                             <!-- /.card-body -->
 
                             <div class="card-footer">
 
-                                <input type="hidden" class="form-control" name="disbursement_id" value="{{ disbursements.id }}">
+                                
                                 <button type="submit" class="btn btn-primary">Update Disbursement</button>
                                 <a href="{% url 'manage_disbursement' %}" class="btn btn-secondary">Cancel</a>
                             </div>
