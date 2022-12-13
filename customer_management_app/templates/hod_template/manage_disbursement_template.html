@@ -147,6 +147,7 @@
                                  
  
                                 <td>
+                                    <a href="{% url 'detail_disbursement' disbursement.id %}" class="btn btn-primary">Details</a> 
                                     <a href="{% url 'edit_disbursement' disbursement.id %}" class="btn btn-success">Edit</a> 
                                     <a href="{% url 'delete_disbursement' disbursement.id %}" class="btn btn-danger">Delete</a>
                                 </td>

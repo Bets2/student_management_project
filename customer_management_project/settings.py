@@ -127,6 +127,8 @@ USE_TZ = True
 
 USE_THOUSAND_SEPARATOR = True
 
+USE_L10N = False
+
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")

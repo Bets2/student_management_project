@@ -1,0 +1,39 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+    Repayment Detail | Repayment code: {{repayments.repayment_code}}
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+
+<section class="content">
+ 
+
+    <div>           
+        <a href = "{% url 'manage_repayment' %}" class = "btn btn-secondary my-5"> Back </a>
+        <a href="/edit_repayment/{{ repayments.id}}" class="btn btn-success">Edit</a> 
+        <a href="/delete_repayment/{{ repayments.id }}" class="btn btn-danger">Delete</a> 
+    </div>
+    
+ 
+        <div class="container-fluid">
+
+            <p><b>to be completed........... and make it pretty..  </b></p>
+
+            <!-- Small boxes (Stat box) -->
+
+            <p>{{ repayments.customer_id.customer_name }}</p>
+
+            <P> {{ repayments.repayment_code }} </P> 
+            <P> Repayment Amount: R{{ repayments.repayment_amount}} </p>
+            <P> Actual Volume in tones: {{ repayments.actual_volume_tone}} </p>
+            
+          
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+  {% endblock main_content %}

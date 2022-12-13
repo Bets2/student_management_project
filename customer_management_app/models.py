@@ -128,9 +128,9 @@ class Disbursements(models.Model):
     disbursement_type = models.CharField(
         choices=DISBURSEMENT_TYPES_DATA, max_length=10)
     disbursement_date = models.DateField(blank=True, null=True)
-    disbursement_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    disbursement_amount = models.DecimalField(max_digits=12, decimal_places=2)
     disbursement_monthly_repayment_amount = models.DecimalField(
-        max_digits=10, decimal_places=2, default=0)
+        max_digits=12, decimal_places=2, default=0)
     contract_signed_date = models.DateField(blank=True, null=True)
     disbursement_end = models.DateField(blank=True, null=True)
     disbursement_allotment = models.CharField(
@@ -141,7 +141,7 @@ class Disbursements(models.Model):
     total_target = models.DecimalField(
         max_digits=10, decimal_places=2, blank=False, default=0)
     monthly_target = models.DecimalField(
-        max_digits=10, decimal_places=2, blank=False, default=0)
+        max_digits=12, decimal_places=2, blank=False, default=0)
     target_measurement_unit = models.CharField(max_length=64, default='Tone')
     customer_id = models.ForeignKey(
         Customers, on_delete=models.DO_NOTHING, default=1)

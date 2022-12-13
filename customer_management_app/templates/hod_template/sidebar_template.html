@@ -38,12 +38,23 @@
               </a>
             </li>
 
+            <li class="nav-item">
+              {% url 'overview' as overview %}
+              {% url 'edit_customer' customer_id=id as edit_customer %}
+              <a href="{{ overview }}" class="nav-link {% if request.path == overview %} active {% endif %} {% if request.path == overview %} active {% endif %}">
+                <i class="nav-icon fas fa-globe"></i>
+                <p>
+                   Overview
+                </p>
+              </a>
+            </li>
+
 
             <li class="nav-item">
               {% url 'manage_customer' as manage_customer %}
               {% url 'edit_customer' customer_id=id as edit_customer %}
               <a href="{{ manage_customer }}" class="nav-link {% if request.path == manage_customer %} active {% endif %} {% if request.path == edit_customer %} active {% endif %}">
-                <i class="nav-icon fas fa-globe"></i>
+                <i class="nav-icon fas fa-users"></i>
                 <p>
                    Customers
                 </p>
@@ -178,6 +189,14 @@
                 </p>
               </a>
             </li> {% endcomment %}
+            <li class="nav-item">
+              
+              
+                <p>
+                  <hr style="width:50%;text-align:left;margin-left:0 text-primary">
+                </p>
+              </a>
+            </li>
 
             <li class="nav-item">
               {% url 'customer_feedback_message' as customer_feedback_message %}

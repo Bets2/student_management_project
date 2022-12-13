@@ -34,6 +34,7 @@ total_disbursement_grant_amount = Disbursements.objects.filter(disbursement_type
 
 # For Repayment KPIs
 all_repayment_count = Repayments.objects.all().count()
+all_repayment_count = Repayments.objects.all().count()
 total_repayment_amount = Repayments.objects.all().aggregate(
     Sum('repayment_amount'))['repayment_amount__sum'] or 0.00
 total_repayment_loan_amount = Repayments.objects.filter(repayment_type='Amortization').aggregate(
@@ -724,6 +725,21 @@ def add_disbursement_save(request):
     return redirect("/manage_disbursement")
 
 
+def detail_disbursement(request, disbursement_id):
+
+    disbursement = Disbursements.objects.get(id=disbursement_id)
+    # repayment = Repayments.objects.get(id=disbursement_id)
+    customer = Customers.objects.get(id=disbursement.customer_id.id)
+
+    context = {
+        "disbursements": disbursement,
+        "id": disbursement_id,
+        "customer": customer
+        # "form": form
+    }
+    return render(request, "hod_template/detail_disbursement_template.html", context)
+
+
 def edit_disbursement(request, disbursement_id):
 
     disbursement = Disbursements.objects.get(id=disbursement_id)
@@ -858,8 +874,63 @@ def delete_disbursement(request, disbursement_id):
         messages.error(request, "Failed to Delete Disbursement.")
         return redirect('manage_disbursement')
 
-# REPAYMENTS
 
+# OVERVIEWS
+
+def is_valid_queryparam(param):
+    return param != '' and param is not None
+
+
+def overview(request):
+    customers = Customers.objects.all()
+    repayments = Repayments.objects.all()
+    disbursements = Disbursements.objects.all()
+
+    # for filters
+    customer_name_contains = request.GET.get('customer_name_contains')
+    disbursement_code_contains = request.GET.get('disbursement_code_contains')
+
+    date_min = request.GET.get('date_min')
+    date_max = request.GET.get('date_max')
+    province_list_contains = request.GET.get('province_list_contains')
+    loans_tick = request.GET.get('loans_tick')
+    grants_tick = request.GET.get('grants_tick')
+
+    if is_valid_queryparam(customer_name_contains) and customer_name_contains != 'Select Customer Name...':
+        disbursements = disbursements.filter(
+            customer_id__exact=customer_name_contains)
+        repayments = repayments.filter(
+            customer_id__exact=customer_name_contains)
+
+    # elif is_valid_queryparam(province_list_contains):
+    #     disbursements = disbursements.filter(id=province_list_contains)
+
+    context = {
+        "repayments": repayments,
+        "all_repayment_count": all_repayment_count,
+        "total_repayment_amount": total_repayment_amount,
+        "total_repayment_loan_amount": total_repayment_loan_amount,
+        "total_repayment_grant_amount": total_repayment_grant_amount,
+        "total_fund_balance": total_fund_balance,
+        "percentage_fund_balance": percentage_fund_balance,
+
+        "disbursements": disbursements,
+        "all_disbursement_count": all_disbursement_count,
+        "total_disbursement_amount": total_disbursement_amount,
+        "total_disbursement_loan_amount": total_disbursement_loan_amount,
+        "total_disbursement_grant_amount": total_disbursement_grant_amount,
+
+        "customers": customers,
+        "all_customer_count": all_customer_count,
+        "customer_count_active": customer_count_active,
+        "customer_count_collector": customer_count_collector,
+        "customer_count_recycler": customer_count_recycler
+
+    }
+    return render(request, 'hod_template/overview_template.html', context)
+
+
+# REPAYMENTS
 
 def manage_repayment(request):
     repayments = Repayments.objects.all()
@@ -948,32 +1019,32 @@ def add_repayment_save(request):
 def detail_repayment(request, repayment_id):
 
     repayment = Repayments.objects.get(id=repayment_id)
-    customer = Customers.objects.all()
-    disbursement = Disbursements.objects.all()
+    customer = Customers.objects.get(id=repayment.customer_id.id)
+    disbursement = Disbursements.objects.get(id=repayment.disbursement_id.id)
 
-    form = EditRepaymentForm(request.POST or None, request.FILES)
+    # form = EditRepaymentForm(request.POST or None, request.FILES)
 
-    # Filling the form with Data from Database
+    # # Filling the form with Data from Database
 
-    form.fields['repayment_code'].initial = repayment.repayment_code
-    form.fields['repayment_type'].initial = repayment.repayment_type
-    form.fields['repayment_description'].initial = repayment.repayment_description
-    form.fields['repayment_amount'].initial = repayment.repayment_amount
-    form.fields['repayment_date'].initial = repayment.repayment_date
-    form.fields['actual_volume_tone'].initial = repayment.actual_volume_tone
-    form.fields['comment'].initial = repayment.comment
-    form.fields['payment_documentation'].initial = repayment.payment_documentation
-    form.fields['disbursement_id'].initial = repayment.disbursement_id
-    form.fields['customer_id'].initial = repayment.customer_id
+    # form.fields['repayment_code'].initial = repayment.repayment_code
+    # form.fields['repayment_type'].initial = repayment.repayment_type
+    # form.fields['repayment_description'].initial = repayment.repayment_description
+    # form.fields['repayment_amount'].initial = repayment.repayment_amount
+    # form.fields['repayment_date'].initial = repayment.repayment_date
+    # form.fields['actual_volume_tone'].initial = repayment.actual_volume_tone
+    # form.fields['comment'].initial = repayment.comment
+    # form.fields['payment_documentation'].initial = repayment.payment_documentation
+    # form.fields['disbursement_id'].initial = repayment.disbursement_id
+    # form.fields['customer_id'].initial = repayment.customer_id
 
     context = {
         'repayments': repayment,
         "id": repayment_id,
         "customer": customer,
-        "disbursement": disbursement,
-        "form": form
+        "disbursement": disbursement
+        # "form": form
     }
-    return render(request, "hod_template/edit_repayment_template.html", context)
+    return render(request, "hod_template/detail_repayment_template.html", context)
 
 
 def edit_repayment(request, repayment_id):
