@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, AdminHOD, Staffs, Courses, Subjects, Customers, Attendance, AttendanceReport, LeaveReportCustomer, LeaveReportStaff, FeedBackCustomer, FeedBackStaffs, NotificationCustomer, NotificationStaffs, Disbursements, Repayments
+from .models import CustomUser, AdminHOD, Staffs, Courses, Subjects, Customers, Attendance, AttendanceReport, LeaveReportCustomer, LeaveReportStaff, FeedBackCustomer, FeedBackStaffs, NotificationCustomer, NotificationStaffs, Disbursements, Repayments, GrantManagement
 
 # Register your models here.
 
@@ -28,3 +28,4 @@ admin.site.register(NotificationStaffs)
 # Bets Added
 admin.site.register(Disbursements)
 admin.site.register(Repayments)
+admin.site.register(GrantManagement)

@@ -7,6 +7,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Sum
 import json
 
+
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+
+
 from .forms import AddCustomerForm, EditCustomerForm, AddDisbursementForm, EditDisbursementForm, AddRepaymentForm, EditRepaymentForm
 
 from .models import CustomUser, Staffs, Courses, Subjects, Customers, SessionYearModel, FeedBackCustomer, FeedBackStaffs, LeaveReportCustomer, LeaveReportStaff, Attendance, AttendanceReport, Disbursements, Repayments

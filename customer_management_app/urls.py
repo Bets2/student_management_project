@@ -3,6 +3,7 @@ from django.urls import path, include
 from . import CustomerViews, views
 from .import HodViews, StaffViews
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name="home"),
@@ -133,6 +134,14 @@ urlpatterns = [
          name="manage_repayment"),
     path('delete_repayment/<repayment_id>/',
          HodViews.delete_repayment, name="delete_repayment"),
+
+
+    # URLS for Grantmanagement
+    #     path('add_volume/', HodViews.add_volume, name="add_volume"),
+
+
+
+
 
     # URLs for Overview
     path('overview/', HodViews.overview,
