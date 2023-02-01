@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Add Disbursemnt
+    Capture Actual Volume
 {% endblock page_title %}
 
 {% block main_content %}
@@ -54,10 +54,10 @@
                         <div class="card-body">
                         
                     
-                            <div class="form-group border">
+                            <div class="form-group border">  
                                 <div class="form-row">
-                                    <div class="form-group col-8 p-4">
-                                        <label>Select Customer </label>                          
+                                    <div class="form-group col-5 p-4">
+                                        <label>Select Customer </label> <br> <br>                        
                                         <select class="form-control" name="customer_id"> 
                                             {% for cust in customer %}                                                                                          
                                                 <option value="{{ cust.id }}">{{ cust.customer_name }}</option>
@@ -66,115 +66,140 @@
                                     </div>
 
                                     <div class="form-group col-4 p-4">
-                                        <label>Contract Signed Date </label>
-                                        <input type="date" class="form-control" name="contract_signed_date" placeholder="Disbursement Contract Signed Date">
+                                        <label>Disbursement Code <br> <small>Use the disbursement code generated when this grant was given</small></label>
+                                        <select class="form-control" name="disbursement_id"> 
+                                            {% for disb in disbursement %}                                                                                          
+                                                <option value="{{ disb.id }}">{{ disb.disbursement_code }}</option>
+                                            {% endfor %}
+                                        </select>
                                     </div>
+                                    <div class="form-group col-3 p-4">
+                                        <label>Volume Report Reference ID: </label> <br> <br>                        
+                                        <input type="text" class="form-control" name="monthly_volume_report_id" placeholder="Add a Reference (e.g. add Date YYYY-MM-DD" required >
+                                    </div>
+
+
+    
                                 </div>
                             </div>
 
-
                             <div class="form-group border">
                                 <div class="form-row">
-                                    <div class="form-group col-8 p-4">
-                                        <label>Disbursement Code <small>This should be unique. All repayments will be linked to this code. </small></label>
-                                        <input type="text" class="form-control" name="disbursement_code" placeholder="Enter Disbursement Code" required >
+                                        <div class="form-group col-4 p-4">
+                                            <label>Volume Capture Date </label>
+                                            <input type="date" class="form-control" name="volume_report_date">
+                                        </div>
+                                        <div class="form-group col-4 p-4">
+                                            <label for="month">Reporting Month</label><br>                                           
+                                            {% comment %} <input type="month"  class="form-control"  name="volume_report_month" required> {% endcomment %}
+                                            <select class="form-control" name="volume_report_month">                                        
+                                                <option value="January">January</option>
+                                                <option value="February">February</option>
+                                                <option value="March">March</option>
+                                                <option value="April">April</option>
+                                                <option value="May">May</option>
+                                                <option value="June">June</option>
+                                                <option value="July">July</option>
+                                                <option value="August">August</option>
+                                                <option value="September">September</option>
+                                                <option value="October">October</option>
+                                                <option value="November">November</option>
+                                                <option value="December">December</option>                                              
+                                            </select>                                                
+                                        </div>
+                                        <div class="form-group col-4 p-4">
+                                            <label for="year">Reporting Year</label>
+                                            {% comment %} <input type="years"  class="form-control"  name="volume_report_year" required> {% endcomment %}
+                                            <select class="form-control" name="volume_report_year">                                        
+                                                <option value="2014">2014</option>
+                                                <option value="2015">2015</option>
+                                                <option value="2016">2016</option>
+                                                <option value="2017">2017</option>
+                                                <option value="2018">2018</option>
+                                                <option value="2019">2019</option>
+                                                <option value="2020">2020</option>
+                                                <option value="2021">2021</option>
+                                                <option value="2022">2022</option>
+                                                <option value="2023">2023</option>
+                                                <option value="2024">2024</option>
+                                                <option value="2025">2025</option>
+                                                <option value="2026">2026</option>
+                                                <option value="2027">2027</option>
+                                                <option value="2028">2028</option>
+                                                <option value="2029">2029</option>
+                                                <option value="2030">2030</option>
+                                            </select>                                    
+                                        </div>
+                                </div>
+                            </div>        
+
+                            <div class="form-group border">
+                    
+                                <div class="form-row">
+
+                                    <div class="form-group col-3 p-4">
+                                        <label>HD (KG)</label>
+                                        <input type="number" class="form-control" name="hd_kg" placeholder="HD in Kilograms" required  step="0.01">
                                     </div>
-                                    <div class="form-group col-4 p-4">
-                                        <label>Disbursement Application Id</label>
-                                        <input type="text" class="form-control" name="disbursement_application_id" placeholder="Enter Description Application ID">
+
+                                    <div class="form-group col-3 p-4">
+                                        <label>LD (KG)</label>
+                                        <input type="number" class="form-control" name="ld_kg" placeholder="LD in Kilograms" required  step="0.01">
+                                    </div>
+                                    <div class="form-group col-3 p-4">
+                                        <label>LLD (KG)</label>
+                                        <input type="number" class="form-control" name="lld_kg" placeholder="LLD in Kilograms" required  step="0.01">
+                                    </div>
+                                    <div class="form-group col-3 p-4">
+                                        <label>PP (KG)</label>
+                                        <input type="number" class="form-control" name="pp_kg" placeholder="PP in Kilograms" required  step="0.01">
                                     </div>
 
                                 </div>
                                 <div class="form-row">
-                                    <div class="form-group col-4 p-4">
-                                        <label>Disbursement Type</label>
-                                        <select class="form-control" name="disbursement_type">                                        
-                                                <option value="Grant">Grant</option>
-                                                <option value="Loan">Loan</option>
-                                        </select>    
-                                    </div>
-                                    <div class="form-group col-4 p-4">
-                                        <label>Disbursement Start Date </label>
-                                        <input type="date" class="form-control" name="disbursement_date"   placeholder="Disbursement Start Date">
-                                    </div>
-                                    <div class="form-group col-4 p-4">
-                                        <label>Disbursement End Date</label>
-                                        <input type="date" class="form-control" name="disbursement_end" >
+                                    <div class="form-group col-3 p-4">
+                                        <label>PVC (KG)</label>
+                                        <input type="number" class="form-control" name="pvc_kg" placeholder="PVC in Kilograms" required  step="0.01">
                                     </div>
 
-
+                                    <div class="form-group col-3 p-4">
+                                        <label>PS (KG)</label>
+                                        <input type="number" class="form-control" name="ps_kg" placeholder="PS in Kilograms" required  step="0.01">
+                                    </div>
+                                    <div class="form-group col-3 p-4">
+                                        <label>PET (KG)</label>
+                                        <input type="number" class="form-control" name="pet_kg" placeholder="PET in Kilograms" required  step="0.01">
+                                    </div>
+                                    <div class="form-group col-3 p-4">
+                                        <label>Other (KG) </label>
+                                        <input type="number" class="form-control" name="other_kg" placeholder="Other in Kilograms" required  step="0.01">
+                                    </div>
+                                    
                                 </div>
 
-                      
-                                <div class="form-row">
-
-                                    <div class="form-group col-3 p-4">
-                                        <label>Repayment Terms <small>(No. of Month)</small></label>
-                                        <input type="number" class="form-control" name="repayment_term" >
-                                    </div>
-                                    <div class="form-group col-3 p-4">
-                                        <label>Disbursement Amount </label>
-                                        <input type="number" class="form-control" name="disbursement_amount" placeholder="Disbursement Amount in Rands" required  step="0.01">
-                                    </div>
-                                    <div class="form-group col-3 p-4">
-                                        <label>Loan Interest Rate</label>
-                                        <input type="number" class="form-control" name="disbursement_interest_rate" placeholder="0.00" required step="0.01">
-                                    </div>
-                                    <div class="form-group col-3 p-4">
-                                        <label>Loan Repayment Monthly Amt</label>
-                                        <input type="number" class="form-control" name="disbursement_monthly_repayment_amount" placeholder="Disbursement Monthly Repayments in Rands" required  step="0.01">
-                                    </div>
-                                </div>
-                                <div class="form-row">
-
-                                    <div class="form-group col-4 p-4">
-                                        <label>Disbursement Allotment</label>
-                                        <input type="text" class="form-control" name="disbursement_allotment" placeholder="Disbursement Allotment (1st, 2nd or 3rd..)">
-                                    </div>
-        
-                                    <div class="form-group col-8 p-4">
-                                        <label>Disbursement Description</label>
-                                        <input type="text" class="form-control" name="disbursement_description" placeholder="Give some description for this disbursement">
-                                    </div>
-                                </div>
-
-                                <div class="form-row">
+                                {% comment %} <div class="form-row">
                                     <div class="form-group col-12 p-4">
-                                        <label>Disbursement Reason</label>
-                                        <input type="text" class="form-control" name="disbursement_reason" placeholder="Enter Reason for funding">
+                                        <label>Total Volume (KG) </label>
+                                        <input type="number" class="form-control" name="total_volume_kg" placeholder="Total Volume in Kilograms" required  step="0.01">
                                     </div>
-                                </div>
+                                </div> {% endcomment %}
 
                             </div>
 
       
-                            <div class="form-group border">                                          
+                            {% comment %} <div class="form-group border">                                          
                                 <div class="form-row">  
 
-                                    <div class="form-group col-4 p-4">
-                                        <label>Total Target</label>
-                                        <input type="number" class="form-control" name="total_target" required>
+                                    <div class="form-group col-6 p-4">
+                                        <label>Amount Amortized</label> <small>Rands</small>
+                                        <input type="number" class="form-control" name="amount_amortized" placeholder="0.00" required step="0.01">
                                     </div>                                
-                                    <div class="form-group col-4 p-4">
-                                        <label>Monthly Volume Target</label>
-                                        <input type="number" class="form-control" name="monthly_target" required>
-                                    </div>                                
-                                    <div class="form-group col-4 p-4">
-                                        <label>Target Measurement Unit</label>
-                                        <input type="text" class="form-control" name="target_measurement_unit">
-                                    </div>         
-                                                        
-                            </div>
-                        </div>
-
-
-                        <div class="form-row">     
-                            <div class="form-group col-6">
-                                <label>Application Contract Document</label>
-                                <p><i>Attache a new document below if you want to replace the above file.</i></p>
-                                <input type="file" class="form-control" name="application_contract_document" >
-                            </div>
-                        </div>
+                                    <div class="form-group col-6 p-4">
+                                        <label>Amount Impaired</label> <small>Rands</small>
+                                        <input type="number" class="form-control" name="amount_impaired" placeholder="0.00" required step="0.01">
+                                    </div>                                                                                       
+                                </div>
+                            </div> {% endcomment %}
 
 
                         </div>
@@ -182,8 +207,8 @@
 
                         <div class="card-footer">
 
-                            <button type="submit" class="btn btn-success">Add Disbursement</button>
-                            <a href="{% url 'manage_disbursement' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-success">Save Monthly Volume</button>
+                            <a href="{% url 'manage_grant' %}" class="btn btn-secondary">Cancel</a>
 
                         </div>
                     </form>

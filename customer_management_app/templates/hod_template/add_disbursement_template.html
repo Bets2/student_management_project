@@ -102,7 +102,6 @@
                                         <input type="date" class="form-control" name="disbursement_end" >
                                     </div>
 
-
                                 </div>
 
                       
@@ -117,12 +116,12 @@
                                         <input type="number" class="form-control" name="disbursement_amount" placeholder="Disbursement Amount in Rands" required  step="0.01">
                                     </div>
                                     <div class="form-group col-3 p-4">
-                                        <label>Loan Interest Rate</label>
+                                        <label>Loan Interest Rate (if any) </label>
                                         <input type="number" class="form-control" name="disbursement_interest_rate" placeholder="0.00" required step="0.01">
                                     </div>
                                     <div class="form-group col-3 p-4">
-                                        <label>Loan Repayment Monthly Amt</label>
-                                        <input type="number" class="form-control" name="disbursement_monthly_repayment_amount" placeholder="Disbursement Monthly Repayments in Rands" required  step="0.01">
+                                        <label>Monthly Repayment/Amortization Amt</label>
+                                        <input type="number" class="form-control" name="disbursement_monthly_repayment_amount" placeholder="Monthly Repayment/Amortization in Rands" required  step="0.01">
                                     </div>
                                 </div>
                                 <div class="form-row">
@@ -148,20 +147,33 @@
                             </div>
 
       
-                            <div class="form-group border">                                          
+                            <div class="form-group border">        
+                                <div class="card-header">
+                                    <h4 class="card-title">Set<b> Volume </b> Targets</h4>
+                                    
+                                </div>
                                 <div class="form-row">  
 
-                                    <div class="form-group col-4 p-4">
-                                        <label>Total Target</label>
+                                    <div class="form-group col-2 p-4">
+                                        <label>Total Base Volume Target</label>
                                         <input type="number" class="form-control" name="total_target" required>
                                     </div>                                
-                                    <div class="form-group col-4 p-4">
-                                        <label>Monthly Volume Target</label>
+                                    <div class="form-group col-2 p-4">
+                                        <label>Base Monthly Volume Target</label>
                                         <input type="number" class="form-control" name="monthly_target" required>
-                                    </div>                                
-                                    <div class="form-group col-4 p-4">
-                                        <label>Target Measurement Unit</label>
-                                        <input type="text" class="form-control" name="target_measurement_unit">
+                                    </div>        
+                                    <div class="form-group col-2 p-4">
+                                        <label>Total Contract Volume Target</label>
+                                        <input type="number" class="form-control" name="contract_target" required>
+                                    </div> 
+                                    <div class="form-group col-3 p-4">
+                                        <label>Contract Monthly Volume Target</label>
+                                        <input type="number" class="form-control" name="contract_monthly_target" required>
+                                    </div> 
+
+                                    <div class="form-group col-3 p-4">
+                                        <label>Volume Measurement Unit</label>
+                                        <input type="text" class="form-control" name="target_measurement_unit" placeholder="tones/kg">
                                     </div>         
                                                         
                             </div>

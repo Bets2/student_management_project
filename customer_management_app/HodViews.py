@@ -5,6 +5,8 @@ from django.core.files.storage import FileSystemStorage
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Sum
+from decimal import Decimal
+from datetime import datetime
 import json
 
 
@@ -12,9 +14,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 
 
-from .forms import AddCustomerForm, EditCustomerForm, AddDisbursementForm, EditDisbursementForm, AddRepaymentForm, EditRepaymentForm
+from .forms import AddCustomerForm, EditCustomerForm, AddDisbursementForm, EditDisbursementForm, AddRepaymentForm, EditRepaymentForm, AddVolumeForm, EditVolumeForm
 
-from .models import CustomUser, Staffs, Courses, Subjects, Customers, SessionYearModel, FeedBackCustomer, FeedBackStaffs, LeaveReportCustomer, LeaveReportStaff, Attendance, AttendanceReport, Disbursements, Repayments
+from .models import CustomUser, Staffs, Courses, Subjects, Customers, SessionYearModel, FeedBackCustomer, FeedBackStaffs, LeaveReportCustomer, LeaveReportStaff, Attendance, AttendanceReport, Disbursements, Repayments, GrantManagement
 
 
 # For Customers KPI
@@ -42,15 +44,23 @@ all_repayment_count = Repayments.objects.all().count()
 all_repayment_count = Repayments.objects.all().count()
 total_repayment_amount = Repayments.objects.all().aggregate(
     Sum('repayment_amount'))['repayment_amount__sum'] or 0.00
-total_repayment_loan_amount = Repayments.objects.filter(repayment_type='Amortization').aggregate(
+total_repayment_loan_amount = Repayments.objects.aggregate(
     Sum('repayment_amount'))['repayment_amount__sum'] or 0.00
-total_repayment_grant_amount = Repayments.objects.filter(repayment_type='Impairment').aggregate(
-    Sum('repayment_amount'))['repayment_amount__sum'] or 0.00
+total_repayment_grant_amount = GrantManagement.objects.aggregate(
+    Sum('amount_amortized'))['amount_amortized__sum'] or 0.00
 
 total_fund_balance = total_repayment_amount - total_disbursement_amount
 
 percentage_fund_balance = (total_repayment_amount /
                            total_disbursement_amount)*100
+
+# For Grant Management KPIs
+total_volume_actual = GrantManagement.objects.all().aggregate(
+    Sum('total_volume_kg'))['total_volume_kg__sum'] or 0.00
+total_amount_amortized = GrantManagement.objects.all().aggregate(
+    Sum('amount_amortized'))['amount_amortized__sum'] or 0.00
+total_amount_impaired = GrantManagement.objects.all().aggregate(
+    Sum('amount_impaired'))['amount_impaired__sum'] or 0.00
 
 
 def admin_home(request):
@@ -396,87 +406,151 @@ def add_customer_save(request):
         messages.error(request, "Invalid Method")
         return redirect('add_customer')
     else:
-        form = AddCustomerForm(request.POST, request.FILES)
+        # form = AddCustomerForm(request.POST, request.FILES)
 
-        if form.is_valid():
+        # if form.is_valid():
 
-            customer_name = form.fields['customer_name']
-            customer_type = form.fields['customer_type']
-            address = form.fields['address']
-            city = form.fields['city']
-            province = form.fields['province']
-            contact_person = form.fields['contact_person']
-            customer_status = form.fields['customer_status']
-            phone = form.fields['phone']
-            comment = form.fields['comment']
+        customer_name = request.POST.get('customer_name')
+        customer_type = request.POST.get('customer_type')
+        address = request.POST.get('address')
+        city = request.POST.get('city')
+        province = request.POST.get('province')
+        contact_person = request.POST.get('contact_person')
+        customer_status = request.POST.get('customer_status')
+        bee_level = request.POST.get('bee_level')
+        phone = request.POST.get('phone')
+        comment = request.POST.get('comment')
 
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            username = form.cleaned_data['username']
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            address = form.cleaned_data['address']
-            phone = form.cleaned_data['phone']
-            session_year_id = form.cleaned_data['session_year_id']
-            course_id = form.cleaned_data['course_id']
-            gender = form.cleaned_data['gender']
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        address = request.POST.get('address')
+        phone = request.POST.get('phone')
+        session_year_id = request.POST.get('session_year_id')
+        course_id = request.POST.get('course_id')
+        gender = request.POST.get('gender')
 
-            if len(request.FILES) != 0:
-                profile_pic = request.FILES['profile_pic']
-                fs = FileSystemStorage()
-                filename = fs.save(profile_pic.name, profile_pic)
-                profile_pic_url = fs.url(filename)
-            else:
-                profile_pic_url = None
-
-            try:
-                user = CustomUser.objects.create_user(username=username,
-                                                      password=password,
-                                                      email=email,
-                                                      first_name=first_name,
-                                                      last_name=last_name,
-                                                      user_type=3)
-
-                user.customers.customer_name = customer_name
-                user.customers.customer_type = customer_type
-                user.customers.address = address
-                user.customers.city = city
-                user.customers.province = province
-                user.customers.contact_person = contact_person
-                user.customers.customer_status = customer_status
-                user.customers.phone = phone
-                user.customers.comment = comment
-
-                user.customers.address = address
-                user.customers.phone = phone
-
-                course_obj = Courses.objects.get(id=course_id)
-                user.customers.course_id = course_obj
-
-                session_year_obj = SessionYearModel.objects.get(
-                    id=session_year_id)
-                user.customers.session_year_id = session_year_obj
-
-                user.customers.gender = gender
-                user.customers.profile_pic = profile_pic_url
-                user.save()
-                messages.success(request, "Customer Added Successfully!")
-                return redirect('manage_customer')
-            except:
-                messages.error(request, "Failed to Add Customer!")
-                return redirect('add_customer')
+        if len(request.FILES) != 0:
+            profile_pic = request.FILES('profile_pic')
+            fs = FileSystemStorage()
+            filename = fs.save(profile_pic.name, profile_pic)
+            profile_pic_url = fs.url(filename)
         else:
-            return redirect('add_customer')
+            profile_pic_url = None
+
+        customer_name = customer_name
+        customer_type = customer_type
+        address = address
+        city = city
+        province = province
+        contact_person = contact_person
+        customer_status = customer_status
+        bee_level = bee_level
+        phone = phone
+        comment = comment
+
+        first_name = first_name
+        last_name = last_name
+        username = username
+        email = email
+        password = password
+
+        session_year_id = session_year_id
+        course_id = course_id
+        gender = gender
+
+        if profile_pic_url != None:
+            profile_pic = profile_pic
+
+       # BETS NOTE: Check if user name is already used
+
+        check_existing_user = CustomUser.objects.filter(
+            username=username).exists()
+        check_existing_company_name = Customers.objects.filter(
+            customer_name=customer_name).exists()
+
+        if check_existing_user:
+            messages.error(
+                request, 'Username already taken! Try using a different username.')
+            return redirect('/add_customer')
+        elif check_existing_company_name:
+            messages.error(
+                request, 'Compay Name already exists! Try using a different Company Name.')
+            return redirect('/add_customer')
+        else:
+            # try:
+            user = CustomUser.objects.create_user(username=username,
+                                                  password=password,
+                                                  email=email,
+                                                  first_name=first_name,
+                                                  last_name=last_name,
+                                                  user_type=3)
+
+            user.customers.customer_name = customer_name
+            user.customers.customer_type = customer_type
+            user.customers.address = address
+            user.customers.city = city
+            user.customers.province = province
+            user.customers.contact_person = contact_person
+            user.customers.customer_status = customer_status
+            user.customers.bee_level = bee_level
+            user.customers.phone = phone
+            user.customers.email = email
+            user.customers.comment = comment
+
+            # course_obj = Courses.objects.get(id=course_id)
+            # user.customers.course_id = course_obj
+
+            # session_year_obj = SessionYearModel.objects.get(
+            #     id=session_year_id)
+            # user.customers.session_year_id = session_year_id
+
+            # user.customers.gender = gender
+            user.customers.profile_pic = profile_pic_url
+            user.save()
+
+            # customer = Customers.objects.create(customer_name=customer_name,
+            #                                     customer_type=customer_type,
+            #                                     address=address,
+            #                                     city=city,
+            #                                     province=province,
+            #                                     contact_person=contact_person,
+            #                                     email=email,
+            #                                     customer_status=customer_status,
+            #                                     bee_level=bee_level,
+            #                                     phone=phone,
+            #                                     comment=comment,
+            #                                     profile_pic=profile_pic_url)
+            # customer.save()
+
+        messages.success(request, customer_name +
+                         "Customer Added Successfully!")
+        return redirect('manage_customer')
+        # except:
+        # messages.error(request, "Failed to Add Customer!")
+        # return redirect('add_customer')
+    # else:
+        # return redirect('add_customer')
 
 
 def manage_customer(request):
     customers = Customers.objects.all()
+
+    # for filters
+    customer_name_contains = request.GET.get('customer_name_contains')
+
+    if is_valid_queryparam(customer_name_contains) and customer_name_contains != 'Select Customer Name...':
+        customers = customers.filter(id__exact=customer_name_contains)
+
     context = {
         "customers": customers,
         "all_customer_count": all_customer_count,
         "customer_count_active": customer_count_active,
         "customer_count_collector": customer_count_collector,
         "customer_count_recycler": customer_count_recycler,
+        "customer_name_contains": customer_name_contains
     }
     return render(request, 'hod_template/manage_customer_template.html', context)
 
@@ -487,7 +561,8 @@ def edit_customer(request, customer_id):
     request.session['customer_id'] = customer_id
 
     customer = Customers.objects.get(admin=customer_id)
-    form = EditCustomerForm()
+    form = EditCustomerForm(request.POST or None, request.FILES)
+    # form = EditCustomerForm()
 
     # Filling the form with Data from Database
     form.fields['customer_name'].initial = customer.customer_name
@@ -497,6 +572,7 @@ def edit_customer(request, customer_id):
     form.fields['province'].initial = customer.province
     form.fields['contact_person'].initial = customer.contact_person
     form.fields['customer_status'].initial = customer.customer_status
+    form.fields['bee_level'].initial = customer.bee_level
     form.fields['phone'].initial = customer.phone
     form.fields['comment'].initial = customer.comment
 
@@ -511,6 +587,7 @@ def edit_customer(request, customer_id):
     form.fields['session_year_id'].initial = customer.session_year_id.id
 
     context = {
+        "customer": customer,
         "id": customer_id,
         "username": customer.admin.username,
         "form": form
@@ -526,39 +603,41 @@ def edit_customer_save(request):
         if customer_id == None:
             return redirect('/manage_customer')
 
-        form = EditCustomerForm(request.POST, request.FILES)
-        if form.is_valid():
-            customer_name = form.cleaned_data['customer_name']
-            customer_type = form.cleaned_data['customer_type']
-            address = form.cleaned_data['address']
-            city = form.cleaned_data['city']
-            province = form.cleaned_data['province']
-            contact_person = form.cleaned_data['contact_person']
-            customer_status = form.cleaned_data['customer_status']
-            phone = form.cleaned_data['phone']
-            comment = form.cleaned_data['comment']
+        else:
+            # form = EditCustomerForm(request.POST, request.FILES)
+            customer_name = request.POST.get('customer_name')
+            customer_type = request.POST.get('customer_type')
+            address = request.POST.get('address')
+            city = request.POST.get('city')
+            province = request.POST.get('province')
+            contact_person = request.POST.get('contact_person')
+            customer_status = request.POST.get('customer_status')
+            bee_level = request.POST.get('bee_level')
+            phone = request.POST.get('phone')
+            comment = request.POST.get('comment')
 
-            email = form.cleaned_data['email']
-            username = form.cleaned_data['username']
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            address = form.cleaned_data['address']
-            course_id = form.cleaned_data['course_id']
-            gender = form.cleaned_data['gender']
-            session_year_id = form.cleaned_data['session_year_id']
+            email = request.POST.get('email')
+            username = request.POST.get('username')
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            address = request.POST.get('address')
+            course_id = request.POST.get('course_id')
+            gender = request.POST.get('gender')
+            session_year_id = request.POST.get('session_year_id')
 
             # Getting Profile Pic first
             # First Check whether the file is selected or not
             # Upload only if file is selected
+
             if len(request.FILES) != 0:
-                profile_pic = request.FILES['profile_pic']
+                profile_pic = request.FILES('profile_pic')
                 fs = FileSystemStorage()
                 filename = fs.save(profile_pic.name, profile_pic)
                 profile_pic_url = fs.url(filename)
             else:
                 profile_pic_url = None
 
-            try:
+            # try:
                 # First Update into Custom User Model
                 user = CustomUser.objects.get(id=customer_id)
                 user.first_name = first_name
@@ -577,17 +656,18 @@ def edit_customer_save(request):
                 customer_model.province = province
                 customer_model.contact_person = contact_person
                 customer_model.customer_status = customer_status
+                customer_model.bee_level = bee_level
                 customer_model.phone = phone
+                customer_model.email = email
                 customer_model.comment = comment
 
-                course = Courses.objects.get(id=course_id)
-                customer_model.course_id = course
+                # course = Courses.objects.get(id=course_id)
+                # customer_model.course_id = course
 
-                session_year_obj = SessionYearModel.objects.get(
-                    id=session_year_id)
-                customer_model.session_year_id = session_year_obj
+                # session_year_obj = SessionYearModel.objects.get(id=session_year_id)
+                # customer_model.session_year_id = session_year_obj
 
-                customer_model.gender = gender
+                # customer_model.gender = gender
                 if profile_pic_url != None:
                     customer_model.profile_pic = profile_pic_url
                 customer_model.save()
@@ -596,10 +676,12 @@ def edit_customer_save(request):
 
                 messages.success(request, "Customer Updated Successfully!")
                 return redirect('/edit_customer/'+customer_id)
-            except:
-                messages.success(request, "Failed to Uupdate Customer.")
+            # except:
+                messages.error(
+                    request, "Failed to update Customer. Please contact administrator")
                 return redirect('/edit_customer/'+customer_id)
-        else:
+
+            messages.Success(request, "Customer Updated successfully!")
             return redirect('/edit_customer/'+customer_id)
 
 
@@ -617,12 +699,23 @@ def delete_customer(request, customer_id):
 # BETS ADDED Disbursment related views here ***************************************************
 def manage_disbursement(request):
     disbursements = Disbursements.objects.all()
+    customer = Customers.objects.all()
+    # for filters
+    customer_name_contains = request.GET.get('customer_name_contains')
+
+    if is_valid_queryparam(customer_name_contains) and customer_name_contains != 'Select Customer Name...':
+        disbursements = disbursements.filter(
+            customer_id__exact=customer_name_contains)
+
     context = {
         "disbursements": disbursements,
         "all_disbursement_count": all_disbursement_count,
         "total_disbursement_amount": total_disbursement_amount,
         "total_disbursement_loan_amount": total_disbursement_loan_amount,
-        "total_disbursement_grant_amount": total_disbursement_grant_amount
+        "total_disbursement_grant_amount": total_disbursement_grant_amount,
+
+        "customers": customer,
+        "customer_name_contains": customer_name_contains
     }
     return render(request, 'hod_template/manage_disbursement_template.html', context)
 
@@ -664,6 +757,8 @@ def add_disbursement_save(request):
         repayment_term = request.POST.get('repayment_term')
         total_target = request.POST.get('total_target')
         monthly_target = request.POST.get('monthly_target')
+        contract_target = request.POST.get('contract_target')
+        contract_monthly_target = request.POST.get('contract_monthly_target')
         target_measurement_unit = request.POST.get(
             'target_measurement_unit')
         # application_contract_document = request.FILES['application_contract_document']
@@ -696,6 +791,8 @@ def add_disbursement_save(request):
         repayment_term = repayment_term
         total_target = total_target
         monthly_target = monthly_target
+        contract_target = contract_target
+        contract_monthly_target = contract_monthly_target
         target_measurement_unit = target_measurement_unit
         if application_contract_document_url != None:
             application_contract_document = application_contract_document
@@ -703,31 +800,42 @@ def add_disbursement_save(request):
         customer_id = Customers.objects.get(
             id=customer_id)
 
-        # disbursement.application_contract_document = application_contract_document
-        disbursement = Disbursements.objects.create(disbursement_code=disbursement_code,
-                                                    disbursement_description=disbursement_description,
-                                                    disbursement_application_id=disbursement_application_id,
-                                                    disbursement_reason=disbursement_reason,
-                                                    disbursement_type=disbursement_type,
-                                                    disbursement_date=disbursement_date,
-                                                    disbursement_amount=disbursement_amount,
-                                                    disbursement_monthly_repayment_amount=disbursement_monthly_repayment_amount,
-                                                    contract_signed_date=contract_signed_date,
-                                                    disbursement_end=disbursement_end,
-                                                    disbursement_allotment=disbursement_allotment,
-                                                    disbursement_interest_rate=disbursement_interest_rate,
-                                                    repayment_term=repayment_term,
-                                                    total_target=total_target,
-                                                    monthly_target=monthly_target,
-                                                    target_measurement_unit=target_measurement_unit,
-                                                    application_contract_document=application_contract_document_url,
-                                                    customer_id=customer_id)
+        # Check if Disbursement Code is already used before
+        check_existing_disbursement_code = Disbursements.objects.filter(
+            disbursement_code=disbursement_code).exists()
 
-    # Save Disbursements table
-    disbursement.save()
-    messages.success(
-        request, disbursement_code + "Disbursement details added Successfully.")
-    return redirect("/manage_disbursement")
+        if check_existing_disbursement_code:
+            messages.error(
+                request, 'Disbursement Code you provided has already been used before! Try Create a new Disbursement Code.')
+            return redirect('/add_disbursement')
+        else:
+            # disbursement.application_contract_document = application_contract_document
+            disbursement = Disbursements.objects.create(disbursement_code=disbursement_code,
+                                                        disbursement_description=disbursement_description,
+                                                        disbursement_application_id=disbursement_application_id,
+                                                        disbursement_reason=disbursement_reason,
+                                                        disbursement_type=disbursement_type,
+                                                        disbursement_date=disbursement_date,
+                                                        disbursement_amount=disbursement_amount,
+                                                        disbursement_monthly_repayment_amount=disbursement_monthly_repayment_amount,
+                                                        contract_signed_date=contract_signed_date,
+                                                        disbursement_end=disbursement_end,
+                                                        disbursement_allotment=disbursement_allotment,
+                                                        disbursement_interest_rate=disbursement_interest_rate,
+                                                        repayment_term=repayment_term,
+                                                        total_target=total_target,
+                                                        monthly_target=monthly_target,
+                                                        contract_target=contract_target,
+                                                        contract_monthly_target=contract_monthly_target,
+                                                        target_measurement_unit=target_measurement_unit,
+                                                        application_contract_document=application_contract_document_url,
+                                                        customer_id=customer_id)
+
+            # Save Disbursements table
+            disbursement.save()
+            messages.success(request, disbursement_code +
+                             "Disbursement details added Successfully.")
+            return redirect("/manage_disbursement")
 
 
 def detail_disbursement(request, disbursement_id):
@@ -768,6 +876,10 @@ def edit_disbursement(request, disbursement_id):
     form.fields['repayment_term'].initial = disbursement.repayment_term
     form.fields['total_target'].initial = disbursement.total_target
     form.fields['monthly_target'].initial = disbursement.monthly_target
+    form.fields['contract_target'].initial = disbursement.contract_target
+    form.fields['contract_monthly_target'].initial = disbursement.contract_monthly_target
+    form.fields['monthly_target'].initial = disbursement.monthly_target
+
     form.fields['target_measurement_unit'].initial = disbursement.target_measurement_unit
     # To Do: BETS finish this here uploading file
     form.fields['application_contract_document'].initial = disbursement.application_contract_document
@@ -813,6 +925,9 @@ def edit_disbursement_save(request):
             repayment_term = request.POST.get('repayment_term')
             total_target = request.POST.get('total_target')
             monthly_target = request.POST.get('monthly_target')
+            contract_target = request.POST.get('contract_target')
+            contract_monthly_target = request.POST.get(
+                'contract_monthly_target')
             target_measurement_unit = request.POST.get(
                 'target_measurement_unit')
             application_contract_document = request.POST.get(
@@ -844,6 +959,9 @@ def edit_disbursement_save(request):
             disbursement.repayment_term = repayment_term
             disbursement.total_target = total_target
             disbursement.monthly_target = monthly_target
+            disbursement.contract_target = contract_target
+            disbursement.contract_monthly_target = contract_monthly_target
+
             disbursement.target_measurement_unit = target_measurement_unit
             if application_contract_document_url != None:
                 disbursement.application_contract_document = application_contract_document
@@ -861,7 +979,8 @@ def edit_disbursement_save(request):
             disbursement.save()
             messages.success(
                 request, "Disbursement details updated Successfully.")
-            return redirect("/manage_disbursement/")
+            return redirect('/detail_disbursement/'+disbursement_id)
+            # return redirect("/manage_disbursement/")
             # return redirect("/edit_disbursement/"+disbursement_id)
             # except:
             #     messages.error(
@@ -879,8 +998,360 @@ def delete_disbursement(request, disbursement_id):
         messages.error(request, "Failed to Delete Disbursement.")
         return redirect('manage_disbursement')
 
+# ***************************************************************************************
+# GRANT MANAGEMENT
 
+
+def manage_grant(request):
+    grants = GrantManagement.objects.all()
+    customers = Customers.objects.all()
+    # for filters
+    customer_name_contains = request.GET.get('customer_name_contains')
+
+    if is_valid_queryparam(customer_name_contains) and customer_name_contains != 'Select Customer Name...':
+        grants = grants.filter(customer_id__exact=customer_name_contains)
+
+    context = {
+        "grants": grants,
+        "total_volume_actual": total_volume_actual,
+        "total_amount_amortized": total_amount_amortized,
+        "total_amount_impaired": total_amount_impaired,
+
+        "customer_name_contains": customer_name_contains,
+        "customers": customers
+    }
+    return render(request, 'hod_template/manage_grant_template.html', context)
+
+
+def add_volume(request):
+    customer = Customers.objects.all()
+    disbursement = Disbursements.objects.all()
+    form = AddVolumeForm()
+    context = {
+        "customer": customer,
+        "disbursement": disbursement,
+        "form": form
+    }
+    return render(request, 'hod_template/add_volume_template.html', context)
+
+
+def add_volume_save(request):
+    if request.method != "POST":
+        messages.error(request, "Invalid Method")
+        return redirect('add_volume')
+
+    else:
+
+        monthly_volume_report_id = request.POST.get('monthly_volume_report_id')
+        volume_report_month = request.POST.get('volume_report_month')
+        volume_report_year = request.POST.get('volume_report_year')
+        hd_kg = request.POST.get('hd_kg')
+        ld_kg = request.POST.get('ld_kg')
+        lld_kg = request.POST.get('lld_kg')
+        pp_kg = request.POST.get('pp_kg')
+        pvc_kg = request.POST.get('pvc_kg')
+        ps_kg = request.POST.get('ps_kg')
+        pet_kg = request.POST.get('pet_kg')
+        other_kg = request.POST.get('other_kg')
+
+        total_volume_kg = Decimal(hd_kg) + Decimal(ld_kg) + Decimal(lld_kg) + Decimal(pp_kg) + Decimal(pvc_kg) + \
+            Decimal(ps_kg) + Decimal(pet_kg) + \
+            Decimal(other_kg)  # request.POST.get('total_volume_kg')
+
+        volume_report_date = request.POST.get('volume_report_date')
+
+        disbursement_id = request.POST.get('disbursement_id')
+        customer_id = request.POST.get('customer_id')
+
+        disbursements = Disbursements.objects.get(id=disbursement_id)
+
+        monthly_target = disbursements.monthly_target
+        monthly_repayment_amount = disbursements.disbursement_monthly_repayment_amount
+
+        contract_monthly_target = disbursements.contract_monthly_target
+
+        if contract_monthly_target == 0:
+            amount_amortized = 0
+            amount_impaired = 0
+        else:
+            if contract_monthly_target <= Decimal(total_volume_kg):
+                amount_amortized = monthly_repayment_amount
+                amount_impaired = 0
+            else:
+                amount_impaired = monthly_repayment_amount - ((Decimal(total_volume_kg)/contract_monthly_target)
+                                                              * monthly_repayment_amount)
+                amount_amortized = monthly_repayment_amount - amount_impaired
+
+        monthly_volume_report_id = monthly_volume_report_id
+        volume_report_month = volume_report_month
+        volume_report_year = volume_report_year
+        hd_kg = hd_kg
+        ld_kg = ld_kg
+        lld_kg = lld_kg
+        pp_kg = pp_kg
+        pvc_kg = pvc_kg
+        ps_kg = ps_kg
+        pet_kg = pet_kg
+        other_kg = other_kg
+        total_volume_kg = Decimal(total_volume_kg)
+        volume_report_date = volume_report_date
+        amount_amortized = amount_amortized
+        amount_impaired = amount_impaired
+
+        disbursement_id = Disbursements.objects.get(
+            id=disbursement_id)
+        customer_id = Customers.objects.get(id=customer_id)
+
+        # Validateions
+        check_existing_monthly_volume_id = GrantManagement.objects.filter(
+            monthly_volume_report_id=monthly_volume_report_id).exists()
+
+        volume_report_date = datetime.strptime(
+            (volume_report_date), "%Y-%m-%d")
+        contract_signed_date = disbursement_id.contract_signed_date
+        contract_signed_date = datetime.strptime(
+            str(contract_signed_date), "%Y-%m-%d")
+
+        disbursement_end_date = disbursement_id.disbursement_end
+        disbursement_end_date = datetime.strptime(
+            str(disbursement_end_date), "%Y-%m-%d")
+
+        if check_existing_monthly_volume_id:
+            messages.error(
+                request, 'The monthly volue report Id already exists!. Try Creating a unique Id for this volume report.')
+            return redirect('/add_volume')
+        elif volume_report_date < contract_signed_date:
+            messages.error(
+                request, 'Volume Report Date can not be before contract start date. Check the report date again.')
+            return redirect('/add_volume')
+        elif volume_report_date > disbursement_end_date:
+            messages.error(
+                request, 'Volume Report Date can not be after the contract end date. Check the report date again.')
+            return redirect('/add_volume')
+
+        else:
+            grantmanagement = GrantManagement.objects.create(monthly_volume_report_id=monthly_volume_report_id,
+                                                             volume_report_month=volume_report_month,
+                                                             volume_report_year=volume_report_year,
+                                                             hd_kg=hd_kg,
+                                                             ld_kg=ld_kg,
+                                                             lld_kg=lld_kg,
+                                                             pp_kg=pp_kg,
+                                                             pvc_kg=pvc_kg,
+                                                             ps_kg=ps_kg,
+                                                             pet_kg=pet_kg,
+                                                             other_kg=other_kg,
+                                                             total_volume_kg=total_volume_kg,
+                                                             volume_report_date=volume_report_date,
+                                                             amount_amortized=amount_amortized,
+                                                             amount_impaired=amount_impaired,
+                                                             disbursement_id=disbursement_id,
+                                                             customer_id=customer_id)
+
+        # Save Repayments table
+            grantmanagement.save()
+            messages.success(
+                request, monthly_volume_report_id + " Monthly Volume details added Successfully.")
+            return redirect("/manage_grant")
+
+
+def edit_volume(request, volume_id):
+    grant = GrantManagement.objects.get(id=volume_id)
+    customer = Customers.objects.all()
+    disbursement = Disbursements.objects.all()
+
+    form = EditVolumeForm(request.POST or None, request.FILES)
+
+    # Filling the form with Data from Database
+
+    form.fields['monthly_volume_report_id'].initial = grant.monthly_volume_report_id
+    form.fields['volume_report_month'].initial = grant.volume_report_month
+    form.fields['volume_report_year'].initial = grant.volume_report_year
+    form.fields['hd_kg'].initial = grant.hd_kg
+    form.fields['ld_kg'].initial = grant.ld_kg
+    form.fields['lld_kg'].initial = grant.lld_kg
+    form.fields['pp_kg'].initial = grant.pp_kg
+    form.fields['pvc_kg'].initial = grant.pvc_kg
+    form.fields['ps_kg'].initial = grant.ps_kg
+    form.fields['pet_kg'].initial = grant.pet_kg
+    form.fields['other_kg'].initial = grant.other_kg
+    # form.fields['total_volume_kg'].initial = grant.total_volume_kg
+    form.fields['volume_report_date'].initial = grant.volume_report_date
+    # form.fields['amount_amortized'].initial = grant.amount_amortized
+    # form.fields['amount_impaired'].initial = grant.amount_impaired
+    form.fields['disbursement_id'].initial = grant.disbursement_id
+    form.fields['customer_id'].initial = grant.customer_id
+
+    context = {
+        'grant': grant,
+        "id": volume_id,
+        "customer": customer,
+        "disbursement": disbursement,
+        "form": form
+    }
+    return render(request, "hod_template/edit_volume_template.html", context)
+
+
+def edit_volume_save(request):
+    if request.method != "POST":
+        return HttpResponse("Invalied Method.")
+    else:
+        volume_id = request.POST.get('volume_id')
+        if volume_id == None:
+            return redirect('/manage_grant')
+
+        else:
+            monthly_volume_report_id = request.POST.get(
+                'monthly_volume_report_id')
+            volume_report_month = request.POST.get('volume_report_month')
+            volume_report_year = request.POST.get('volume_report_year')
+            hd_kg = request.POST.get('hd_kg')
+            ld_kg = request.POST.get('ld_kg')
+            lld_kg = request.POST.get('lld_kg')
+            pp_kg = request.POST.get('pp_kg')
+            pvc_kg = request.POST.get('pvc_kg')
+            ps_kg = request.POST.get('ps_kg')
+            pet_kg = request.POST.get('pet_kg')
+            other_kg = request.POST.get('other_kg')
+            total_volume_kg = Decimal(hd_kg) + Decimal(ld_kg) + Decimal(lld_kg) + Decimal(pp_kg) + Decimal(pvc_kg) + \
+                Decimal(ps_kg) + Decimal(pet_kg) + \
+                Decimal(other_kg)  # request.POST.get('total_volume_kg')
+            volume_report_date = request.POST.get('volume_report_date')
+            # amount_amortized = request.POST.get('amount_amortized')
+            # amount_impaired = request.POST.get('amount_impaired')
+
+            disbursement_id = request.POST.get('disbursement_id')
+            customer_id = request.POST.get('customer_id')
+
+            grant = GrantManagement.objects.get(id=volume_id)
+            grant.monthly_volume_report_id = monthly_volume_report_id
+            grant.volume_report_month = volume_report_month
+            grant.volume_report_year = volume_report_year
+            grant.hd_kg = hd_kg
+            grant.ld_kg = ld_kg
+            grant.lld_kg = lld_kg
+            grant.pp_kg = pp_kg
+            grant.pvc_kg = pvc_kg
+            grant.ps_kg = ps_kg
+            grant.pet_kg = pet_kg
+            grant.other_kg = other_kg
+            grant.total_volume_kg = Decimal(total_volume_kg)
+            grant.volume_report_date = volume_report_date
+
+            disbursements = Disbursements.objects.get(id=disbursement_id)
+
+            monthly_target = disbursements.monthly_target  # this is base_monthly_target
+            monthly_repayment_amount = disbursements.disbursement_monthly_repayment_amount
+
+            contract_monthly_target = disbursements.contract_monthly_target
+
+            if contract_monthly_target == 0:
+                grant.amount_amortized = 0
+                grant.amount_impaired = 0
+            else:
+                if contract_monthly_target <= Decimal(total_volume_kg):
+                    grant.amount_amortized = monthly_repayment_amount
+                    grant.amount_impaired = 0
+                else:
+                    grant.amount_impaired = monthly_repayment_amount - ((Decimal(total_volume_kg)/contract_monthly_target)
+                                                                        * monthly_repayment_amount)
+                    grant.amount_amortized = monthly_repayment_amount - grant.amount_impaired
+            # grant.amount_amortized = 0  # this will be removed in future temp place holder
+            # grant.amount_impaired = 0  # this will be removed in future temp place holder
+
+            if grant.customer_id == None:
+                grant.customer_id = customer_id
+            else:
+                grant.customer_id = Customers.objects.get(id=customer_id)
+
+            if grant.disbursement_id == None:
+                grant.disbursement_id = disbursement_id
+            else:
+                grant.disbursement_id = Disbursements.objects.get(
+                    id=disbursement_id)
+
+            # Save GrantManagement table
+
+            volume_report_date = datetime.strptime(
+                volume_report_date, "%Y-%m-%d")
+            contract_signed_date = disbursements.contract_signed_date
+            contract_signed_date = datetime.strptime(
+                str(contract_signed_date), "%Y-%m-%d")
+
+            disbursement_end_date = disbursements.disbursement_end
+            disbursement_end_date = datetime.strptime(
+                str(disbursement_end_date), "%Y-%m-%d")
+
+            if volume_report_date < contract_signed_date:
+                messages.error(
+                    request, 'Volume Report Date can not be before contract start date. Check the volume capture/report date again.')
+                return redirect('/edit_volume/'+volume_id)
+            elif volume_report_date > disbursement_end_date:
+                messages.error(
+                    request, 'Volume Report Date can not be after the contract end date. Check the Volume capture/report date again.')
+                return redirect('/edit_volume/'+volume_id)
+
+            else:
+                grant.save()
+                messages.success(
+                    request, "Grant Report - Volume details updated Successfully.")
+                return redirect("/detail_volume/"+volume_id)
+                # return redirect("/edit_volume/"+volume_id)
+                # except:
+                #     messages.error(
+                #         request, "BETS....Failed to Update Repayment details.")
+                #     return redirect('/edit_volume/'+volume_id)
+
+
+def detail_volume(request, volume_id):
+
+    grant = GrantManagement.objects.get(id=volume_id)
+    customer = Customers.objects.get(id=grant.customer_id.id)
+    disbursement = Disbursements.objects.get(id=grant.disbursement_id.id)
+
+    percentage_actual_volume_to_target = (
+        (grant.total_volume_kg/disbursement.contract_monthly_target) * 100)
+
+    percentage_actual_volume_to_target = round(
+        percentage_actual_volume_to_target, 2)
+
+    # if disbursement.contract_monthly_target <= grant.total_volume_kg:
+    #     amount_amortized_calculated = disbursement.disbursement_monthly_repayment_amount
+    #     amount_impaired_calculated = 0
+    # else:
+    #     amount_amortized_calculated = disbursement.disbursement_monthly_repayment_amount - ((grant.total_volume_kg/disbursement.monthly_target)
+    #                                                                                         * disbursement.disbursement_monthly_repayment_amount)
+    #     amount_impaired_calculated = (
+    #         disbursement.disbursement_monthly_repayment_amount - amount_amortized_calculated)
+
+    context = {
+        'grant': grant,
+        "id": volume_id,
+        "customer": customer,
+        "disbursement": disbursement,
+        # "amount_amortized_calculated": amount_amortized_calculated,
+        # "amount_impaired_calculated": amount_impaired_calculated,
+        "percentage_actual_volume_to_target": percentage_actual_volume_to_target
+        # "form": form
+    }
+    return render(request, "hod_template/detail_volume_template.html", context)
+
+
+def delete_grant(request, volume_id):
+    grant = GrantManagement.objects.get(id=volume_id)
+    try:
+        grant.delete()
+        messages.success(
+            request, "ID: " + volume_id + " Grant Volume detail Deleted Successfully.")
+        return redirect('manage_grant')
+    except:
+        messages.error(request, "Failed to Delete Grant volume detail.")
+        return redirect('manage_grant')
+
+
+# ***************************************************************************************
 # OVERVIEWS
+
 
 def is_valid_queryparam(param):
     return param != '' and param is not None
@@ -890,6 +1361,7 @@ def overview(request):
     customers = Customers.objects.all()
     repayments = Repayments.objects.all()
     disbursements = Disbursements.objects.all()
+    grants = GrantManagement.objects.all()
 
     # for filters
     customer_name_contains = request.GET.get('customer_name_contains')
@@ -906,6 +1378,7 @@ def overview(request):
             customer_id__exact=customer_name_contains)
         repayments = repayments.filter(
             customer_id__exact=customer_name_contains)
+        grants = grants.filter(customer_id__exact=customer_name_contains)
 
     # elif is_valid_queryparam(province_list_contains):
     #     disbursements = disbursements.filter(id=province_list_contains)
@@ -929,23 +1402,38 @@ def overview(request):
         "all_customer_count": all_customer_count,
         "customer_count_active": customer_count_active,
         "customer_count_collector": customer_count_collector,
-        "customer_count_recycler": customer_count_recycler
+        "customer_count_recycler": customer_count_recycler,
+
+        "grants": grants,
+        "customer_name_contains": customer_name_contains
 
     }
     return render(request, 'hod_template/overview_template.html', context)
 
-
+# ***************************************************************************************
 # REPAYMENTS
+
 
 def manage_repayment(request):
     repayments = Repayments.objects.all()
+    customers = Customers.objects.all()
+
+    customer_name_contains = request.GET.get('customer_name_contains')
+
+    if is_valid_queryparam(customer_name_contains) and customer_name_contains != 'Select Customer Name...':
+        repayments = repayments.filter(
+            customer_id__exact=customer_name_contains)
+
     context = {
         "repayments": repayments,
         "total_repayment_amount": total_repayment_amount,
         "total_repayment_loan_amount": total_repayment_loan_amount,
         "total_repayment_grant_amount": total_repayment_grant_amount,
         "total_fund_balance": total_fund_balance,
-        "percentage_fund_balance": percentage_fund_balance
+        "percentage_fund_balance": percentage_fund_balance,
+
+        "customer_name_contains": customer_name_contains,
+        "customers": customers
     }
     return render(request, 'hod_template/manage_repayment_template.html', context)
 
@@ -970,7 +1458,7 @@ def add_repayment_save(request):
     else:
 
         repayment_code = request.POST.get('repayment_code')
-        repayment_type = request.POST.get('repayment_type')
+        # repayment_type = request.POST.get('repayment_type')
         repayment_description = request.POST.get('repayment_description')
         repayment_amount = request.POST.get('repayment_amount')
         repayment_date = request.POST.get('repayment_date')
@@ -990,7 +1478,7 @@ def add_repayment_save(request):
             payment_documentation_url = None
 
         repayment_code = repayment_code
-        repayment_type = repayment_type
+        # repayment_type = repayment_type
         repayment_description = repayment_description
         repayment_amount = repayment_amount
         repayment_date = repayment_date
@@ -1003,22 +1491,50 @@ def add_repayment_save(request):
         disbursement_id = Disbursements.objects.get(id=disbursement_id)
         customer_id = Customers.objects.get(id=customer_id)
 
-        repayment = Repayments.objects.create(repayment_code=repayment_code,
-                                              repayment_type=repayment_type,
-                                              repayment_description=repayment_description,
-                                              repayment_amount=repayment_amount,
-                                              repayment_date=repayment_date,
-                                              actual_volume_tone=actual_volume_tone,
-                                              comment=comment,
-                                              payment_documentation=payment_documentation_url,
-                                              disbursement_id=disbursement_id,
-                                              customer_id=customer_id)
+        # Validateions
+        check_existing_repayment_code = Repayments.objects.filter(
+            repayment_code=repayment_code).exists()
 
-    # Save Repayments table
-    repayment.save()
-    messages.success(
-        request, repayment_code + "Repayment details added Successfully.")
-    return redirect("/manage_repayment")
+        repayment_date = datetime.strptime(
+            (repayment_date), "%Y-%m-%d")
+        contract_signed_date = disbursement_id.contract_signed_date
+        contract_signed_date = datetime.strptime(
+            str(contract_signed_date), "%Y-%m-%d")
+
+        disbursement_end_date = disbursement_id.disbursement_end
+        disbursement_end_date = datetime.strptime(
+            str(disbursement_end_date), "%Y-%m-%d")
+
+        if check_existing_repayment_code:
+            messages.error(
+                request, 'The repayment code you provided already exists!. Try Creating a unique code to capture this repayment.')
+            return redirect('/add_repayment')
+        elif repayment_date < contract_signed_date:
+            messages.error(
+                request, 'The Repayment Date can not be before contract start date. Check the repayment date again.')
+            return redirect('/add_repayment')
+        elif repayment_date > disbursement_end_date:
+            messages.error(
+                request, 'The Repayment Date can not be after the contract end date. Check the repayment date again.')
+            return redirect('/add_repayment')
+
+        else:
+            repayment = Repayments.objects.create(repayment_code=repayment_code,
+                                                  #   repayment_type=repayment_type,
+                                                  repayment_description=repayment_description,
+                                                  repayment_amount=repayment_amount,
+                                                  repayment_date=repayment_date,
+                                                  actual_volume_tone=actual_volume_tone,
+                                                  comment=comment,
+                                                  payment_documentation=payment_documentation_url,
+                                                  disbursement_id=disbursement_id,
+                                                  customer_id=customer_id)
+
+        # Save Repayments table
+            repayment.save()
+            messages.success(
+                request, repayment_code + "Repayment details added Successfully.")
+            return redirect("/manage_repayment")
 
 
 def detail_repayment(request, repayment_id):
@@ -1026,21 +1542,6 @@ def detail_repayment(request, repayment_id):
     repayment = Repayments.objects.get(id=repayment_id)
     customer = Customers.objects.get(id=repayment.customer_id.id)
     disbursement = Disbursements.objects.get(id=repayment.disbursement_id.id)
-
-    # form = EditRepaymentForm(request.POST or None, request.FILES)
-
-    # # Filling the form with Data from Database
-
-    # form.fields['repayment_code'].initial = repayment.repayment_code
-    # form.fields['repayment_type'].initial = repayment.repayment_type
-    # form.fields['repayment_description'].initial = repayment.repayment_description
-    # form.fields['repayment_amount'].initial = repayment.repayment_amount
-    # form.fields['repayment_date'].initial = repayment.repayment_date
-    # form.fields['actual_volume_tone'].initial = repayment.actual_volume_tone
-    # form.fields['comment'].initial = repayment.comment
-    # form.fields['payment_documentation'].initial = repayment.payment_documentation
-    # form.fields['disbursement_id'].initial = repayment.disbursement_id
-    # form.fields['customer_id'].initial = repayment.customer_id
 
     context = {
         'repayments': repayment,
@@ -1063,7 +1564,7 @@ def edit_repayment(request, repayment_id):
     # Filling the form with Data from Database
 
     form.fields['repayment_code'].initial = repayment.repayment_code
-    form.fields['repayment_type'].initial = repayment.repayment_type
+    # form.fields['repayment_type'].initial = repayment.repayment_type
     form.fields['repayment_description'].initial = repayment.repayment_description
     form.fields['repayment_amount'].initial = repayment.repayment_amount
     form.fields['repayment_date'].initial = repayment.repayment_date
@@ -1093,7 +1594,7 @@ def edit_repayment_save(request):
 
         else:
             repayment_code = request.POST.get('repayment_code')
-            repayment_type = request.POST.get('repayment_type')
+            # repayment_type = request.POST.get('repayment_type')
             repayment_description = request.POST.get('repayment_description')
             repayment_amount = request.POST.get('repayment_amount')
             repayment_date = request.POST.get('repayment_date') or None
@@ -1116,7 +1617,7 @@ def edit_repayment_save(request):
             # try:
             repayment = Repayments.objects.get(id=repayment_id)
             repayment.repayment_code = repayment_code
-            repayment.repayment_type = repayment_type
+            # repayment.repayment_type = repayment_type
             repayment.repayment_description = repayment_description
             repayment.repayment_amount = repayment_amount
             repayment.repayment_date = repayment_date
@@ -1139,16 +1640,37 @@ def edit_repayment_save(request):
                 repayment.disbursement_id = Disbursements.objects.get(
                     id=disbursement_id)
 
-            # Save Repayment table
-            repayment.save()
-            messages.success(
-                request, "Repayment details updated Successfully.")
-            return redirect("/manage_repayment/")
-            # return redirect("/edit_repayment/"+repayment_id)
-            # except:
-            #     messages.error(
-            #         request, "BETS....Failed to Update Repayment details.")
-            #     return redirect('/edit_repayment/'+repayment_id)
+            # Validateions
+            repayment_date = datetime.strptime(
+                (repayment_date), "%Y-%m-%d")
+            contract_signed_date = repayment.disbursement_id.contract_signed_date
+            contract_signed_date = datetime.strptime(
+                str(contract_signed_date), "%Y-%m-%d")
+
+            disbursement_end_date = repayment.disbursement_id.disbursement_end
+            disbursement_end_date = datetime.strptime(
+                str(disbursement_end_date), "%Y-%m-%d")
+
+            if repayment_date < contract_signed_date:
+                messages.error(
+                    request, 'The Repayment Date can not be before contract start date. Check the repayment date again.')
+                return redirect('/edit_repayment/'+repayment_id)
+            elif repayment_date > disbursement_end_date:
+                messages.error(
+                    request, 'The Repayment Date can not be after the contract end date. Check the repayment date again.')
+                return redirect('/edit_repayment/'+repayment_id)
+
+            else:
+                # Save Repayment table
+                repayment.save()
+                messages.success(
+                    request, "Repayment details updated Successfully.")
+                return redirect("/detail_repayment/"+repayment_id)
+                # return redirect("/edit_repayment/"+repayment_id)
+                # except:
+                #     messages.error(
+                #         request, "BETS....Failed to Update Repayment details.")
+                #     return redirect('/edit_repayment/'+repayment_id)
 
 
 def delete_repayment(request, repayment_id):
@@ -1161,8 +1683,9 @@ def delete_repayment(request, repayment_id):
         messages.error(request, "Failed to Delete Repayment.")
         return redirect('manage_repayment')
 
-
+# ***************************************************************************************
 # Subject
+
 
 def add_subject(request):
     courses = Courses.objects.all()

@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Repayment Detail | Repayment code: {{repayments.repayment_code}}
+    Repayment Detail | Customer: {{repayments.customer_id.customer_name}}
 {% endblock page_title %}
 
 {% block main_content %}
@@ -9,31 +9,126 @@
 {% load static %}
 
 
-<section class="content">
- 
-
-    <div>           
-        <a href = "{% url 'manage_repayment' %}" class = "btn btn-secondary my-5"> Back </a>
-        <a href="/edit_repayment/{{ repayments.id}}" class="btn btn-success">Edit</a> 
-        <a href="/delete_repayment/{{ repayments.id }}" class="btn btn-danger">Delete</a> 
-    </div>
-    
+    <section class="content">
  
         <div class="container-fluid">
 
-            <p><b>to be completed........... and make it pretty..  </b></p>
-
-            <!-- Small boxes (Stat box) -->
-
-            <p>{{ repayments.customer_id.customer_name }}</p>
-
-            <P> {{ repayments.repayment_code }} </P> 
-            <P> Repayment Amount: R{{ repayments.repayment_amount}} </p>
-            <P> Actual Volume in tones: {{ repayments.actual_volume_tone}} </p>
             
-          
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-primary"><i class="fas fa-money-bill-wave"></i> {{ repayments.repayment_code }} - Disbursement Details</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                            <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                 
+                            <div class="col-12 col-md-4 col-lg-12 order-2 order-md-1">
+                                <div class="row">
+                                    <div class="col-3 col-sm-2">
+                                        <div class="info-box bg-light">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center text-muted">Disbursed Amount</span>
+                                                <span class="info-box-number text-center text-muted mb-0"> R{{ repayments.disbursement_id.disbursement_amount}} </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-3 col-sm-2">
+                                        <div class="info-box bg-light">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center text-muted">Total Base Volume Target</span>
+                                                <span class="info-box-number text-center text-muted mb-0">{{ repayments.disbursement_id.total_target}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-3 col-sm-2">
+                                        <div class="info-box bg-light">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center text-muted">Monthly <b>Base</b> Volume Target</span>
+                                                <span class="info-box-number text-center text-muted mb-0">{{ repayments.disbursement_id.monthly_target}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-3 col-sm-2">
+                                        <div class="info-box bg-light">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center text-muted">Monthly <b>Contract</b> Vol. Target</span>
+                                                <span class="info-box-number text-center text-muted mb-0">{{ repayments.disbursement_id.contract_monthly_target}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-3 col-sm-2">
+                                        <div class="info-box bg-light">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center text-muted"><b>Actual</b> Volume</span>
+                                                <span class="info-box-number text-center text-muted mb-0">{{ repayments.actual_volume_tone }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-3 col-sm-2">
+                                        <div class="info-box bg-light">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center text-muted">Repayment Amount</span>
+                                                <span class="info-box-number text-center text-muted mb-0">R{{ repayments.repayment_amount }}</span>
+                                            </div>
+                                        </div>
+                                    </div>                                    
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h4>Disbursement Details</h4>
+                                        <div class="post clearfix">
+                                            <div class="post">
+                                                <p class="text-sm">Client Name:
+                                                    <b class="d-block"> {{ repayments.customer_id.customer_name}}</b>
+                                                </p>
+                                                <p class="text-sm">Client Email:
+                                                    <b class="d-block"> {{ repayments.customer_id.email}}</b>
+                                                </p>
+                                                <p class="text-sm">Client phone:
+                                                    <b class="d-block"> {{ repayments.customer_id.phone}}</b>
+                                                </p>
+                                                <p class="text-sm">Loan Reason:
+                                                    <b class="d-block"> {{ repayments.disbursement_id.disbursement_reason}}</b>
+                                                </p>
+                                                <p class="text-sm">Expected/Contractual Monthly Repayment Amount:
+                                                    <b class="d-block"> R{{ repayments.disbursement_id.disbursement_monthly_repayment_amount}}</b>
+                                                </p>                                         
+                                            </div>
+                                        </div>    
+                                        <div class="post clearfix">                 
+                                            <p class="text-sm">Any Payment Comments:
+                                                <b class="d-block"> {{ repayments.comment}}</b>
+                                            </p>
+                                        </div>
+                                        <div class="post clearfix">                 
+                                            <p class="text-sm">Payment Date:
+                                                <b class="d-block"> {{ repayments.repayment_date}}</b>
+                                            </p>
+                                        </div>
 
+
+                                        <div class="post clearfix">            
+                                            <a href = "{% url 'manage_repayment' %}" class = "btn btn-secondary my-5"> Back </a>
+                                            <a href="/edit_repayment/{{ repayments.id}}" class="btn btn-success">Edit</a> 
+                                            <a href="/delete_repayment/{{ repayments.id }}" class="btn btn-danger">Delete</a> 
+                                        </div>
+                                    
+                                    </div>
+                                </div>
+                            </div>
+                           
+                    </div>
+                </div>
+                               
+         
         </div><!-- /.container-fluid -->
-      </section>
+    </section>
 
   {% endblock main_content %}

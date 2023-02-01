@@ -87,7 +87,11 @@
                 </a>
                 <a class="btn btn-app" href="{% url 'add_repayment' %}">
                     <span class="badge bg-success">{{ all_repayment_count }}</span>
-                    <i class="fas fa-arrow-down"></i> Add Repayment
+                    <i class="fas fa-coins"></i> Add <b>Loan</b> Repayment
+                </a>
+                <a class="btn btn-app" href="{% url 'add_volume' %}">
+                    <span class="badge bg-success">{{ all_repayment_count }}</span>
+                    <i class="fas fa-money-bill"></i> Add <b>Grant/Volume</b> Repayment
                 </a>
                 {% comment %} <a class="btn btn-primary" href="{% url 'add_repayment' %}" role="button">+ Add Repayment</a> <br/>&nbsp; {% endcomment %}
             </P>
@@ -95,182 +99,84 @@
             
             
             {% if messages %}
-                                <div class="form-group">
-                                <div class="col-12">
-                                    {% for message in messages %}
-                                    {% if message.tags == "error" %}
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% elif message.tags == "success" %}
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% endif %}
-                                    {% endfor %}
+                <div class="form-group">
+                    <div class="col-12">
+                        {% for message in messages %}
+                            {% if message.tags == "error" %}
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                                 </div>
+                            {% elif message.tags == "success" %}
+                                <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                                 </div>
-                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
 
 
                             
 
-                                <div class="row">
-                                    {% comment %} disbursement table {% endcomment %}
-                                    <div class="col-md-12">
-                                        <!-- general form elements -->
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h3 class="card-title">Report Filters</h3>
-                    
-                                                 
-                                            </div>
-                                            <!-- /.card-header -->
-                                            <div class="card-body table p-4">
-                                                <form method="GET" action=".">
-                                                   
-                                                    <div class="form-row">
-                                                        <div class="form-group col-6">
-                                                            <div class="input-group">
-
-                                                    
-                                                                <select id="customer_name_contains" class="form-control" name="customer_name_contains">
-                                                                    <option selected>Select Customer Name...</option>
-                                                                    {% for customer in customers %}
-                                                                        <option value="{{ customer.id }}">{{ customer.customer_name }}</option>
-                                                                    {% endfor %}
-                                                                </select>
-                                                            </div>   
-                                                        </div>  
-
-                                                        <div class="form-group col-md-3">
-                                                            <div class="input-group">
-                                                              
-                                                                <select id="province_list_contains" class="form-control" name="province_list_contains">
-                                                                    <option selected>Choose Province...</option>
-                                                                    {% for customer in customers %}
-                                                                        <option value="{{ customer.province }}">{{ customer.province }}</option>
-                                                                    {% endfor %}
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                        
-                                                        <div class="form-group col-3">
-                                                            <div class="input-group">
-                                                                <input class="form-control py-2 border-right-0 border" type="search" name="disbursement_code_contains" placeholder="Disbursement code contains.." />
-                                                                <span class="input-group-append">
-                                                                    <div class="input-group-text bg-transparent">
-                                                                        <i class="fa fa-search"></i>
-                                                                    </div>
-                                                                </span>
-                                                            </div>
-                                                        </div> 
-
-
-
-                                                    </div>        
-
-                                                    <div class="form-row">
-                                                        {% comment %} <div class="form-group col-6">
-                                                            <div class="input-group">
-                                                                <input class="form-control py-2 border-right-0 border" type="search" name="customer_name_contains" placeholder="Customer Name contains..." />
-                                                                <span class="input-group-append">
-                                                                    <div class="input-group-text bg-transparent">
-                                                                        <i class="fa fa-search"></i>
-                                                                    </div>
-                                                                </span>
-                                                            </div>
-                                                        </div>         {% endcomment %}
-                                   
-       
-                                                    </div>
-                                                    {% comment %} <div class="form-row">
-                                                        <div class="form-group col-12">
-                                                            <div class="input-group">
-                                                                <input class="form-control py-2 border-right-0 border" type="search" name="customer_or_disbursement" placeholder="Customer or Disbursement code..." />
-                                                                <span class="input-group-append">
-                                                                    <div class="input-group-text bg-transparent">
-                                                                        <i class="fa fa-search"></i>
-                                                                    </div>
-                                                                </span>
-                                                            </div>
-                                                        </div>        
-                                                    </div> {% endcomment %}
-                                                    <div class="form-row">
-                                                        <div class="form-group col-md-2 col-lg-2">
-                                                        <label for="viewCountMin">Minimum View Count</label>
-                                                        <input type="number" min=0 class="form-control" id="viewCountMin" placeholder="0" name="view_count_min">
-                                                        </div>
-                                                        <div class="form-group col-md-2 col-lg-2">
-                                                        <label for="viewCountMax">Maximum View Count</label>
-                                                        <input type="number" min=0 class="form-control" id="viewCountMax" placeholder="10000?" name="view_count_max">
-                                                        </div>
-                                                        <div class="form-group col-md-2 col-lg-2">
-                                                        <label for="publishDateMin">Repayment date minimum</label>
-                                                        <input type="date" class="form-control" id="publishDateMin" name="date_min">
-                                                        </div>
-                                                        <div class="form-group col-md-2 col-lg-2">
-                                                        <label for="publishDateMax">Repayment date maximum</label>
-                                                        <input type="date" class="form-control" id="publishDateMax" name="date_max">
-                                                        </div>
-                                                        
-                                                    </div>
-                                                    <div class="form-row">
-                                                        <div class="form-group">
-                                                            <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox" id="loanstick" name="loans_tick">
-                                                            <label class="form-check-label" for="loanstick">
-                                                                Loans   &nbsp &nbsp
-                                                            </label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox" id="grants_tick" name="grants_tick">
-                                                            <label class="form-check-label" for="grants_tick">
-                                                                Grants
-                                                            </label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <button type="submit" class="btn btn-primary">Search</button>
-                                                </form>
-
-
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                            
-
-
-
-
-
+   
 
 
 
             <div class="row">
-
                 <div class="col-md-3">
                     <!-- general form elements -->
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">Selection Summary</h4>
-
-              
+                            <h4 class="card-title">Select Customer</h4>
                         </div>
                         <!-- /.card-header -->
-                        <div class="card-body table-responsive p-0">
-                            Customer Selected: <br/>
-                            Date Range from: &nbsp &nbsp To:
+                        <div class="card-body table-responsive p-3">
+
+                            <form method="GET" action=".">                                               
+                                    <div class="form-group col-12">
+                                        <div class="input-group">
+                                            <select id="customer_name_contains" class="form-control" name="customer_name_contains">
+                                                <option selected>Select Customer Name...</option>
+                                                {% for customer in customers %}
+                                                    <option value="{{ customer.id }}">{{ customer.customer_name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>   
+                                    </div>  
+
+                                    {% comment %} <div class="form-group col-md-12">
+                                        <div class="input-group">
+                                          
+                                            <select id="province_list_contains" class="form-control" name="province_list_contains">
+                                                <option selected>Choose Province...</option>
+                                                {% for customer in customers %}
+                                                    <option value="{{ customer.province }}">{{ customer.province }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group col-12">
+                                        <div class="input-group">
+                                            <input class="form-control py-2 border-right-0 border" type="search" name="disbursement_code_contains" placeholder="Disbursement code contains.." />
+                                            <span class="input-group-append">
+                                                <div class="input-group-text bg-transparent">
+                                                    <i class="fa fa-search"></i>
+                                                </div>
+                                            </span>
+                                        </div>
+                                    </div>  {% endcomment %}
+                                
+                                <button type="submit" class="btn btn-primary">Search</button>
+                                <a href="{% url 'overview' %}" class="btn btn-secondary">Clear / Reset Selection</a>
+                            </form>
 
                             
                         </div>
@@ -280,24 +186,19 @@
 
                 </div>
 
-
-
-
-
-
                 {% comment %} disbursement table {% endcomment %}
                 <div class="col-md-9">
                     <!-- general form elements -->
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">Disbursement Details</h4>
+                            <h4 class="card-title">Disbursement  </h4> &nbsp&nbsp <small> client ID: {{ customer_name_contains }} selected</small>
 
                             <div class="card-tools">
                             <div class="input-group input-group-sm" style="width: 150px;">
                                 <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
 
                                 <div class="input-group-append">
-                                <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                    <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
                                 </div>
                             </div>
                             </div>
@@ -305,51 +206,41 @@
                         <!-- /.card-header -->
                         <div class="card-body table-responsive p-0">
                             <table class="table table-hover text-nowrap">
-                            <thead>
-                                <tr>
-                            
-                                    <th>ID</th>
-                                    <th>Customer Name</th>
-                                    <th>Disbrused Date</th>
-                                    <th>Disbrused Code</th>
-                                    <th>Disbrused type</th>
-                                    <th>Disbursed Amt</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                                <thead>
+                                    <tr>
+                                
+                                        <th>ID</th>
+                                        <th>Customer Name</th>
+                                        <th>Disbrused Date</th>
+                                        <th>Disbrused Code</th>
+                                        <th>Disbrused type</th>
+                                        <th>Disbursed Amt</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                     
-                                        {% for disbursement in disbursements %}
-                                        <tr>
-                     
+                                    {% for disbursement in disbursements %}
+                                        <tr>             
                                             <td>{{ disbursement.id }}</td>
                                             <td>{{ disbursement.customer_id.customer_name }}</td>
-            
                                             <td>{{ disbursement.disbursement_date }}</td>
-
                                             <td>{{ disbursement.disbursement_code }}</td>
-        
                                             <td>{{ disbursement.disbursement_type }}</td>
                                             <td>R{{ disbursement.disbursement_amount }}</td>                           
-            
                                             <td>
                                                 <a href="{% url 'detail_disbursement' disbursement.id %}" class="btn btn-primary">Details</a> 
                                                 <a href="{% url 'edit_disbursement' disbursement.id %}" class="btn btn-success">Edit</a> 
                                                 <a href="{% url 'delete_disbursement' disbursement.id %}" class="btn btn-danger">Delete</a>
                                             </td>
-
-                                        </tr>
-                                           
-
-                                        {% endfor %}
-                    
-                            </tbody>
+                                        </tr>                                
+                                    {% endfor %}                   
+                                </tbody>
                             </table>
                         </div>
                         <!-- /.card-body -->
-                        </div>
+                    </div>
                     <!-- /.card -->
-
                 </div>
 
                 {% comment %} repayments table {% endcomment %}
@@ -357,16 +248,16 @@
                     <!-- general form elements -->
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">Repayment Details</h4>
+                            <h4 class="card-title">Monthly <b>Loan</b> Repayments</h4> &nbsp&nbsp <small> client ID: {{ customer_name_contains }} selected</small>
 
                             <div class="card-tools">
-                            <div class="input-group input-group-sm" style="width: 150px;">
-                                <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+                                <div class="input-group input-group-sm" style="width: 150px;">
+                                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
 
-                                <div class="input-group-append">
-                                <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                    <div class="input-group-append">
+                                    <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                    </div>
                                 </div>
-                            </div>
                             </div>
                         </div>
                         <!-- /.card-header -->
@@ -378,8 +269,8 @@
                                     <th>Customer Name</th>
                                     <th>Disbursement Code</th>
                                     <th>Repayment Date</th>
-                               
-                                    <th>Repayment type</th>
+                                    <th>Mthly. Contrt Trgt.</th>
+                                    <th><b>Actual</b> Vol.</th>
                                     <th>Repayment Amt</th>
                                     <th>Action</th>
                                 </tr>
@@ -392,8 +283,8 @@
     
                                     <td>{{ repayment.disbursement_id.disbursement_code }}</td>
                                     <td>{{ repayment.repayment_date }}</td>
-                                                                                           
-                                    <td>{{ repayment.repayment_type }}</td>
+                                    <td>{{ repayment.disbursement_id.contract_monthly_target }} </td>                                                  
+                                    <td>{{ repayment.actual_volume_tone }}</td>
                                     <td>R{{ repayment.repayment_amount }}</td>                         
                                     <td>
                                         <a href="{% url 'detail_repayment' repayment.id %}" class="btn btn-primary">Details</a> 
@@ -413,9 +304,70 @@
                 </div>
 
 
+                <!--Grant / Volume Collections Detail Table -->
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Monthly <b>Volume / Grant</b> Allocations </h4> &nbsp&nbsp <small> client ID: {{ customer_name_contains }} selected</small>
 
+                            <div class="card-tools">
+                                <div class="input-group input-group-sm" style="width: 150px;">
+                                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
 
+                                    <div class="input-group-append">
+                                    <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Customer Name</th>
+                                    <th>Disbursement Code</th>
 
+                                    <th>Grant Amount</th>
+                                    <th>Reported Date</th>
+                                    <th><b>Target</b> Month Vol.</th>
+                                    <th><b>Actual</b> Month Vol.</th>
+                                    <th>Grant Amortized</th>
+                                    <th>Grant Impaired</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for grant in grants %}
+                                <tr>
+                                    <td>{{ grant.id }}</td>
+                                    <td>{{ grant.customer_id.customer_name }}</td>
+                                    <td>{{ grant.disbursement_id.disbursement_code }}</td>
+
+                                    <td>{{ grant.disbursement_id.disbursement_amount }}</td>
+                                    <td>{{ grant.volume_report_date }}</td>
+                                    <td>{{ grant.disbursement_id.contract_monthly_target }} </td>                                                  
+                                    <td>{{ grant.total_volume_kg }}</td>
+                                    <td>R{{ grant.amount_amortized }}</td>     
+                                    <td>R{{ grant.amount_impaired }}</td>                     
+                                    <td>
+                                        <a href="{% url 'detail_volume' grant.id %}" class="btn btn-primary">Details</a> 
+                                        <a href="{% url 'edit_volume' grant.id %}" class="btn btn-success">Edit</a> 
+                                        <a href="{% url 'delete_volume' grant.id %}" class="btn btn-danger">Delete</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                
+                            </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                        </div>
+                    <!-- /.card -->
+
+                </div>
 
             </div>
 

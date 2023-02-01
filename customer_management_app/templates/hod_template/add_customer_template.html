@@ -15,16 +15,176 @@
                 <div class="col-md-12">
                     <!-- general form elements -->
                     <div class="card card-primary">
-                    <div class="card-header">
-                        <h3 class="card-title">Add Customer</h3>
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-plus"></i> Add Customer</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        <form role="form" method="POST" action="{% url 'add_customer_save' %}" class="p-2">
+                            {% csrf_token %}
+
+                                    {% comment %} Display Messages {% endcomment %}
+                                    {% if messages %}
+                                    <div class="form-group">
+                                    <div class="col-12">
+                                        {% for message in messages %}
+                                        {% if message.tags == "error" %}
+                                            <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                            {{ message }}
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            </div>
+                                        {% elif message.tags == "success" %}
+                                            <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                            {{ message }}
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            </div>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    </div>
+                                    {% endif %}
+                                <div class="card-body">    
+                                    <div class="form-group border">
+                                        <div class="form-row">
+                                            <div class="form-group col-8 p-3">
+                                                <label>Customer Name</label>
+                                                <input type="text" class="form-control" name="customer_name" placeholder="Customer Name..." required >
+                                            </div>
+                                            <div class="form-group col-4 p-3">
+                                                <label>Customer Type</label>
+                                                <select class="form-control" name="customer_type">                                        
+                                                    <option value="Collector">Collector</option>
+                                                    <option value="Recycler">Recycler</option>
+                                                    <option value="Quality">Quality</option>
+                                                </select>    
+                                            </div>
+                                        </div>
+
+                                        <div class="form-row">
+                                            <div class="form-group col-3 p-3">
+                                                <label>address</label>
+                                                <input type="text" class="form-control" name="address" placeholder="Customer Address" required >
+                             
+                                            </div>
+                                            <div class="form-group col-3 p-3">
+                                                <label>city</label>
+                                                <input type="text" class="form-control" name="city" placeholder="Customer City" required >
+                                            </div>
+                                            <div class="form-group col-3 p-3">
+                                                <label>Province</label>
+                                                <select class="form-control" name="province" required>   
+                                                    <option value="Eastern_Cape">Eastern Cape</option>
+                                                    <option value="Free_State">Free State</option>                                     
+                                                    <option value="Gauteng">Gauteng</option>
+                                                    <option value="KZN">KZN</option>
+                                                    <option value="Limpopo">Limpopo</option>
+                                                    <option value="Mpumalanga">Mpumalanga</option>
+                                                    <option value="Northern_Cape">Northern Cape</option>
+                                                    <option value="North_West">North West</option>                                                                                                                                
+                                                    <option value="Western_Cape">Western Cape</option>                    
+                                                </select>   
+                                            </div>
+                                            <div class="form-group col-3 p-3">
+                                                <label>Customer Status</label>
+                                                <select class="form-control" name="customer_status" required>   
+                                                    <option value="Active">Active</option>
+                                                    <option value="Cancelled">Cancelled</option>                                     
+                                                    <option value="Contract_Complete">Contract Complete</option>
+                                                    <option value="Business_Closed">Business Closed</option>
+                                                    <option value="Other">Other</option>                  
+                                                </select>  
+                                            </div>
+        
+                                        </div>
+
+                                        <div class="form-row">
+                                            <div class="form-group col-3 p-3">
+                                                <label>BEE Level</label>
+                                                <select class="form-control" name="bee_level" required>   
+                                                    <option value="Level_1">Level 1</option>
+                                                    <option value="Level_2">Level 2</option>                                     
+                                                    <option value="Level_3">Level 3</option>
+                                                    <option value="Level_4">Level 4</option>
+                                                    <option value="Level_5">Level 5</option>   
+                                                    <option value="Level_6">Level 6</option>  
+                                                    <option value="Level_7">Level 7</option>  
+                                                    <option value="Level_8">Level 8</option>  
+                                                    <option value="Non_Complieant">Non Compliant</option>                 
+                                                </select>  
+                                            </div>
+
+
+                                            <div class="form-group col-3 p-3">
+                                                <label>Contact Person</label>
+                                                <input type="text" class="form-control" name="contact_person" placeholder="Contact Person Name.." required >
+                                            </div>
+                                            <div class="form-group col-3 p-3">
+                                                <label>Phone</label>
+                                                <input type="text" class="form-control" name="phone" placeholder="Phone" required >
+                                            </div>
+                                            <div class="form-group col-3 p-3">
+                                                <label>Email <small>(contact person's email)</small></label>
+                                                <input type="email" class="form-control" name="email" placeholder="Email" required >
+                                            </div>
+
+                                        </div>       
+                                    </div> 
+
+                                    <div class="form-group border p-2"> User Profile
+                                        <div class="form-row">
+                                            <div class="form-group col-3 p-3">
+                                                <label>First Name</label>
+                                                <input type="text" class="form-control" name="first_name" placeholder="First Name" required >
+                                            </div>
+                                            <div class="form-group col-3 p-3">
+                                                <label>Last Name</label>
+                                                <input type="text" class="form-control" name="last_name" placeholder="Last Name" required >
+                                            </div>
+                                            <div class="form-group col-3 p-3">
+                                                <label>User Name</label>
+                                                <input type="text" class="form-control" name="username" placeholder="e.g. yourname_hod.hod@polyco.co.za" required >
+                                            </div>
+                                            <div class="form-group col-3 p-3">
+                                                <label>Password</label>
+                                                <input type="password" class="form-control" name="password" placeholder="password" required >
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group border p-2"> 
+                                        <div class="form-row">
+                                            <div class="form-group col-9 p-3">
+                                                <label>Any comment</label>
+                                                <input type="text" class="form-control" name="comment" placeholder="Put any remark or 'No comment' if no comment" required >
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-3 p-3">
+                                                <label>Attache Profile Picture, logo, or any document</label>
+                                                <p><i>Attache any document if needed.</i></p>
+                                                <input type="file" class="form-control" name="profile_pic" >
+                                            </div>
+                                        </div>        
+
+
+                                        </div>
+                                    </div>
+                                </dvi>        
+                                <!-- /.card-body -->
+
+                                <div class="card-footer">
+
+                                    <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Save Customer</button>
+                                    {% comment %} {% url 'add_customer_save' as action_path %} {% endcomment %}
+                                    {% comment %} {% include 'hod_template/form_template.html' with messages=messages form=form action_path=action_path button_text="Add Customer" %} {% endcomment %}
+                                    <a href="{% url 'manage_customer' %}" class="btn btn-secondary"> Cancel</a>
+                                </div>
+                        </form>
                     </div>
-                    <!-- /.card-header -->
-                    <!-- form start -->
-                    {% url 'add_customer_save' as action_path %}
-                    {% include 'hod_template/form_template.html' with messages=messages form=form action_path=action_path button_text="Add Customer" %}
-                    <a href="{% url 'manage_customer' %}" class="btn btn-secondary col-2">Cancel</a>
-                    </div>
-                    <!-- /.card -->
+                        <!-- /.card -->
 
                 </div>
             </div>

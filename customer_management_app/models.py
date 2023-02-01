@@ -80,7 +80,8 @@ CUSTOMER_STATUS_DATA = (('Active', "Active"), ('Cancelled', "Cancelled"), ('Cont
 
 class Customers(models.Model):
     id = models.AutoField(primary_key=True)
-    # models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    # user = models.OneToOneField(
+    #     CustomUser, null=True, on_delete=models.CASCADE)
     admin = models.OneToOneField(
         CustomUser, on_delete=models.CASCADE)
     customer_name = models.CharField(max_length=255)
@@ -138,11 +139,18 @@ class Disbursements(models.Model):
         choices=DISBURSEMENT_ALLOTMENT_DATA, max_length=64)
     disbursement_interest_rate = models.DecimalField(
         max_digits=10, decimal_places=2)
-    repayment_term = models.IntegerField(blank=True)
+    repayment_term = models.IntegerField(
+        blank=True)                # this is number of months
     total_target = models.DecimalField(
-        max_digits=10, decimal_places=2, blank=False, default=0)
+        max_digits=10, decimal_places=2, blank=False, default=0)  # this is total base target
     monthly_target = models.DecimalField(
-        max_digits=12, decimal_places=2, blank=False, default=0)
+        max_digits=12, decimal_places=2, blank=False, default=0)  # this is monthly base target
+
+    contract_target = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=False, default=0)
+    contract_monthly_target = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=False, default=0)
+
     target_measurement_unit = models.CharField(max_length=64, default='Tone')
     customer_id = models.ForeignKey(
         Customers, on_delete=models.DO_NOTHING, default=1)
@@ -159,7 +167,7 @@ PAYMENT_TYPE_DATA = (('Monthly_Repayment', "Monthly Repayment"),
 class Repayments(models.Model):
     id = models.AutoField(primary_key=True)
     repayment_code = models.CharField(max_length=255, default=1)
-    repayment_type = models.CharField(choices=PAYMENT_TYPE_DATA, max_length=64)
+    # repayment_type = models.CharField(choices=PAYMENT_TYPE_DATA, max_length=64)
     repayment_description = models.CharField(
         max_length=255, null=True, blank=True)
     repayment_amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -176,27 +184,6 @@ class Repayments(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
     # payment_code = models.CharField(max_length=255, null=True, blank=True)
-
-    # payment_description = models.CharField(
-    #     max_length=255, null=True, blank=True)
-    # payment_reason = models.CharField(
-    #     max_length=255, null=True, blank=True)
-    # payment_type = models.CharField(
-    #     choices=PAYMENT_TYPE_DATA, max_length=64)
-    # payment_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    # payment_date = models.DateField()
-    # current_balance = models.DecimalField(
-    #     max_digits=10, decimal_places=2, null=True)
-    # actual_tonnage = models.DecimalField(
-    #     decimal_places=2, max_digits=10, default=0)
-    # payment_documentation = models.FileField(null=True, blank=True)
-    # disbursement_id = models.ForeignKey(
-    #     Disbursements, on_delete=models.DO_NOTHING, default=1)
-    # customer_id = models.ForeignKey(
-    #     Customers, on_delete=models.DO_NOTHING, default=1)
-    # created_at = models.DateTimeField(auto_now_add=True)
-    # updated_at = models.DateTimeField(auto_now=True)
-    # objects = models.Manager()
 
 
 MONTH_LIST_DATA = (('January', "January"), ('February', "February"), ('March', "March"),  ('April', "April"),
@@ -248,7 +235,7 @@ class GrantManagement(models.Model):
     disbursement_id = models.ForeignKey(
         Disbursements, on_delete=models.DO_NOTHING)
 
-    monthly_volume_report_id = models.IntegerField(blank=True)
+    monthly_volume_report_id = models.CharField(max_length=255, blank=True)
     volume_report_month = models.CharField(
         choices=MONTH_LIST_DATA, max_length=64)
     volume_report_year = models.CharField(

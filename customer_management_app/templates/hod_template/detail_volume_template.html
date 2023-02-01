@@ -1,0 +1,235 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+    <b>Grant Volume Detail </b>| Grant Volume Report code: {{grant.monthly_volume_report_id}}
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+ 
+
+<section class="content">
+ 
+    <div class="card">
+        <div class="card-header">
+            <h3 class="text-primary"><i class="fas fa-money-bill"></i> {{ grant.customer_id.customer_name }} - Disbursement Details</h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                <i class="fas fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="post clearfix">  
+               
+                <div class="row">
+                    <div class="col-3 col-sm-4">
+                        <div class="info-box bg-light">
+                            <div class="info-box-content">
+                                
+                                <span class="info-box-text text-left text-muted">Client Name: <b> {{ grant.customer_id.customer_name }}</b></span>
+                                
+                                <span class="info-box-text text-left text-muted"> Email: <b> {{ grant.customer_id.email }}</b> </span>
+                                
+                                <span class="info-box-text text-left text-muted"> Client Phone: <b> {{ grant.customer_id.email }}</b> </span>
+
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="col-3 col-sm-4">
+                        <div class="info-box bg-light">
+                            <div class="info-box-content">
+                                
+                                <span class="info-box-text text-left text-muted">Total Grant Amount: <b> R {{ grant.disbursement_id.disbursement_amount}}</b></span>
+                                
+                                <span class="info-box-text text-left text-muted"> Loan Reason: <b> {{ grant.disbursement_id.disbursement_reason}}</b> </span>
+                                
+                                <span class="info-box-text text-left text-muted"> Expected/Contractual Monthly Repayment Amount: <b> R {{ grant.disbursement_id.disbursement_monthly_repayment_amount}}</b> </span>
+
+                            </div>
+                        </div>
+                    </div> 
+                </div>            
+            </div>   
+
+
+
+            <div class="col-12 col-md-4 col-lg-12 order-2 order-md-1">
+                <div class="row">
+                    <div class="col-3 col-sm-2">
+                        <div class="info-box bg-light">
+                            <div class="info-box-content">
+                                <span class="info-box-text text-center text-muted">Total Base Volume Target</span>
+                                <span class="info-box-number text-center text-muted mb-0">{{ grant.disbursement_id.total_target}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3 col-sm-2">
+                        <div class="info-box bg-light">
+                            <div class="info-box-content">
+                                <span class="info-box-text text-center text-muted">Monthly <b>Base</b> Volume Target</span>
+                                <span class="info-box-number text-center text-muted mb-0">{{ grant.disbursement_id.monthly_target}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3 col-sm-2">
+                        <div class="info-box bg-light">
+                            <div class="info-box-content">
+                                <span class="info-box-text text-center text-muted">Monthly <b>Contract</b> Vol. Target</span>
+                                <span class="info-box-number text-center text-muted mb-0">{{ grant.disbursement_id.contract_monthly_target}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3 col-sm-2">
+                        <div class="info-box bg-light">
+                            <div class="info-box-content">
+                                <span class="info-box-text text-center text-muted"><b>Actual</b> Volume Captured</span>
+                                <span class="info-box-number text-center text-muted mb-0">{{ grant.total_volume_kg }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3 col-sm-2">
+                        <div class="info-box bg-light">
+                            <div class="info-box-content">
+                                <span class="info-box-text text-center text-green">Amount Amortized</span>
+                                <span class="info-box-number text-center text-green mb-0">R{{ grant.amount_amortized }}</span>
+                            </div>
+                        </div>
+                    </div>   
+                    <div class="col-3 col-sm-2">
+                        <div class="info-box bg-light">
+                            <div class="info-box-content">
+                                <span class="info-box-text text-center text-red">Amount Impaired</span>
+                                <span class="info-box-number text-center text-red mb-0">R{{ grant.amount_impaired }}</span>
+                            </div>
+                        </div>
+                    </div>                                  
+                </div>
+            </div>  
+            
+            
+                <div class="post clearfix">
+                    <h4>Volume Details</h4>
+                    
+                         
+                        
+                    </div>    
+                    <div class="post clearfix">                 
+                        <div class="col-12 col-md-4 col-lg-12 order-2 order-md-1">
+                            <div class="row">
+                                <div class="col-3 col-sm-2">
+                                    <div class="info-box bg-light">
+                                        <div class="info-box-content">
+                                            <span class="info-box-text text-center text-muted">HD KG</span>
+                                            <span class="info-box-number text-center text-muted mb-0">{{ grant.hd_kg}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3 col-sm-2">
+                                    <div class="info-box bg-light">
+                                        <div class="info-box-content">
+                                            <span class="info-box-text text-center text-muted">LD KG</span>
+                                            <span class="info-box-number text-center text-muted mb-0">{{ grant.ld_kg}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3 col-sm-2">
+                                    <div class="info-box bg-light">
+                                        <div class="info-box-content">
+                                            <span class="info-box-text text-center text-muted">LLD KG</span>
+                                            <span class="info-box-number text-center text-muted mb-0">{{ grant.lld_kg }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3 col-sm-2">
+                                    <div class="info-box bg-light">
+                                        <div class="info-box-content">
+                                            <span class="info-box-text text-center text-muted">PP KG</span>
+                                            <span class="info-box-number text-center text-muted mb-0">{{ grant.pp_kg }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3 col-sm-2">
+                                    <div class="info-box bg-light">
+                                        <div class="info-box-content">
+                                            <span class="info-box-text text-center text-muted">PVC KG</span>
+                                            <span class="info-box-number text-center text-muted mb-0">R{{ grant.pvc_kg }}</span>
+                                        </div>
+                                    </div>
+                                </div>   
+                                <div class="col-3 col-sm-2">
+                                    <div class="info-box bg-light">
+                                        <div class="info-box-content">
+                                            <span class="info-box-text text-center text-muted">PS KG</span>
+                                            <span class="info-box-number text-center text-muted mb-0">R{{ grant.ps_kg }}</span>
+                                        </div>
+                                    </div>
+                                </div>  
+                                <div class="col-3 col-sm-2">
+                                    <div class="info-box bg-light">
+                                        <div class="info-box-content">
+                                            <span class="info-box-text text-center text-muted">PET KG</span>
+                                            <span class="info-box-number text-center text-muted mb-0">R{{ grant.pet_kg }}</span>
+                                        </div>
+                                    </div>
+                                </div>    
+                                <div class="col-3 col-sm-2">
+                                    <div class="info-box bg-light">
+                                        <div class="info-box-content">
+                                            <span class="info-box-text text-center text-muted">Other KG</span>
+                                            <span class="info-box-number text-center text-muted mb-0">R{{ grant.other_kg }}</span>
+                                        </div>
+                                    </div>
+                                </div>       
+                                <div class="col-3 col-sm-6">
+                                    <div class="info-box bg-yellow">
+                                        <div class="info-box-content">
+                                            <span class="info-box-text text-center text-muted"><b>Total Volume KG</b></span>
+                                            <span class="info-box-number text-center text-muted mb-0"><b>{{ grant.total_volume_kg }}</b></span>
+                                        </div>
+                                    </div>
+                                </div>            
+                                <div class="col-3 col-sm-2">
+                                    <div class="info-box bg-light">
+                                        <div class="info-box-content">
+                                            <span class="info-box-text text-center text-blue"><b>% </b> to Contract Target</span>
+                                            <span class="info-box-number text-center text-blue mb-0"><b>{{ percentage_actual_volume_to_target }} %</b></span>
+                                        </div>
+                                    </div>
+                                </div>              
+                            </div>
+                        </div>  
+                    </div>
+
+                    <div class="post clearfix">                 
+                        <p class="text-sm">Report Year and Month:
+                            <b class="d-block"> {{ grant.volume_report_year}} - {{ grant.volume_report_month}}</b>
+                        </p>
+                        <p class="text-sm">Volume Report Date:
+                            <b class="d-block"> {{ grant.volume_report_date}}</b>
+                        </p>
+                    </div>
+
+                    <div>           
+                        <a href = "{% url 'manage_grant' %}" class = "btn btn-secondary my-5"> Back </a>
+                        <a href="/edit_volume/{{ grant.id}}" class="btn btn-success">Edit</a> 
+                        <a href="/delete_volume/{{ grant.id }}" class="btn btn-danger">Delete</a> 
+                    </div>
+                
+                
+            
+
+        </div>
+
+    </div>    
+
+
+
+      </section>
+
+  {% endblock main_content %}

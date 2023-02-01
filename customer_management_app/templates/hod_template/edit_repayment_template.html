@@ -80,14 +80,14 @@
                                     <label>Repayment Code</label>
                                     <input type="text" class="form-control" name="repayment_code" value="{{ repayments.repayment_code }}" required >
                                 </div>
-                                <div class="form-group col-2">
+                                {% comment %} <div class="form-group col-2">
                                     <label>Repayment Type</label>
                                     <select class="form-control" name="repayment_type">     
                                             <option value="{{ repayments.repayment_type }}" {% if repayments.id == repayment_id %} selected {% endif %}>{{ repayments.repayment_type }}</option>                                   
                                             <option value="Amortization">Amortization</option>
                                             <option value="Impairment">Impairment</option>
                                     </select>    
-                                </div>
+                                </div> {% endcomment %}
                                 <div class="form-group">
                                     <label>Repayment Description</label>
                                     <input type="text" class="form-control" name="repayment_description" value="{{ repayments.repayment_description }}" >

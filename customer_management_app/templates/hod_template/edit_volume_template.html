@@ -1,0 +1,226 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+    Edit Grant Volume Report |  Volume Report code: {{grant.monthly_volume_report_id}} 
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Edit Grant - Volume Report</h3>
+                    </div>
+                    <!-- /.card-header -->
+                     <!-- form start -->
+                     
+
+                     
+                        <form role="form" method="POST" action="{% url 'edit_volume_save' %}">
+
+                            {% csrf_token %}
+
+                            
+                                    {% comment %} Display Messages {% endcomment %}
+                                    {% if messages %}
+                                    <div class="form-group">
+                                    <div class="col-12">
+                                        {% for message in messages %}
+                                        {% if message.tags == "error" %}
+                                            <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                            {{ message }}
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            </div>
+                                        {% elif message.tags == "success" %}
+                                            <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                            {{ message }}
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            </div>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    </div>
+                                    {% endif %}
+                                
+                            <div class="card-body">
+                
+            
+                                <div class="form-group border">  
+                                    <div class="form-row">
+                                        <div class="form-group col-5 p-4">
+                                            <label>Select Customer </label> <br> <br>                        
+                                            <select class="form-control" name="customer_id"> 
+                                                {% for cust in customer %}                                                                                          
+                                                    <option value="{{ cust.id }}" {% if cust.id == grant.customer_id.id %} selected {% endif %}>{{ cust.customer_name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+    
+                                        <div class="form-group col-4 p-4">
+                                            <label>Disbursement Code <br> <small>Use the disbursement code generated when this grant was given</small></label>
+                                            <select class="form-control" name="disbursement_id"> 
+                                                {% for disb in disbursement %}                                                                                          
+                                                    <option value="{{ disb.id }}" {% if disb.id == grant.disbursement_id.id %} selected {% endif %}>{{ disb.disbursement_code }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-3 p-4">
+                                            <label>Volume Report Reference ID: </label> <br> <br>                        
+                                            <input type="text" class="form-control" name="monthly_volume_report_id" value="{{ grant.monthly_volume_report_id }}" required >
+                                        </div>
+        
+                                    </div>
+                                </div>
+    
+                                <div class="form-group border">
+                                    <div class="form-row">
+                                            <div class="form-group col-4 p-4">
+                                                <label>Volume Capture Date </label>
+                                                <input type="date" class="form-control" name="volume_report_date" value="{{ grant.volume_report_date|date:'Y-m-d' }}">
+                                            </div>
+                                            <div class="form-group col-4 p-4">
+                                                <label for="month">Reporting Month</label><br>                                           
+                                                {% comment %} <input type="month"  class="form-control"  name="volume_report_month" required> {% endcomment %}
+                                                <select class="form-control" name="volume_report_month">   
+                                                    <option value="{{ grant.volume_report_month }}" {% if grant.id == volume_id %} selected {% endif %}>{{ grant.volume_report_month }}</option>                                                                        
+                                                    <option value="January">January</option>
+                                                    <option value="February">February</option>
+                                                    <option value="March">March</option>
+                                                    <option value="April">April</option>
+                                                    <option value="May">May</option>
+                                                    <option value="June">June</option>
+                                                    <option value="July">July</option>
+                                                    <option value="August">August</option>
+                                                    <option value="September">September</option>
+                                                    <option value="October">October</option>
+                                                    <option value="November">November</option>
+                                                    <option value="December">December</option>                                              
+                                                </select>                                                
+                                            </div>
+                                            <div class="form-group col-4 p-4">
+                                                <label for="year">Reporting Year</label>
+                                                {% comment %} <input type="years"  class="form-control"  name="volume_report_year" required> {% endcomment %}
+                                                <select class="form-control" name="volume_report_year">           
+                                                    <option value="{{ grant.volume_report_year }}" {% if grant.id == volume_id %} selected {% endif %}>{{ grant.volume_report_year }}</option>                                
+                                                    <option value="2014">2014</option>
+                                                    <option value="2015">2015</option>
+                                                    <option value="2016">2016</option>
+                                                    <option value="2017">2017</option>
+                                                    <option value="2018">2018</option>
+                                                    <option value="2019">2019</option>
+                                                    <option value="2020">2020</option>
+                                                    <option value="2021">2021</option>
+                                                    <option value="2022">2022</option>
+                                                    <option value="2023">2023</option>
+                                                    <option value="2024">2024</option>
+                                                    <option value="2025">2025</option>
+                                                    <option value="2026">2026</option>
+                                                    <option value="2027">2027</option>
+                                                    <option value="2028">2028</option>
+                                                    <option value="2029">2029</option>
+                                                    <option value="2030">2030</option>
+                                                </select>                                    
+                                            </div>
+                                    </div>
+                                </div>        
+    
+                                <div class="form-group border">
+                        
+                                    <div class="form-row">
+    
+                                        <div class="form-group col-3 p-4">
+                                            <label>HD (KG)</label>
+                                            <input type="number" class="form-control" name="hd_kg" placeholder="HD in Kilograms" value="{{grant.hd_kg}}" required  step="0.01">
+                                        </div>
+    
+                                        <div class="form-group col-3 p-4">
+                                            <label>LD (KG)</label>
+                                            <input type="number" class="form-control" name="ld_kg" placeholder="LD in Kilograms"  value="{{grant.ld_kg}}" required  step="0.01">
+                                        </div>
+                                        <div class="form-group col-3 p-4">
+                                            <label>LLD (KG)</label>
+                                            <input type="number" class="form-control" name="lld_kg" placeholder="LLD in Kilograms"  value="{{grant.lld_kg}}" required  step="0.01">
+                                        </div>
+                                        <div class="form-group col-3 p-4">
+                                            <label>PP (KG)</label>
+                                            <input type="number" class="form-control" name="pp_kg" placeholder="PP in Kilograms"  value="{{grant.pp_kg}}" required  step="0.01">
+                                        </div>
+    
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-3 p-4">
+                                            <label>PVC (KG)</label>
+                                            <input type="number" class="form-control" name="pvc_kg" placeholder="PVC in Kilograms" value="{{grant.pvc_kg}}" required  step="0.01">
+                                        </div>
+    
+                                        <div class="form-group col-3 p-4">
+                                            <label>PS (KG)</label>
+                                            <input type="number" class="form-control" name="ps_kg" placeholder="PS in Kilograms" value="{{grant.ps_kg}}" required  step="0.01">
+                                        </div>
+                                        <div class="form-group col-3 p-4">
+                                            <label>PET (KG)</label>
+                                            <input type="number" class="form-control" name="pet_kg" placeholder="PET in Kilograms" value="{{grant.pet_kg}}" required  step="0.01">
+                                        </div>
+                                        <div class="form-group col-3 p-4">
+                                            <label>Other (KG) </label>
+                                            <input type="number" class="form-control" name="other_kg" placeholder="Other in Kilograms" value="{{grant.other_kg}}" required  step="0.01">
+                                        </div>
+                                        
+                                    </div>
+    
+                                    {% comment %} <div class="form-row">
+                                        <div class="form-group col-12 p-4">
+                                            <label>Total Volume (KG) </label>
+                                            <input type="number" class="form-control" name="total_volume_kg" placeholder="Total Volume in Kilograms" value="{{grant.total_volume_kg}}" required  step="0.01">
+                                        </div>
+                                    </div> {% endcomment %}
+    
+                                </div>
+    
+            
+                                {% comment %} <div class="form-group border">                                          
+                                    <div class="form-row">  
+    
+                                        <div class="form-group col-6 p-4">
+                                            <label>Amount Amortized</label> <small>Rands</small>
+                                            <input type="number" class="form-control" name="amount_amortized" placeholder="0.00" value="{{grant.amount_amortized}}" required step="0.01">
+                                        </div>                                
+                                        <div class="form-group col-6 p-4">
+                                            <label>Amount Impaired</label> <small>Rands</small>
+                                            <input type="number" class="form-control" name="amount_impaired" placeholder="0.00" value="{{grant.amount_impaired}}" required step="0.01">
+                                        </div>                                                                                       
+                                    </div>
+                                </div> {% endcomment %}
+    
+    
+                            </div>
+                       
+                            <div class="card-footer">
+
+                                <input type="hidden" class="form-control" name="volume_id" value="{{ grant.id }}">
+                                <button type="submit" class="btn btn-primary">Update Volume</button>
+                                <a href="{% url 'manage_grant' %}" class="btn btn-secondary">Cancel</a>
+                            </div>
+                        </form>
+
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+  {% endblock main_content %}

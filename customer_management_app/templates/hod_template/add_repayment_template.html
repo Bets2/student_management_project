@@ -63,7 +63,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Select Disbursement Code: </label>
+                                <label>Select Disbursement Code: </label><br>
                                 <p><small>All payments need to be allocated to a particular disbursement code</small></p>
                           
                                 <select class="form-control" name="disbursement_id"> 
@@ -77,13 +77,13 @@
                                 <label>Repayment Code</label>
                                 <input type="text" class="form-control" name="repayment_code" placeholder="Enter Repayment Code" required >
                             </div>
-                            <div class="form-group col-2">
+                            {% comment %} <div class="form-group col-2">
                                 <label>Repayment Type</label>
                                 <select class="form-control" name="repayment_type">                                        
                                         <option value="Amortization">Amortization</option>
                                         <option value="Impairment">Impairment</option>
                                 </select>    
-                            </div>
+                            </div> {% endcomment %}
                             <div class="form-group">
                                 <label>Repayment Description</label>
                                 <input type="text" class="form-control" name="repayment_description" placeholder="Enter Description">

@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Manage Repayments
+    Grant Amortization Schedule & Volume Capture
 {% endblock page_title %}
 
 {% block main_content %}
@@ -31,71 +31,69 @@
                                     </div>  
     
                                
-                                <button type="submit" class="btn btn-secondary"> <i class="fas fa-search"></i> Search</button>
+                                <button type="submit" class="btn btn-secondary"><i class="fas fa-search"></i> Search</button>
                             </form>
             
                             </div>
                             <div class="icon">
                                     <i class="ion ion-stats-bars"></i>
                             </div>
-                            <a href="{% url 'manage_repayment' %}" class="small-box-footer"><b>Clear Search (All Customers) </b>     <i class="fas fa-arrow-circle-right"></i></a>
+                            <a href="{% url 'manage_grant' %}" class="small-box-footer"><b>Clear Search (All Customers) </b>     <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     
                 </div>    <!-- ./col -->
 
-
-
                 <div class="col-lg-3 col-6">
                 <!-- small box -->
-                <div class="small-box bg-success">
-                    <div class="inner">
-                    <h4>R{{ total_repayment_amount }}</h4> 
+                    <div class="small-box bg-success">
+                        <div class="inner">
+                            <h4>{{ total_volume_actual }}</h4> 
 
-                    <p>Total Repayments </p>
+                            <p>Total Volume Actual (Tones) </p>
 
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-stats-bars"></i>
+                        </div>
+                        <a href="{% url 'manage_grant' %}" class="small-box-footer"><b>Grants</b>     <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
-                    <div class="icon">
-                    <i class="ion ion-stats-bars"></i>
-                    </div>
-                    <a href="{% url 'manage_repayment' %}" class="small-box-footer"><b>Repayments</b>     <i class="fas fa-arrow-circle-right"></i></a>
-                </div>
                 </div>
                 <div class="col-lg-3 col-6">
                     <!-- small box -->
                     <div class="small-box bg-success">
                         <div class="inner">
-                        <h4>R{{ total_repayment_loan_amount }}</h4> 
+                        <h4>R{{ total_amount_amortized }}</h4> 
         
-                        <p>Total Loan Repayments </p>
+                        <p>Total Amount Amortized (R) </p>
         
                         </div>
                         <div class="icon">
                         <i class="ion ion-stats-bars"></i>
                         </div>
-                        <a href="{% url 'manage_repayment' %}" class="small-box-footer"><b>Loans Repayments</b>     <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="{% url 'manage_grant' %}" class="small-box-footer"><b>Grants Amortized</b>     <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                     </div>
-   
                     <div class="col-lg-3 col-6">
                         <!-- small box -->
-                        <div class="small-box bg-warning">
+                        <div class="small-box bg-danger">
                             <div class="inner">
-                            <h4>R{{ total_fund_balance }}</h4> 
+                            <h4>R{{ total_amount_impaired }}</h4> 
             
-                            <p> Fund Balance:  {{ percentage_fund_balance|floatformat:4 }}% </p>
+                            <p> Total Amount Impaired (R) </p>
             
                             </div>
                             <div class="icon">
                             <i class="ion ion-stats-bars"></i>
                             </div>
-                            <a href="{% url 'manage_repayment' %}" class="small-box-footer"><b>Fund Balance</b>  <i class="fas fa-arrow-circle-right"></i></a>
+                            <a href="{% url 'manage_grant' %}" class="small-box-footer"><b>Grant Repayments</b>     <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
+                
             </div>    <!-- ./col -->
 
 
 
-            <p><a class="btn btn-success" href="{% url 'add_repayment' %}" role="button"><i class="fas fa-plus"></i>  Add Repayment</a> <br/>&nbsp;</p>
+            <p><a class="btn btn-success" href="{% url 'add_volume' %}" role="button"><i class="fas fa-plus"></i>  Capture New Volume</a> <br/>&nbsp;</p>
             
             {% if messages %}
                                 <div class="form-group">
@@ -127,7 +125,7 @@
                     <!-- general form elements -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Repayment Details</h3>
+                            <h3 class="card-title">Grant Amortization Schedule / Volume Details</h3> &nbsp &nbsp<small>{{customer_name_contains}} Id Filtered</small>
 
                             <div class="card-tools">
                             <div class="input-group input-group-sm" style="width: 150px;">
@@ -147,32 +145,40 @@
                                     <th>ID</th>
                                     <th>Customer Name</th>
     
-                                    <th>Repayment Code</th>                              
-                                    <th>Repayment Date</th>
-                                    <th>Amount</th>
-                                    <th>Loan/Grant Amt</th>
-                                    <th>Actual Volume</th>
-                                    <th>Target Monthly Vol</th>
+                                    <th>Disb. Code</th>
+                                    <th>Grant Amount</th>
+                                    <th>Report Month-Year</th>
+
+                                    <th>Vol. Mnthly Target</th>
+                                    <th>Vol. Mnth Actuals</th>
+                                    
+                                    <th>Monthly Amt.</th>
+                                    <th>Grant Amortized </th>
+                                    <th>Grant Impaired</th>
+                                    
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for repayment in repayments %}
+                                {% for grant in grants %}
                                 <tr>
-                                    <td>{{ repayment.id }}</td>
-                                    <td>{{ repayment.customer_id.customer_name }}</td>
-    
-                                    <td>{{ repayment.repayment_code }}</td>                    
-                                    <td>{{ repayment.repayment_date }}</td>
-                                    <td>R{{ repayment.repayment_amount }}</td>
-                                    <td>R{{ repayment.disbursement_id.disbursement_amount }}</td>
-                                    <td>{{ repayment.actual_volume_tone }} tones</td>
-                                    <td>{{ repayment.disbursement_id.monthly_target }} tones</td>                            
+                                    <td>{{ grant.id }}</td>
+                                    <td>{{ grant.customer_id.customer_name }}</td>
+                                    <td>{{ grant.disbursement_id.disbursement_code }}</td>
+                                    <td>R{{ grant.disbursement_id.disbursement_amount }}</td>
+                                    <td>{{ grant.volume_report_month }} - {{ grant.volume_report_year }} </td>
+                                   
+                                    <td>{{ grant.disbursement_id.contract_monthly_target }}</td>
+                                    <td>{{ grant.total_volume_kg }}</td>
+                                    
+                                    <td>R{{ grant.disbursement_id.disbursement_monthly_repayment_amount }}</td>
+                                    <td><span class="info-box-text text-center text-green">R{{ grant.amount_amortized}}</span></td> 
+                                    <td><span class="info-box-text text-center text-red">R{{ grant.amount_impaired }}</span></td>
     
                                     <td>
-                                        <a href="{% url 'detail_repayment' repayment.id %}" class="btn btn-primary">Details</a> 
-                                        <a href="{% url 'edit_repayment' repayment.id %}" class="btn btn-success">Edit</a> 
-                                        <a href="{% url 'delete_repayment' repayment.id %}" class="btn btn-danger">Delete</a>
+                                        <a href="{% url 'detail_volume' grant.id %}" class="btn btn-primary">Details</a> 
+                                        <a href="{% url 'edit_volume' grant.id %}" class="btn btn-success">Edit</a> 
+                                        <a href="{% url 'delete_volume' grant.id %}" class="btn btn-danger">Delete</a>
                                     </td>
                                 </tr>
                                 {% endfor %}

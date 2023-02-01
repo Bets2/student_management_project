@@ -14,35 +14,67 @@
             <!-- Small boxes (Stat box) -->
             <div class="row">
                 <div class="col-lg-3 col-6">
-                <!-- small box -->
-                <div class="small-box bg-primary">
-                    <div class="inner">
-                    <h4>R{{ total_disbursement_amount }}</h4> 
-
-                    <p>Total Disbursed </p>
-
-                    </div>
-                    <div class="icon">
-                    <i class="ion ion-stats-bars"></i>
-                    </div>
-                    <a href="{% url 'manage_disbursement' %}" class="small-box-footer"><b>Disbursements</b>     <i class="fas fa-arrow-circle-right"></i></a>
-                </div>
-                </div>
-                <div class="col-lg-3 col-6">
                     <!-- small box -->
+                        <div class="small-box bg-light">
+                            <div class="inner">
+                            
+                                <form method="GET" action=".">                                               
+                                    <div class="form-group col-12">
+                                        <div class="input-group">
+                                            <select id="customer_name_contains" class="form-control" name="customer_name_contains">
+                                                <option selected>Select Customer Name...</option>
+                                                {% for customer in customers %}
+                                                    <option value="{{ customer.id }}">{{ customer.customer_name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>   
+                                    </div>  
+    
+                               
+                                <button type="submit" class="btn btn-secondary"><i class="fas fa-search"></i> Search</button>
+                            </form>
+            
+                            </div>
+                            <div class="icon">
+                                    <i class="ion ion-stats-bars"></i>
+                            </div>
+                            <a href="{% url 'manage_disbursement' %}" class="small-box-footer"><b>Clear Search</b>     <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    
+                </div>    <!-- ./col -->
+
+
+
+                <div class="col-lg-3 col-6">
+                <!-- small box -->
                     <div class="small-box bg-primary">
                         <div class="inner">
-                        <h4>R{{ total_disbursement_loan_amount }}</h4> 
-        
-                        <p>Total Loans Disbursed </p>
-        
+                        <h4>R{{ total_disbursement_amount }}</h4> 
+
+                        <p>Total Disbursed </p>
+
                         </div>
                         <div class="icon">
                         <i class="ion ion-stats-bars"></i>
                         </div>
-                        <a href="{% url 'manage_disbursement' %}" class="small-box-footer"><b>Loans Disbursed</b>     <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="{% url 'manage_disbursement' %}" class="small-box-footer"><b>Disbursements</b>     <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
-                    </div>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                        <div class="small-box bg-primary">
+                            <div class="inner">
+                            <h4>R{{ total_disbursement_loan_amount }}</h4> 
+            
+                            <p>Total Loans Disbursed </p>
+            
+                            </div>
+                            <div class="icon">
+                            <i class="ion ion-stats-bars"></i>
+                            </div>
+                            <a href="{% url 'manage_disbursement' %}" class="small-box-footer"><b>Loans Disbursed</b>     <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                </div>
                     <div class="col-lg-3 col-6">
                         <!-- small box -->
                         <div class="small-box bg-primary">
@@ -63,7 +95,7 @@
 
 
 
-            <p><a class="btn btn-primary" href="{% url 'add_disbursement' %}" role="button">+ Add Disbursement</a> <br/>&nbsp;</p>
+            <p><a class="btn btn-success" href="{% url 'add_disbursement' %}" role="button"><i class="fas fa-plus"></i>  Add Disbursement</a> <br/>&nbsp;</p>
             
             {% if messages %}
                                 <div class="form-group">

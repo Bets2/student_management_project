@@ -137,16 +137,22 @@ urlpatterns = [
 
 
     # URLS for Grantmanagement
-    #     path('add_volume/', HodViews.add_volume, name="add_volume"),
+    path('add_volume/', HodViews.add_volume, name="add_volume"),
+    path('add_volume_save/', HodViews.add_volume_save, name="add_volume_save"),
+    path('manage_grant/', HodViews.manage_grant, name="manage_grant"),
 
-
+    path('detail_volume/<volume_id>',
+         HodViews.detail_volume, name="detail_volume"),
+    path('edit_volume/<volume_id>', HodViews.edit_volume, name="edit_volume"),
+    path('edit_volume_save/', HodViews.edit_volume_save, name="edit_volume_save"),
+    path('delete_volume/<volume_id>/',
+         HodViews.delete_grant, name="delete_volume"),
 
 
 
     # URLs for Overview
     path('overview/', HodViews.overview,
          name="overview"),
-
 
     path('add_subject/', HodViews.add_subject, name="add_subject"),
     path('add_subject_save/', HodViews.add_subject_save,
