@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, JsonResponse
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
 from django.urls import reverse
@@ -8,16 +8,19 @@ from django.db.models import Sum
 from decimal import Decimal
 from datetime import datetime
 import json
+from django.contrib.auth.models import User
+from customer_management_app.models import CustomUser
 
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+# from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import authenticate
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 
 
 from .forms import AddCustomerForm, EditCustomerForm, AddDisbursementForm, EditDisbursementForm, AddRepaymentForm, EditRepaymentForm, AddVolumeForm, EditVolumeForm
 
 from .models import CustomUser, Staffs, Courses, Subjects, Customers, SessionYearModel, FeedBackCustomer, FeedBackStaffs, LeaveReportCustomer, LeaveReportStaff, Attendance, AttendanceReport, Disbursements, Repayments, GrantManagement
-
 
 # For Customers KPI
 all_customer_count = Customers.objects.all().count()
@@ -63,6 +66,7 @@ total_amount_impaired = GrantManagement.objects.all().aggregate(
     Sum('amount_impaired'))['amount_impaired__sum'] or 0.00
 
 
+@login_required
 def admin_home(request):
 
     # all_customer_count = Customers.objects.all().count()
@@ -159,11 +163,14 @@ def admin_home(request):
     return render(request, "hod_template/home_content.html", context)
 
 
+@login_required
 def add_staff(request):
     return render(request, "hod_template/add_staff_template.html")
 
 
+@login_required
 def add_staff_save(request):
+
     if request.method != "POST":
         messages.error(request, "Invalid Method ")
         return redirect('add_staff')
@@ -191,7 +198,9 @@ def add_staff_save(request):
             return redirect('add_staff')
 
 
+@login_required
 def manage_staff(request):
+
     staffs = Staffs.objects.all()
     context = {
         "staffs": staffs
@@ -199,6 +208,7 @@ def manage_staff(request):
     return render(request, "hod_template/manage_staff_template.html", context)
 
 
+@login_required
 def edit_staff(request, staff_id):
     staff = Staffs.objects.get(admin=staff_id)
 
@@ -209,6 +219,7 @@ def edit_staff(request, staff_id):
     return render(request, "hod_template/edit_staff_template.html", context)
 
 
+@login_required
 def edit_staff_save(request):
     if request.method != "POST":
         return HttpResponse("<h2>Method Not Allowed</h2>")
@@ -242,6 +253,7 @@ def edit_staff_save(request):
             return redirect('/edit_staff/'+staff_id)
 
 
+@login_required
 def delete_staff(request, staff_id):
     staff = Staffs.objects.get(admin=staff_id)
     try:
@@ -253,10 +265,12 @@ def delete_staff(request, staff_id):
         return redirect('manage_staff')
 
 
+@login_required
 def add_course(request):
     return render(request, "hod_template/add_course_template.html")
 
 
+@login_required
 def add_course_save(request):
     if request.method != "POST":
         messages.error(request, "Invalid Method!")
@@ -273,6 +287,7 @@ def add_course_save(request):
             return redirect('add_course')
 
 
+@login_required
 def manage_course(request):
     courses = Courses.objects.all()
     context = {
@@ -281,6 +296,7 @@ def manage_course(request):
     return render(request, 'hod_template/manage_course_template.html', context)
 
 
+@login_required
 def edit_course(request, course_id):
     course = Courses.objects.get(id=course_id)
     context = {
@@ -290,6 +306,7 @@ def edit_course(request, course_id):
     return render(request, 'hod_template/edit_course_template.html', context)
 
 
+@login_required
 def edit_course_save(request):
     if request.method != "POST":
         HttpResponse("Invalid Method")
@@ -310,6 +327,7 @@ def edit_course_save(request):
             return redirect('/edit_course/'+course_id)
 
 
+@login_required
 def delete_course(request, course_id):
     course = Courses.objects.get(id=course_id)
     try:
@@ -321,6 +339,7 @@ def delete_course(request, course_id):
         return redirect('manage_course')
 
 
+@login_required
 def manage_session(request):
     session_years = SessionYearModel.objects.all()
     context = {
@@ -329,10 +348,12 @@ def manage_session(request):
     return render(request, "hod_template/manage_session_template.html", context)
 
 
+@login_required
 def add_session(request):
     return render(request, "hod_template/add_session_template.html")
 
 
+@login_required
 def add_session_save(request):
     if request.method != "POST":
         messages.error(request, "Invalid Method")
@@ -352,6 +373,7 @@ def add_session_save(request):
             return redirect("add_session")
 
 
+@login_required
 def edit_session(request, session_id):
     session_year = SessionYearModel.objects.get(id=session_id)
     context = {
@@ -360,6 +382,7 @@ def edit_session(request, session_id):
     return render(request, "hod_template/edit_session_template.html", context)
 
 
+@login_required
 def edit_session_save(request):
     if request.method != "POST":
         messages.error(request, "Invalid Method!")
@@ -382,6 +405,7 @@ def edit_session_save(request):
             return redirect('/edit_session/'+session_id)
 
 
+@login_required
 def delete_session(request, session_id):
     session = SessionYearModel.objects.get(id=session_id)
     try:
@@ -393,6 +417,7 @@ def delete_session(request, session_id):
         return redirect('manage_session')
 
 
+@login_required
 def add_customer(request):
     form = AddCustomerForm()
     context = {
@@ -401,6 +426,7 @@ def add_customer(request):
     return render(request, 'hod_template/add_customer_template.html', context)
 
 
+@login_required
 def add_customer_save(request):
     if request.method != "POST":
         messages.error(request, "Invalid Method")
@@ -535,7 +561,9 @@ def add_customer_save(request):
         # return redirect('add_customer')
 
 
+@login_required
 def manage_customer(request):
+
     customers = Customers.objects.all()
 
     # for filters
@@ -555,6 +583,7 @@ def manage_customer(request):
     return render(request, 'hod_template/manage_customer_template.html', context)
 
 
+@login_required
 def edit_customer(request, customer_id):
 
     # Adding Customer ID into Session Variable
@@ -595,6 +624,7 @@ def edit_customer(request, customer_id):
     return render(request, "hod_template/edit_customer_template.html", context)
 
 
+@login_required
 def edit_customer_save(request):
     if request.method != "POST":
         return HttpResponse("Invalid Method!")
@@ -685,6 +715,7 @@ def edit_customer_save(request):
             return redirect('/edit_customer/'+customer_id)
 
 
+@login_required
 def delete_customer(request, customer_id):
     customer = Customers.objects.get(admin=customer_id)
     try:
@@ -697,6 +728,7 @@ def delete_customer(request, customer_id):
 
 
 # BETS ADDED Disbursment related views here ***************************************************
+@login_required
 def manage_disbursement(request):
     disbursements = Disbursements.objects.all()
     customer = Customers.objects.all()
@@ -720,6 +752,7 @@ def manage_disbursement(request):
     return render(request, 'hod_template/manage_disbursement_template.html', context)
 
 
+@login_required
 def add_disbursement(request):
     customer = Customers.objects.all()
     form = AddDisbursementForm()
@@ -730,6 +763,7 @@ def add_disbursement(request):
     return render(request, 'hod_template/add_disbursement_template.html', context)
 
 
+@login_required
 def add_disbursement_save(request):
     if request.method != "POST":
         messages.error(request, "Invalid Method")
@@ -838,6 +872,7 @@ def add_disbursement_save(request):
             return redirect("/manage_disbursement")
 
 
+@login_required
 def detail_disbursement(request, disbursement_id):
 
     disbursement = Disbursements.objects.get(id=disbursement_id)
@@ -853,6 +888,7 @@ def detail_disbursement(request, disbursement_id):
     return render(request, "hod_template/detail_disbursement_template.html", context)
 
 
+@login_required
 def edit_disbursement(request, disbursement_id):
 
     disbursement = Disbursements.objects.get(id=disbursement_id)
@@ -896,6 +932,7 @@ def edit_disbursement(request, disbursement_id):
     return render(request, "hod_template/edit_disbursement_template.html", context)
 
 
+@login_required
 def edit_disbursement_save(request):
     if request.method != "POST":
         return HttpResponse("Invalied Method.")
@@ -988,6 +1025,7 @@ def edit_disbursement_save(request):
             #     return redirect('/edit_disbursement/'+disbursement_id)
 
 
+@login_required
 def delete_disbursement(request, disbursement_id):
     disbursement = Disbursements.objects.get(id=disbursement_id)
     try:
@@ -1002,6 +1040,7 @@ def delete_disbursement(request, disbursement_id):
 # GRANT MANAGEMENT
 
 
+@login_required
 def manage_grant(request):
     grants = GrantManagement.objects.all()
     customers = Customers.objects.all()
@@ -1023,6 +1062,7 @@ def manage_grant(request):
     return render(request, 'hod_template/manage_grant_template.html', context)
 
 
+@login_required
 def add_volume(request):
     customer = Customers.objects.all()
     disbursement = Disbursements.objects.all()
@@ -1035,6 +1075,7 @@ def add_volume(request):
     return render(request, 'hod_template/add_volume_template.html', context)
 
 
+@login_required
 def add_volume_save(request):
     if request.method != "POST":
         messages.error(request, "Invalid Method")
@@ -1155,6 +1196,7 @@ def add_volume_save(request):
             return redirect("/manage_grant")
 
 
+@login_required
 def edit_volume(request, volume_id):
     grant = GrantManagement.objects.get(id=volume_id)
     customer = Customers.objects.all()
@@ -1192,6 +1234,7 @@ def edit_volume(request, volume_id):
     return render(request, "hod_template/edit_volume_template.html", context)
 
 
+@login_required
 def edit_volume_save(request):
     if request.method != "POST":
         return HttpResponse("Invalied Method.")
@@ -1303,6 +1346,7 @@ def edit_volume_save(request):
                 #     return redirect('/edit_volume/'+volume_id)
 
 
+@login_required
 def detail_volume(request, volume_id):
 
     grant = GrantManagement.objects.get(id=volume_id)
@@ -1337,6 +1381,7 @@ def detail_volume(request, volume_id):
     return render(request, "hod_template/detail_volume_template.html", context)
 
 
+@login_required
 def delete_grant(request, volume_id):
     grant = GrantManagement.objects.get(id=volume_id)
     try:
@@ -1357,7 +1402,9 @@ def is_valid_queryparam(param):
     return param != '' and param is not None
 
 
+@login_required
 def overview(request):
+
     customers = Customers.objects.all()
     repayments = Repayments.objects.all()
     disbursements = Disbursements.objects.all()
@@ -1414,6 +1461,7 @@ def overview(request):
 # REPAYMENTS
 
 
+@login_required
 def manage_repayment(request):
     repayments = Repayments.objects.all()
     customers = Customers.objects.all()
@@ -1438,6 +1486,7 @@ def manage_repayment(request):
     return render(request, 'hod_template/manage_repayment_template.html', context)
 
 
+@login_required
 def add_repayment(request):
     customer = Customers.objects.all()
     disbursement = Disbursements.objects.all()
@@ -1450,6 +1499,7 @@ def add_repayment(request):
     return render(request, 'hod_template/add_repayment_template.html', context)
 
 
+@login_required
 def add_repayment_save(request):
     if request.method != "POST":
         messages.error(request, "Invalid Method")
@@ -1537,6 +1587,7 @@ def add_repayment_save(request):
             return redirect("/manage_repayment")
 
 
+@login_required
 def detail_repayment(request, repayment_id):
 
     repayment = Repayments.objects.get(id=repayment_id)
@@ -1553,6 +1604,7 @@ def detail_repayment(request, repayment_id):
     return render(request, "hod_template/detail_repayment_template.html", context)
 
 
+@login_required
 def edit_repayment(request, repayment_id):
 
     repayment = Repayments.objects.get(id=repayment_id)
@@ -1584,6 +1636,7 @@ def edit_repayment(request, repayment_id):
     return render(request, "hod_template/edit_repayment_template.html", context)
 
 
+@login_required
 def edit_repayment_save(request):
     if request.method != "POST":
         return HttpResponse("Invalied Method.")
@@ -1673,6 +1726,7 @@ def edit_repayment_save(request):
                 #     return redirect('/edit_repayment/'+repayment_id)
 
 
+@login_required
 def delete_repayment(request, repayment_id):
     repayment = Repayments.objects.get(id=repayment_id)
     try:
@@ -1687,6 +1741,7 @@ def delete_repayment(request, repayment_id):
 # Subject
 
 
+@login_required
 def add_subject(request):
     courses = Courses.objects.all()
     staffs = CustomUser.objects.filter(user_type='2')
@@ -1697,6 +1752,7 @@ def add_subject(request):
     return render(request, 'hod_template/add_subject_template.html', context)
 
 
+@login_required
 def add_subject_save(request):
     if request.method != "POST":
         messages.error(request, "Method Not Allowed!")
@@ -1722,6 +1778,7 @@ def add_subject_save(request):
             return redirect('add_subject')
 
 
+@login_required
 def manage_subject(request):
     subjects = Subjects.objects.all()
     context = {
@@ -1730,6 +1787,7 @@ def manage_subject(request):
     return render(request, 'hod_template/manage_subject_template.html', context)
 
 
+@login_required
 def edit_subject(request, subject_id):
     subject = Subjects.objects.get(id=subject_id)
     courses = Courses.objects.all()
@@ -1743,6 +1801,7 @@ def edit_subject(request, subject_id):
     return render(request, 'hod_template/edit_subject_template.html', context)
 
 
+@login_required
 def edit_subject_save(request):
     if request.method != "POST":
         HttpResponse("Invalid Method.")
@@ -1775,6 +1834,7 @@ def edit_subject_save(request):
                                                 kwargs={"subject_id": subject_id}))
 
 
+@login_required
 def delete_subject(request, subject_id):
     subject = Subjects.objects.get(id=subject_id)
     try:
@@ -1786,6 +1846,7 @@ def delete_subject(request, subject_id):
         return redirect('manage_subject')
 
 
+@login_required
 @csrf_exempt
 def check_email_exist(request):
     email = request.POST.get("email")
@@ -1796,6 +1857,7 @@ def check_email_exist(request):
         return HttpResponse(False)
 
 
+@login_required
 @csrf_exempt
 def check_username_exist(request):
     username = request.POST.get("username")
@@ -1806,6 +1868,7 @@ def check_username_exist(request):
         return HttpResponse(False)
 
 
+@login_required
 def customer_feedback_message(request):
     feedbacks = FeedBackCustomer.objects.all()
     context = {
@@ -1814,6 +1877,7 @@ def customer_feedback_message(request):
     return render(request, 'hod_template/customer_feedback_template.html', context)
 
 
+@login_required
 @csrf_exempt
 def customer_feedback_message_reply(request):
     feedback_id = request.POST.get('id')
@@ -1829,6 +1893,7 @@ def customer_feedback_message_reply(request):
         return HttpResponse("False")
 
 
+@login_required
 def staff_feedback_message(request):
     feedbacks = FeedBackStaffs.objects.all()
     context = {
@@ -1837,6 +1902,7 @@ def staff_feedback_message(request):
     return render(request, 'hod_template/staff_feedback_template.html', context)
 
 
+@login_required
 @csrf_exempt
 def staff_feedback_message_reply(request):
     feedback_id = request.POST.get('id')
@@ -1852,6 +1918,7 @@ def staff_feedback_message_reply(request):
         return HttpResponse("False")
 
 
+@login_required
 def customer_leave_view(request):
     leaves = LeaveReportCustomer.objects.all()
     context = {
@@ -1860,6 +1927,7 @@ def customer_leave_view(request):
     return render(request, 'hod_template/customer_leave_view.html', context)
 
 
+@login_required
 def customer_leave_approve(request, leave_id):
     leave = LeaveReportCustomer.objects.get(id=leave_id)
     leave.leave_status = 1
@@ -1867,6 +1935,7 @@ def customer_leave_approve(request, leave_id):
     return redirect('customer_leave_view')
 
 
+@login_required
 def customer_leave_reject(request, leave_id):
     leave = LeaveReportCustomer.objects.get(id=leave_id)
     leave.leave_status = 2
@@ -1874,6 +1943,7 @@ def customer_leave_reject(request, leave_id):
     return redirect('customer_leave_view')
 
 
+@login_required
 def staff_leave_view(request):
     leaves = LeaveReportStaff.objects.all()
     context = {
@@ -1882,6 +1952,7 @@ def staff_leave_view(request):
     return render(request, 'hod_template/staff_leave_view.html', context)
 
 
+@login_required
 def staff_leave_approve(request, leave_id):
     leave = LeaveReportStaff.objects.get(id=leave_id)
     leave.leave_status = 1
@@ -1889,6 +1960,7 @@ def staff_leave_approve(request, leave_id):
     return redirect('staff_leave_view')
 
 
+@login_required
 def staff_leave_reject(request, leave_id):
     leave = LeaveReportStaff.objects.get(id=leave_id)
     leave.leave_status = 2
@@ -1896,6 +1968,7 @@ def staff_leave_reject(request, leave_id):
     return redirect('staff_leave_view')
 
 
+@login_required
 def admin_view_attendance(request):
     subjects = Subjects.objects.all()
     session_years = SessionYearModel.objects.all()
@@ -1906,6 +1979,7 @@ def admin_view_attendance(request):
     return render(request, "hod_template/admin_view_attendance.html", context)
 
 
+@login_required
 @csrf_exempt
 def admin_get_attendance_dates(request):
 
@@ -1934,6 +2008,7 @@ def admin_get_attendance_dates(request):
                         safe=False)
 
 
+@login_required
 @csrf_exempt
 def admin_get_attendance_customer(request):
 
@@ -1954,6 +2029,7 @@ def admin_get_attendance_customer(request):
     return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
 
 
+@login_required
 def admin_profile(request):
     user = CustomUser.objects.get(id=request.user.id)
 
@@ -1963,6 +2039,7 @@ def admin_profile(request):
     return render(request, 'hod_template/admin_profile.html', context)
 
 
+@login_required
 def admin_profile_update(request):
     if request.method != "POST":
         messages.error(request, "Invalid Method!")
@@ -1986,9 +2063,11 @@ def admin_profile_update(request):
             return redirect('admin_profile')
 
 
+@login_required
 def staff_profile(request):
     pass
 
 
+@login_required
 def customer_profile(requtest):
     pass

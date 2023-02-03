@@ -34,7 +34,7 @@
                                         <div class="info-box bg-light">
                                             <div class="info-box-content">
                                                 <span class="info-box-text text-center text-muted">Disbursed Amount</span>
-                                                <span class="info-box-number text-center text-muted mb-0"> R{{ repayments.disbursement_id.disbursement_amount}} </span>
+                                                <span class="info-box-number text-center text-muted mb-0"> R{{ repayments.disbursement_id.disbursement_amount|floatformat:2}} </span>
                                             </div>
                                         </div>
                                     </div>
@@ -42,7 +42,7 @@
                                         <div class="info-box bg-light">
                                             <div class="info-box-content">
                                                 <span class="info-box-text text-center text-muted">Total Base Volume Target</span>
-                                                <span class="info-box-number text-center text-muted mb-0">{{ repayments.disbursement_id.total_target}}</span>
+                                                <span class="info-box-number text-center text-muted mb-0">{{ repayments.disbursement_id.total_target|floatformat:2}}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -50,7 +50,7 @@
                                         <div class="info-box bg-light">
                                             <div class="info-box-content">
                                                 <span class="info-box-text text-center text-muted">Monthly <b>Base</b> Volume Target</span>
-                                                <span class="info-box-number text-center text-muted mb-0">{{ repayments.disbursement_id.monthly_target}}</span>
+                                                <span class="info-box-number text-center text-muted mb-0">{{ repayments.disbursement_id.monthly_target|floatformat:2}}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -58,7 +58,7 @@
                                         <div class="info-box bg-light">
                                             <div class="info-box-content">
                                                 <span class="info-box-text text-center text-muted">Monthly <b>Contract</b> Vol. Target</span>
-                                                <span class="info-box-number text-center text-muted mb-0">{{ repayments.disbursement_id.contract_monthly_target}}</span>
+                                                <span class="info-box-number text-center text-muted mb-0">{{ repayments.disbursement_id.contract_monthly_target|floatformat:2}}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -66,7 +66,7 @@
                                         <div class="info-box bg-light">
                                             <div class="info-box-content">
                                                 <span class="info-box-text text-center text-muted"><b>Actual</b> Volume</span>
-                                                <span class="info-box-number text-center text-muted mb-0">{{ repayments.actual_volume_tone }}</span>
+                                                <span class="info-box-number text-center text-muted mb-0">{{ repayments.actual_volume_tone|floatformat:2 }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -74,7 +74,7 @@
                                         <div class="info-box bg-light">
                                             <div class="info-box-content">
                                                 <span class="info-box-text text-center text-muted">Repayment Amount</span>
-                                                <span class="info-box-number text-center text-muted mb-0">R{{ repayments.repayment_amount }}</span>
+                                                <span class="info-box-number text-center text-muted mb-0">R{{ repayments.repayment_amount|floatformat:2 }}</span>
                                             </div>
                                         </div>
                                     </div>                                    

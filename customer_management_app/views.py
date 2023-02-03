@@ -3,6 +3,9 @@ from django.contrib.auth import logout, authenticate, login
 from .models import CustomUser, Staffs, Customers, AdminHOD
 from django.contrib import messages
 
+from django.contrib.auth.forms import AuthenticationForm
+from django.shortcuts import render, redirect
+
 
 def home(request):
     return render(request, 'home.html')
@@ -16,26 +19,56 @@ def loginUser(request):
     return render(request, 'login_page.html')
 
 
-def doLogin(request):
+# def doLogin(request):
 
-    print("here")
+#     print("here")
+#     email_id = request.GET.get('email')
+#     password = request.GET.get('password')
+#     # user_type = request.GET.get('user_type')
+#     print(email_id)
+#     print(password)
+#     print(request.user)
+#     if not (email_id and password):
+#         messages.error(request, "Please provide all the details!!")
+#         return render(request, 'login_page.html')
+
+#     user = CustomUser.objects.filter(email=email_id, password=password).last()
+#     if not user:
+#         messages.error(request, 'Invalid Login Credentials!!')
+#         return render(request, 'login_page.html')
+
+#     login(request, user)
+#     print(request.user)
+
+#     if user.user_type == CustomUser.CUSTOMER:
+#         return redirect('customer_home/')
+#     elif user.user_type == CustomUser.STAFF:
+#         return redirect('staff_home/')
+#     elif user.user_type == CustomUser.HOD:
+#         return redirect('admin_home/')
+
+#     return render(request, 'home.html')
+
+
+def doLogin(request):
+    # if request.method == 'POST':
+    #     form = AuthenticationForm(data=request.POST)
+    #     if form.is_valid():
     email_id = request.GET.get('email')
     password = request.GET.get('password')
-    # user_type = request.GET.get('user_type')
-    print(email_id)
-    print(password)
-    print(request.user)
-    if not (email_id and password):
-        messages.error(request, "Please provide all the details!!")
-        return render(request, 'login_page.html')
+    user_type = request.GET.get('user_type')
 
-    user = CustomUser.objects.filter(email=email_id, password=password).last()
+    # username = form.cleaned_data.get('username')
+    # password = form.cleaned_data.get('password')
+    # user = authenticate(username=username, password=password)
+    user = CustomUser.objects.filter(
+        email=email_id, password=password).last()
     if not user:
         messages.error(request, 'Invalid Login Credentials!!')
         return render(request, 'login_page.html')
 
-    login(request, user)
-    print(request.user)
+    if user is not None:
+        login(request, user)
 
     if user.user_type == CustomUser.CUSTOMER:
         return redirect('customer_home/')
@@ -44,7 +77,10 @@ def doLogin(request):
     elif user.user_type == CustomUser.HOD:
         return redirect('admin_home/')
 
-    return render(request, 'home.html')
+    return redirect('home.html')
+    # else:
+    #     form = AuthenticationForm()
+    # return render(request, 'login_page.html', {'form': form})
 
 
 def registration(request):

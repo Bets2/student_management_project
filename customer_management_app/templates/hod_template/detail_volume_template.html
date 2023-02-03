@@ -174,7 +174,7 @@
                                     <div class="info-box bg-light">
                                         <div class="info-box-content">
                                             <span class="info-box-text text-center text-muted">PET KG</span>
-                                            <span class="info-box-number text-center text-muted mb-0">R{{ grant.pet_kg }}</span>
+                                            <span class="info-box-number text-center text-muted mb-0">{{ grant.pet_kg }}</span>
                                         </div>
                                     </div>
                                 </div>    
@@ -182,7 +182,7 @@
                                     <div class="info-box bg-light">
                                         <div class="info-box-content">
                                             <span class="info-box-text text-center text-muted">Other KG</span>
-                                            <span class="info-box-number text-center text-muted mb-0">R{{ grant.other_kg }}</span>
+                                            <span class="info-box-number text-center text-muted mb-0">{{ grant.other_kg|floatformat:2 }}</span>
                                         </div>
                                     </div>
                                 </div>       
@@ -190,7 +190,7 @@
                                     <div class="info-box bg-yellow">
                                         <div class="info-box-content">
                                             <span class="info-box-text text-center text-muted"><b>Total Volume KG</b></span>
-                                            <span class="info-box-number text-center text-muted mb-0"><b>{{ grant.total_volume_kg }}</b></span>
+                                            <span class="info-box-number text-center text-muted mb-0"><b>{{ grant.total_volume_kg|floatformat:2 }}</b></span>
                                         </div>
                                     </div>
                                 </div>            
@@ -198,7 +198,7 @@
                                     <div class="info-box bg-light">
                                         <div class="info-box-content">
                                             <span class="info-box-text text-center text-blue"><b>% </b> to Contract Target</span>
-                                            <span class="info-box-number text-center text-blue mb-0"><b>{{ percentage_actual_volume_to_target }} %</b></span>
+                                            <span class="info-box-number text-center text-blue mb-0"><b>{{ percentage_actual_volume_to_target|floatformat:2 }} %</b></span>
                                         </div>
                                     </div>
                                 </div>              

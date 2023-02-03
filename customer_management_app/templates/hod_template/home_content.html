@@ -12,9 +12,9 @@
               <!-- small box -->
               <div class="small-box bg-info">
                 <div class="inner">
-                  <h3>{{ all_customer_count }}</h3> 
+                  <h3>{{ all_customer_count|floatformat:0 }}</h3> 
 
-                  <p>{{ customer_count_active }} Active </p>
+                  <p>{{ customer_count_active|floatformat:0 }} Active </p>
 
                 </div>
                 <div class="icon">
@@ -28,9 +28,9 @@
               <!-- small box -->
               <div class="small-box bg-primary">
                 <div class="inner">
-                  <h3>R {{ total_disbursement_amount }}</h3>
+                  <h3> R {{ total_disbursement_amount|floatformat:2 }} </h3>
 
-                  <p> Loan: R{{ total_disbursement_loan_amount }} Grant: R{{total_disbursement_grant_amount}}</p>
+                  <p> Loan: R {{ total_disbursement_loan_amount|floatformat:2 }} Grant: R {{total_disbursement_grant_amount|floatformat:2}}</p>
                 </div>
                 <div class="icon">
                   <i class="ion ion-stats-bars"></i>
@@ -44,9 +44,9 @@
               <!-- small box -->
               <div class="small-box bg-success">
                 <div class="inner">
-                  <h3>R{{ total_repayment_amount }}</h3>
+                  <h3>R{{ total_repayment_amount|floatformat:2 }}</h3>
 
-                  <p>Loans paid: R{{ total_repayment_loan_amount }} Grants paid: R{{ total_repayment_grant_amount }}</p>
+                  <p>Loans paid: R{{ total_repayment_loan_amount|floatformat:2 }} Grants paid: R{{ total_repayment_grant_amount|floatformat:2 }}</p>
                 </div>
                 <div class="icon">
                   <i class="ion ion-stats-bars"></i>
@@ -59,7 +59,7 @@
               <!-- small box -->
               <div class="small-box bg-warning">
                 <div class="inner">
-                  <h3>R{{ total_fund_balance }}</h3>
+                  <h3>R{{ total_fund_balance|floatformat:2 }}</h3>
 
                   <p>Total Funds Balance</p>
                 </div>
@@ -141,7 +141,7 @@
               <!-- PIE CHART -->
               <div class="card card-info">
                 <div class="card-header">
-                  <h3 class="card-title">Total Customers Grant in Each Subject</h3>
+                  <h3 class="card-title">Grants per Customers </h3>
 
                   <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
@@ -192,7 +192,7 @@
             <!-- BAR CHART -->
             <div class="card card-success">
               <div class="card-header">
-                <h3 class="card-title">Actual VS Target Volume tones</h3>
+                <h3 class="card-title">Actual VS Target Volume</h3>
 
                 <div class="card-tools">
                   <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
@@ -461,6 +461,8 @@
       })
 
     })
+
+
   </script>
 
   {% endblock custom_js %}

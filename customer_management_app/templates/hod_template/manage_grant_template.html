@@ -47,7 +47,7 @@
                 <!-- small box -->
                     <div class="small-box bg-success">
                         <div class="inner">
-                            <h4>{{ total_volume_actual }}</h4> 
+                            <h4>{{ total_volume_actual|floatformat:2 }}</h4> 
 
                             <p>Total Volume Actual (Tones) </p>
 
@@ -62,7 +62,7 @@
                     <!-- small box -->
                     <div class="small-box bg-success">
                         <div class="inner">
-                        <h4>R{{ total_amount_amortized }}</h4> 
+                        <h4>R {{ total_amount_amortized|floatformat:2 }}</h4> 
         
                         <p>Total Amount Amortized (R) </p>
         
@@ -77,7 +77,7 @@
                         <!-- small box -->
                         <div class="small-box bg-danger">
                             <div class="inner">
-                            <h4>R{{ total_amount_impaired }}</h4> 
+                            <h4>R {{ total_amount_impaired|floatformat:2 }}</h4> 
             
                             <p> Total Amount Impaired (R) </p>
             
@@ -165,15 +165,15 @@
                                     <td>{{ grant.id }}</td>
                                     <td>{{ grant.customer_id.customer_name }}</td>
                                     <td>{{ grant.disbursement_id.disbursement_code }}</td>
-                                    <td>R{{ grant.disbursement_id.disbursement_amount }}</td>
+                                    <td>R{{ grant.disbursement_id.disbursement_amount|floatformat:2 }}</td>
                                     <td>{{ grant.volume_report_month }} - {{ grant.volume_report_year }} </td>
                                    
                                     <td>{{ grant.disbursement_id.contract_monthly_target }}</td>
-                                    <td>{{ grant.total_volume_kg }}</td>
+                                    <td>{{ grant.total_volume_kg|floatformat:2 }}</td>
                                     
-                                    <td>R{{ grant.disbursement_id.disbursement_monthly_repayment_amount }}</td>
-                                    <td><span class="info-box-text text-center text-green">R{{ grant.amount_amortized}}</span></td> 
-                                    <td><span class="info-box-text text-center text-red">R{{ grant.amount_impaired }}</span></td>
+                                    <td>R{{ grant.disbursement_id.disbursement_monthly_repayment_amount|floatformat:2 }}</td>
+                                    <td><span class="info-box-text text-center text-green">R{{ grant.amount_amortized|floatformat:2}}</span></td> 
+                                    <td><span class="info-box-text text-center text-red">R{{ grant.amount_impaired|floatformat:2 }}</span></td>
     
                                     <td>
                                         <a href="{% url 'detail_volume' grant.id %}" class="btn btn-primary">Details</a> 

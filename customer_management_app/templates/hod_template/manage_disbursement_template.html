@@ -49,7 +49,7 @@
                 <!-- small box -->
                     <div class="small-box bg-primary">
                         <div class="inner">
-                        <h4>R{{ total_disbursement_amount }}</h4> 
+                        <h4>R{{ total_disbursement_amount|floatformat:2 }}</h4> 
 
                         <p>Total Disbursed </p>
 
@@ -64,7 +64,7 @@
                     <!-- small box -->
                         <div class="small-box bg-primary">
                             <div class="inner">
-                            <h4>R{{ total_disbursement_loan_amount }}</h4> 
+                            <h4>R{{ total_disbursement_loan_amount|floatformat:2 }}</h4> 
             
                             <p>Total Loans Disbursed </p>
             
@@ -79,7 +79,7 @@
                         <!-- small box -->
                         <div class="small-box bg-primary">
                             <div class="inner">
-                            <h4>R{{ total_disbursement_grant_amount }}</h4> 
+                            <h4>R{{ total_disbursement_grant_amount|floatformat:2 }}</h4> 
             
                             <p> Total Grants Disbursed </p>
             
@@ -167,8 +167,8 @@
                                     <td>{{ disbursement.disbursement_code }}</td>
                                     <td>{{ disbursement.disbursement_type }}</td>
                                     <td>{{ disbursement.disbursement_date }}</td>
-                                    <td>R{{ disbursement.disbursement_amount }}</td>
-                                    <td>{{ disbursement.total_target }}tone</td>
+                                    <td>R{{ disbursement.disbursement_amount|floatformat:2 }}</td>
+                                    <td>{{ disbursement.total_target|floatformat:2 }}tone</td>
                                     <td>{{ disbursement.contract_signed_date }}</td>
                                     <td>
                                         <div class="progress progress-xs">

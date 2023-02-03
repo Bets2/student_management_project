@@ -17,15 +17,15 @@
                     <!-- small box -->
                     <div class="small-box bg-info">
                       <div class="inner">
-                        <h4>{{ all_customer_count }}</h4> 
+                        <h4>{{ all_customer_count|floatformat:0  }}</h4> 
       
-                        <p>{{ customer_count_active }} Active </p>
+                        <p>{{ customer_count_active|floatformat:0 }} Active </p>
       
                       </div>
                       <div class="icon">
                         <i class="ion ion-stats-bars"></i>
                       </div>
-                      <a href="{% url 'manage_customer' %}" class="small-box-footer"><b>Customers</b>     <i class="fas fa-arrow-circle-right"></i></a>
+                      <a href="{% url 'manage_customer' %}" class="small-box-footer"><b>Customers</b> <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                   </div>
                   <!-- ./col -->
@@ -33,9 +33,9 @@
                     <!-- small box -->
                     <div class="small-box bg-primary">
                       <div class="inner">
-                        <h4>R {{ total_disbursement_amount }}</h4>
+                        <h4>R {{ total_disbursement_amount|floatformat:2 }}</h4>
       
-                        <p> Loan: R{{ total_disbursement_loan_amount }} Grant: R{{total_disbursement_grant_amount}}</p>
+                        <p> Loan: R{{ total_disbursement_loan_amount|floatformat:2 }} Grant: R{{total_disbursement_grant_amount|floatformat:2 }}</p>
                       </div>
                       <div class="icon">
                         <i class="ion ion-stats-bars"></i>
@@ -49,9 +49,9 @@
                     <!-- small box -->
                     <div class="small-box bg-success">
                       <div class="inner">
-                        <h4>R{{ total_repayment_amount }}</h4>
+                        <h4>R{{ total_repayment_amount|floatformat:2 }}</h4>
       
-                        <p>Loans paid: R{{ total_repayment_loan_amount }} Grants paid: R{{ total_repayment_grant_amount }}</p>
+                        <p>Loans paid: R{{ total_repayment_loan_amount|floatformat:2 }} Grants paid: R{{ total_repayment_grant_amount|floatformat:2 }}</p>
                       </div>
                       <div class="icon">
                         <i class="ion ion-stats-bars"></i>
@@ -63,9 +63,9 @@
                         <!-- small box -->
                         <div class="small-box bg-warning">
                             <div class="inner">
-                            <h4>R{{ total_fund_balance }}</h4> 
+                            <h4>R{{ total_fund_balance|floatformat:2 }}</h4> 
             
-                            <p> Fund Balance:  {{ percentage_fund_balance|floatformat:4 }}% </p>
+                            <p> Fund Balance:  {{ percentage_fund_balance|floatformat:2 }}% </p>
             
                             </div>
                             <div class="icon">
@@ -78,19 +78,19 @@
 
             <P> 
                 <a class="btn btn-app" href="{% url 'add_customer' %}">
-                    <span class="badge bg-purple">{{ all_customer_count }}</span>
+                    <span class="badge bg-purple">{{ all_customer_count|floatformat:2 }}</span>
                     <i class="fas fa-users"></i> Add Customer
                 </a>
                 <a class="btn btn-app" href="{% url 'add_disbursement' %}">
-                    <span class="badge bg-success">{{ all_disbursement_count }}</span>
+                    <span class="badge bg-success">{{ all_disbursement_count|floatformat:2 }}</span>
                     <i class="fas fa-arrow-up"></i> Add Disbursement
                 </a>
                 <a class="btn btn-app" href="{% url 'add_repayment' %}">
-                    <span class="badge bg-success">{{ all_repayment_count }}</span>
+                    <span class="badge bg-success">{{ all_repayment_count|floatformat:2 }}</span>
                     <i class="fas fa-coins"></i> Add <b>Loan</b> Repayment
                 </a>
                 <a class="btn btn-app" href="{% url 'add_volume' %}">
-                    <span class="badge bg-success">{{ all_repayment_count }}</span>
+                    <span class="badge bg-success">{{ all_repayment_count|floatformat:2 }}</span>
                     <i class="fas fa-money-bill"></i> Add <b>Grant/Volume</b> Repayment
                 </a>
                 {% comment %} <a class="btn btn-primary" href="{% url 'add_repayment' %}" role="button">+ Add Repayment</a> <br/>&nbsp; {% endcomment %}
@@ -227,7 +227,7 @@
                                             <td>{{ disbursement.disbursement_date }}</td>
                                             <td>{{ disbursement.disbursement_code }}</td>
                                             <td>{{ disbursement.disbursement_type }}</td>
-                                            <td>R{{ disbursement.disbursement_amount }}</td>                           
+                                            <td>R{{ disbursement.disbursement_amount|floatformat:2 }}</td>                           
                                             <td>
                                                 <a href="{% url 'detail_disbursement' disbursement.id %}" class="btn btn-primary">Details</a> 
                                                 <a href="{% url 'edit_disbursement' disbursement.id %}" class="btn btn-success">Edit</a> 
@@ -284,8 +284,8 @@
                                     <td>{{ repayment.disbursement_id.disbursement_code }}</td>
                                     <td>{{ repayment.repayment_date }}</td>
                                     <td>{{ repayment.disbursement_id.contract_monthly_target }} </td>                                                  
-                                    <td>{{ repayment.actual_volume_tone }}</td>
-                                    <td>R{{ repayment.repayment_amount }}</td>                         
+                                    <td>{{ repayment.actual_volume_tone|floatformat:2 }}</td>
+                                    <td>R{{ repayment.repayment_amount|floatformat:2  }}</td>                         
                                     <td>
                                         <a href="{% url 'detail_repayment' repayment.id %}" class="btn btn-primary">Details</a> 
                                         <a href="{% url 'edit_repayment' repayment.id %}" class="btn btn-success">Edit</a> 
@@ -346,12 +346,12 @@
                                     <td>{{ grant.customer_id.customer_name }}</td>
                                     <td>{{ grant.disbursement_id.disbursement_code }}</td>
 
-                                    <td>{{ grant.disbursement_id.disbursement_amount }}</td>
+                                    <td>R{{ grant.disbursement_id.disbursement_amount|floatformat:2 }}</td>
                                     <td>{{ grant.volume_report_date }}</td>
-                                    <td>{{ grant.disbursement_id.contract_monthly_target }} </td>                                                  
-                                    <td>{{ grant.total_volume_kg }}</td>
-                                    <td>R{{ grant.amount_amortized }}</td>     
-                                    <td>R{{ grant.amount_impaired }}</td>                     
+                                    <td>{{ grant.disbursement_id.contract_monthly_target|floatformat:2 }} </td>                                                  
+                                    <td>{{ grant.total_volume_kg|floatformat:2  }}</td>
+                                    <td>R{{ grant.amount_amortized|floatformat:2 }}</td>     
+                                    <td>R{{ grant.amount_impaired|floatformat:2 }}</td>                     
                                     <td>
                                         <a href="{% url 'detail_volume' grant.id %}" class="btn btn-primary">Details</a> 
                                         <a href="{% url 'edit_volume' grant.id %}" class="btn btn-success">Edit</a> 
@@ -373,12 +373,8 @@
 
         </div><!-- /.container-fluid -->
       </section>
-      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-      
 
-
+        
   {% endblock main_content %}
 
   

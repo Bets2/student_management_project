@@ -94,6 +94,10 @@ DATABASES = {
     }
 }
 
+# BETS NOTE: for user authecation
+LOGIN_REDIRECT_URL = 'home'
+LOGIN_URL = '/login'
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

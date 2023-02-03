@@ -49,7 +49,7 @@
                 <!-- small box -->
                 <div class="small-box bg-success">
                     <div class="inner">
-                    <h4>R{{ total_repayment_amount }}</h4> 
+                    <h4>R {{ total_repayment_amount|floatformat:2 }}</h4> 
 
                     <p>Total Repayments </p>
 
@@ -64,7 +64,7 @@
                     <!-- small box -->
                     <div class="small-box bg-success">
                         <div class="inner">
-                        <h4>R{{ total_repayment_loan_amount }}</h4> 
+                        <h4>R {{ total_repayment_loan_amount|floatformat:2 }}</h4> 
         
                         <p>Total Loan Repayments </p>
         
@@ -80,9 +80,9 @@
                         <!-- small box -->
                         <div class="small-box bg-warning">
                             <div class="inner">
-                            <h4>R{{ total_fund_balance }}</h4> 
+                            <h4>R {{ total_fund_balance|floatformat:2 }}</h4> 
             
-                            <p> Fund Balance:  {{ percentage_fund_balance|floatformat:4 }}% </p>
+                            <p> Fund Balance:  {{ percentage_fund_balance|floatformat:2 }}% </p>
             
                             </div>
                             <div class="icon">
@@ -164,10 +164,10 @@
     
                                     <td>{{ repayment.repayment_code }}</td>                    
                                     <td>{{ repayment.repayment_date }}</td>
-                                    <td>R{{ repayment.repayment_amount }}</td>
-                                    <td>R{{ repayment.disbursement_id.disbursement_amount }}</td>
-                                    <td>{{ repayment.actual_volume_tone }} tones</td>
-                                    <td>{{ repayment.disbursement_id.monthly_target }} tones</td>                            
+                                    <td>R{{ repayment.repayment_amount|floatformat:2 }}</td>
+                                    <td>R{{ repayment.disbursement_id.disbursement_amount|floatformat:2 }}</td>
+                                    <td>{{ repayment.actual_volume_tone|floatformat:2 }} tones</td>
+                                    <td>{{ repayment.disbursement_id.monthly_target|floatformat:2 }} tones</td>                            
     
                                     <td>
                                         <a href="{% url 'detail_repayment' repayment.id %}" class="btn btn-primary">Details</a> 
