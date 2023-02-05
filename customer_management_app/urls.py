@@ -154,6 +154,12 @@ urlpatterns = [
     path('overview/', HodViews.overview,
          name="overview"),
 
+    # URL for customer summary from HOD view
+    path('customer_profile/<customer_id>', HodViews.customer_profile,
+         name="customer_profile"),
+
+
+
     path('add_subject/', HodViews.add_subject, name="add_subject"),
     path('add_subject_save/', HodViews.add_subject_save,
          name="add_subject_save"),

@@ -180,6 +180,24 @@ class Repayments(models.Model):
     customer_id = models.ForeignKey(
         Customers, on_delete=models.DO_NOTHING, default=1)
     comment = models.TextField(null=True, blank=True)
+
+    hd_kg = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=False, default=0)
+    ld_kg = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=False, default=0)
+    lld_kg = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=False, default=0)
+    pp_kg = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=False, default=0)
+    pvc_kg = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=False, default=0)
+    ps_kg = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=False, default=0)
+    pet_kg = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=False, default=0)
+    other_kg = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=False, default=0)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()

@@ -8,6 +8,14 @@
 
 {% load static %}
 
+{% block  customscript %}
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.2/css/jquery.dataTables.css">
+    
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.js"></script>
+
+
+{% endblock %}
+
 <section class="content">
         <div class="container-fluid">
 
@@ -100,15 +108,8 @@
 
 
         <div class="row">
-           <p> <a class="btn btn-success" href="{% url 'add_customer' %}" role="button"><i class="fas fa-plus"></i> Add Customer</a> <br/>&nbsp;</p>          
+           <p> <a class="btn btn-success" href="{% url 'add_customer' %}" role="button"><i class="fas fa-plus"></i> Create New Customer</a> <br/>&nbsp;</p>          
         </div>
-    
-
-
-
-
-
-
 
 
             
@@ -182,14 +183,17 @@
                                 <td>{{ customer.province }}</td>
                                 <td>{{ customer.phone }}</td>
                                 <td>{{ customer.customer_status }}</td>
+                                <td>tester{{ total_disb_per_cust }}</td>
+                                
                                 
                                 {% comment %} <td> <img src="{{ customer.profile_pic }}" style="width: 100px;" /> </td> {% endcomment %}
                                 <td>{{ customer.email }}</td>
                                 <td>{{ customer.admin.last_login }}</td>
                                 <td>{{ customer.admin.date_joined }}</td>
                                 <td>
-                                    <a href="{% url 'edit_customer' customer.admin.id %}" class="btn btn-success">Edit</a> 
-                                    <a href="{% url 'delete_customer' customer.admin.id %}" class="btn btn-danger">Delete</a>
+                                    <a href="{% url 'customer_profile' customer.id %}" class="btn btn-outline-primary"><i class="fas fa-folder-open"></i> Details</a> 
+                                    <a href="{% url 'edit_customer' customer.admin.id %}" class="btn btn-outline-success"><i class="fas fa-edit"></i> Edit</a> 
+                                    <a href="{% url 'delete_customer' customer.admin.id %}" class="btn btn-outline-danger"><i class="fas fa-trash"></i> Delete</a>
                                 </td>
                                 </tr>
                                 {% endfor %}
@@ -208,3 +212,6 @@
       </section>
  
   {% endblock main_content %}
+
+  
+

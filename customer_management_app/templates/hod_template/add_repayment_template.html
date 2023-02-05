@@ -16,7 +16,7 @@
                     <!-- general form elements -->
                     <div class="card card-success">
                     <div class="card-header">
-                        <h3 class="card-title">Add/Capture Disbursemnt</h3>
+                        <h3 class="card-title"><i class="fas fa-money-bill-wave"> </i>  Add/Capture New Loan Repayment</h3>
                     </div>
                     <!-- /.card-header -->
                     <!-- form start -->
@@ -53,69 +53,129 @@
 
                         <div class="card-body">
 
-                            <div class="form-group">
-                                <label>Select Customer </label>
-                          
-                                <select class="form-control" name="customer_id"> 
-                                    {% for cust in customer %}                                                                                          
-                                        <option value="{{ cust.id }}">{{ cust.customer_name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Select Disbursement Code: </label><br>
-                                <p><small>All payments need to be allocated to a particular disbursement code</small></p>
-                          
-                                <select class="form-control" name="disbursement_id"> 
-                                    {% for disb in disbursement %}                                                                                          
-                                        <option value="{{ disb.id }}">{{ disb.disbursement_code }}</option>
-                                    {% endfor %}
-                                </select>
+
+
+                            <div class="form-group border">
+                                <div class="form-row">
+                                    <div class="form-group col-5 p-4">
+                                        <label>Select Customer </label>                             
+                                        <select class="form-control" name="customer_id"> 
+                                            {% for cust in customer %}                                                                                          
+                                                <option value="{{ cust.id }}">{{ cust.customer_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>                                    
+                                    <div class="form-group col-4 p-1">
+                                        <label>Disbursement Code: <br> <small>All payments need to be allocated to a particular disbursement code</small> </label><br>                                    
+                                        <select class="form-control" name="disbursement_id"> 
+                                            {% for disb in disbursement %}                                                                                          
+                                                <option value="{{ disb.id }}">{{ disb.disbursement_code }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-3 p-4">
+                                        <label>Repayment Code/Reference</label>
+                                        <input type="text" class="form-control" name="repayment_code" placeholder="Repayment Code/Reference" required >
+                                    </div>
+                                    {% comment %} <div class="form-group col-2">
+                                        <label>Repayment Type</label>
+                                        <select class="form-control" name="repayment_type">                                        
+                                                <option value="Amortization">Amortization</option>
+                                                <option value="Impairment">Impairment</option>
+                                        </select>    
+                                    </div> {% endcomment %}
+                                </div>
+                            </div>    
+                            <div class="form-group border">
+                                <div class="form-row">
+
+                                    <div class="form-group col-3 p-4">
+                                        <label>Repayment Amount </label>
+                                        <input type="number" class="form-control" name="repayment_amount" placeholder="Repayment Amount in Rands" required  step="0.01">
+                                    </div>
+                                    <div class="form-group col-3 p-4">
+                                        <label>Repayment Date </label>
+                                        <input type="date" class="form-control" name="repayment_date"   placeholder="Repayment Date">
+                                    </div>
+
+                                    <div class="form-group col-6 p-4">
+                                        <label>Repayment Comment/Note</label>
+                                        <input type="text" class="form-control" name="repayment_description" placeholder="Enter Description or Note">
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="form-group">
-                                <label>Repayment Code</label>
-                                <input type="text" class="form-control" name="repayment_code" placeholder="Enter Repayment Code" required >
-                            </div>
-                            {% comment %} <div class="form-group col-2">
-                                <label>Repayment Type</label>
-                                <select class="form-control" name="repayment_type">                                        
-                                        <option value="Amortization">Amortization</option>
-                                        <option value="Impairment">Impairment</option>
-                                </select>    
-                            </div> {% endcomment %}
-                            <div class="form-group">
-                                <label>Repayment Description</label>
-                                <input type="text" class="form-control" name="repayment_description" placeholder="Enter Description">
-                            </div>
-                            <div class="form-group col-3">
-                                <label>Repayment Amount </label>
-                                <input type="number" class="form-control" name="repayment_amount" placeholder="Repayment Amount in Rands" required  step="0.01">
-                            </div>
-                            <div class="form-group col-3">
-                                <label>Repayment Date </label>
-                                <input type="date" class="form-control" name="repayment_date"   placeholder="Repayment Date">
-                            </div>
-                            <div class="form-group col-3">
-                                <label>Actual Volumen Tone </label>
-                                <input type="number" class="form-control" name="actual_volume_tone" placeholder="Volume in tones" required  step="0.01">
-                            </div>
-                            <div class="form-group">
-                                <label>Any Comment on payment</label>
-                                <input type="text" class="form-control" name="comment" placeholder="Comment if any">
-                            </div>
-                            <div class="form-group col-6">
-                                <label>Payment documentation (if any)</label>
+                            <div class="form-group border">
+                                <div class="form-row">
+                                    <div class="form-group col-3 p-4">
+                                        <label>HD (KG)</label>
+                                        <input type="number" class="form-control" name="hd_kg" placeholder="HD in Kilograms" required  step="0.01">
+                                    </div>
 
-                                <p><i>Upload any payment confirmation if needed.</i></p>
-                                <input type="file" class="form-control" name="payment_documentation" >
+                                    <div class="form-group col-3 p-4">
+                                        <label>LD (KG)</label>
+                                        <input type="number" class="form-control" name="ld_kg" placeholder="LD in Kilograms" required  step="0.01">
+                                    </div>
+                                    <div class="form-group col-3 p-4">
+                                        <label>LLD (KG)</label>
+                                        <input type="number" class="form-control" name="lld_kg" placeholder="LLD in Kilograms" required  step="0.01">
+                                    </div>
+                                    <div class="form-group col-3 p-4">
+                                        <label>PP (KG)</label>
+                                        <input type="number" class="form-control" name="pp_kg" placeholder="PP in Kilograms" required  step="0.01">
+                                    </div>      
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group col-3 p-4">
+                                        <label>PVC (KG)</label>
+                                        <input type="number" class="form-control" name="pvc_kg" placeholder="PVC in Kilograms" required  step="0.01">
+                                    </div>
+
+                                    <div class="form-group col-3 p-4">
+                                        <label>PS (KG)</label>
+                                        <input type="number" class="form-control" name="ps_kg" placeholder="PS in Kilograms" required  step="0.01">
+                                    </div>
+                                    <div class="form-group col-3 p-4">
+                                        <label>PET (KG)</label>
+                                        <input type="number" class="form-control" name="pet_kg" placeholder="PET in Kilograms" required  step="0.01">
+                                    </div>
+                                    <div class="form-group col-3 p-4">
+                                        <label>Other (KG) </label>
+                                        <input type="number" class="form-control" name="other_kg" placeholder="Other in Kilograms" required  step="0.01">
+                                    </div>                                   
+                                </div>
+                            </div>   
+                            
+                            <div class="form-group border">
+                                <div class="form-row">
+                                       {% comment %} <div class="form-group col-3">
+                                        <label>Actual Volumen Tone </label>
+                                        <input type="number" class="form-control" name="actual_volume_tone" placeholder="Volume in tones" required  step="0.01">
+                                    </div> {% endcomment %}
+                                    <div class="form-group  col-12 p-4">
+                                        <label>Any Comment on payment</label>
+                                        <input type="text" class="form-control" name="comment" placeholder="Comment if any">
+                                    </div>
+                                </div>
+                                <div class="form-row col-12 p-4">
+                                    <div class="form-row">
+                                        <div class="form-group col-6">
+                                            <label>Payment documentation (if any)</label>
+
+                                            <p><i>Upload any payment confirmation if needed.</i></p>
+                                            <input type="file" class="form-control" name="payment_documentation" >
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+                            
 
                         </div>
                         <!-- /.card-body -->
 
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-success">Add/Save Repayment</button>
+                            <button type="submit" class="btn btn-success"><i class="fas fa-save"></i>  Add/Save Repayment</button>
                             <a href="{% url 'manage_repayment' %}" class="btn btn-secondary">Cancel</a>
 
                         </div>

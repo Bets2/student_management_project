@@ -15,132 +15,191 @@
                 <div class="col-md-12">
                     <!-- general form elements -->
                     <div class="card card-primary">
-                    <div class="card-header">
-                        <h3 class="card-title">Edit Repayment</h3>
-                    </div>
-                    <!-- /.card-header -->
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-money-bill-wave"> </i> Edit Repayment</h3>
+                        </div><!-- /.card-header -->
                      <!-- form start -->
                      
 
                      
-                        <form role="form" method="POST" action="{% url 'edit_repayment_save' %}">
+                            <form role="form" method="POST" action="{% url 'edit_repayment_save' %}">
 
-                            {% csrf_token %}
+                                {% csrf_token %}
 
-                            
-                                    {% comment %} Display Messages {% endcomment %}
-                                    {% if messages %}
-                                    <div class="form-group">
-                                    <div class="col-12">
-                                        {% for message in messages %}
-                                        {% if message.tags == "error" %}
-                                            <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                            {{ message }}
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                            </div>
-                                        {% elif message.tags == "success" %}
-                                            <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                            {{ message }}
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                            </div>
+                                
+                                        {% comment %} Display Messages {% endcomment %}
+                                        {% if messages %}
+                                        <div class="form-group">
+                                        <div class="col-12">
+                                            {% for message in messages %}
+                                            {% if message.tags == "error" %}
+                                                <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                                {{ message }}
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                                </div>
+                                            {% elif message.tags == "success" %}
+                                                <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                                {{ message }}
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                                </div>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        </div>
                                         {% endif %}
-                                        {% endfor %}
-                                    </div>
-                                    </div>
-                                    {% endif %}
                                 
 
                             <div class="card-body">
+                                        <div class="form-group border">
+                                            <div class="form-row">
 
-                                <div class="form-group">
-                                    <label>Select Customer </label>
-                              
-                                    <select class="form-control" name="customer_id"> 
-                                        {% for cust in customer %}                                                                                          
-                                            <option value="{{ cust.id }}" {% if cust.id == repayments.customer_id.id %} selected {% endif %}>{{ cust.customer_name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Select Disbursement Code: </label>
-                                    <p><small>All payments need to be allocated to a particular disbursement code</small></p>
-                              
-                                    <select class="form-control" name="disbursement_id"> 
-                                        {% for disb in disbursement %}                                                                                          
-                                            <option value="{{ disb.id }}" {% if disb.id == repayments.disbursement_id.id %} selected {% endif %}>{{ disb.disbursement_code }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-    
-                                <div class="form-group">
-                                    <label>Repayment Code</label>
-                                    <input type="text" class="form-control" name="repayment_code" value="{{ repayments.repayment_code }}" required >
-                                </div>
-                                {% comment %} <div class="form-group col-2">
-                                    <label>Repayment Type</label>
-                                    <select class="form-control" name="repayment_type">     
-                                            <option value="{{ repayments.repayment_type }}" {% if repayments.id == repayment_id %} selected {% endif %}>{{ repayments.repayment_type }}</option>                                   
-                                            <option value="Amortization">Amortization</option>
-                                            <option value="Impairment">Impairment</option>
-                                    </select>    
-                                </div> {% endcomment %}
-                                <div class="form-group">
-                                    <label>Repayment Description</label>
-                                    <input type="text" class="form-control" name="repayment_description" value="{{ repayments.repayment_description }}" >
-                                </div>
-                                <div class="form-group col-3">
-                                    <label>Repayment Amount </label>
-                                    <input type="number" class="form-control" name="repayment_amount" value="{{ repayments.repayment_amount }}" required  step="0.01">
-                                </div>
-                                <div class="form-group col-3">
-                                    <label>Repayment Date </label>
-                                    <input type="date" class="form-control" name="repayment_date"   value="{{ repayments.repayment_date|date:'Y-m-d' }}">
-                                </div>
-                                <div class="form-group col-3">
-                                    <label>Actual Volumen Tone </label>
-                                    <input type="number" class="form-control" name="actual_volume_tone" value="{{ repayments.actual_volume_tone }}" required  step="0.01">
-                                </div>
-                                <div class="form-group">
-                                    <label>Any Comment on payment</label>
-                                    <input type="text" class="form-control" name="comment" value="{{ repayments.comment }}">
-                                </div>
-                                <div class="form-group col-6">
-                                    <label>Payment documentation (if any)</label>
-                                    <p>Current Document: <b>{{ disbursements.payment_documentation }}</b>  </p>
-                                    <p><i>Upload any payment confirmation if needed.</i></p>
-                                    <input type="file" class="form-control" name="payment_documentation" >
-                                </div>    
+                                                <div class="form-group col-5 p-4">
+                                                    <label>Select Customer </label>
+                                            
+                                                    <select class="form-control" name="customer_id"> 
+                                                        {% for cust in customer %}                                                                                          
+                                                            <option value="{{ cust.id }}" {% if cust.id == repayments.customer_id.id %} selected {% endif %}>{{ cust.customer_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
 
 
-                                <div class="form-group col-6">
-                                    <label>Application Contract Document</label>
-                                    <p>Current Document: {% if disbursements.application_contract_document != None %} <b>{{ disbursements.application_contract_document }}</b> </p>
-                                    <p> {% else %} <b>Nothing Attached </b> </p>
-                                    {% endif %} 
-                                    <p><i>Attache a new document below if you want to replace the above file.</i></p>
-                                    <input type="file" class="form-control" name="application_contract_document"   value="{{ disbursements.application_contract_document }}">
+
+                                                <div class="form-group col-4 p-1">
+                                                    <label>Disbursement Code:  <br> <small>All payments need to be allocated to a particular disbursement code</small> </label><br> </label>                                                        
+                                                    <select class="form-control" name="disbursement_id"> 
+                                                        {% for disb in disbursement %}                                                                                          
+                                                            <option value="{{ disb.id }}" {% if disb.id == repayments.disbursement_id.id %} selected {% endif %}>{{ disb.disbursement_code }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                    
+                                                <div class="form-group col-3 p-4">
+                                                    <label>Repayment Code/Reference</label>
+                                                    <input type="text" class="form-control" name="repayment_code" value="{{ repayments.repayment_code }}" required >
+                                                </div>
+                                                {% comment %} <div class="form-group col-2">
+                                                    <label>Repayment Type</label>
+                                                    <select class="form-control" name="repayment_type">     
+                                                            <option value="{{ repayments.repayment_type }}" {% if repayments.id == repayment_id %} selected {% endif %}>{{ repayments.repayment_type }}</option>                                   
+                                                            <option value="Amortization">Amortization</option>
+                                                            <option value="Impairment">Impairment</option>
+                                                    </select>    
+                                                </div> {% endcomment %}
+                                            </div>
+                                        </div>           
+
+                                        <div class="form-group border">
+                                            <div class="form-row">                                
+                                                <div class="form-group col-3 p-4">
+                                                    <label>Repayment Amount </label>
+                                                    <input type="number" class="form-control" name="repayment_amount" value="{{ repayments.repayment_amount }}" required  step="0.01">
+                                                </div>
+                                                <div class="form-group col-3 p-4">
+                                                    <label>Repayment Date </label>
+                                                    <input type="date" class="form-control" name="repayment_date"   value="{{ repayments.repayment_date|date:'Y-m-d' }}">
+                                                </div>
+
+                                                <div class="form-group col-6 p-4">
+                                                    <label>Repayment Description/Comment/Note</label>
+                                                    <input type="text" class="form-control" name="repayment_description" value="{{ repayments.repayment_description }}" >
+                                                </div>
+                                            </div>
+                                        <div>
+
+
+                                        <div class="form-group border">
+                                            <div class="form-row">     
+
+                                                <div class="form-group col-3 p-4">
+                                                    <label>HD (KG)</label>
+                                                    <input type="number" class="form-control" name="hd_kg" placeholder="HD in Kilograms" value="{{repayments.hd_kg}}" required  step="0.01">
+                                                </div>
+            
+                                                <div class="form-group col-3 p-4">
+                                                    <label>LD (KG)</label>
+                                                    <input type="number" class="form-control" name="ld_kg" placeholder="LD in Kilograms"  value="{{repayments.ld_kg}}" required  step="0.01">
+                                                </div>
+                                                <div class="form-group col-3 p-4">
+                                                    <label>LLD (KG)</label>
+                                                    <input type="number" class="form-control" name="lld_kg" placeholder="LLD in Kilograms"  value="{{repayments.lld_kg}}" required  step="0.01">
+                                                </div>
+                                                <div class="form-group col-3 p-4">
+                                                    <label>PP (KG)</label>
+                                                    <input type="number" class="form-control" name="pp_kg" placeholder="PP in Kilograms"  value="{{repayments.pp_kg}}" required  step="0.01">
+                                                </div>
+            
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group col-3 p-4">
+                                                    <label>PVC (KG)</label>
+                                                    <input type="number" class="form-control" name="pvc_kg" placeholder="PVC in Kilograms" value="{{repayments.pvc_kg}}" required  step="0.01">
+                                                </div>
+            
+                                                <div class="form-group col-3 p-4">
+                                                    <label>PS (KG)</label>
+                                                    <input type="number" class="form-control" name="ps_kg" placeholder="PS in Kilograms" value="{{repayments.ps_kg}}" required  step="0.01">
+                                                </div>
+                                                <div class="form-group col-3 p-4">
+                                                    <label>PET (KG)</label>
+                                                    <input type="number" class="form-control" name="pet_kg" placeholder="PET in Kilograms" value="{{repayments.pet_kg}}" required  step="0.01">
+                                                </div>
+                                                <div class="form-group col-3 p-4">
+                                                    <label>Other (KG) </label>
+                                                    <input type="number" class="form-control" name="other_kg" placeholder="Other in Kilograms" value="{{repayments.other_kg}}" required  step="0.01">
+                                                </div>
+                                                {% comment %} <div class="form-group col-3">
+                                                    <label>Actual Volumen Tone </label>
+                                                    <input type="number" class="form-control" name="actual_volume_tone" value="{{ repayments.actual_volume_tone }}" required  step="0.01">
+                                                </div> {% endcomment %}
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group border">
+                                            <div class="form-row">
+                                                <div class="form-group  col-12 p-4">
+                                                    <label>Any Comment on payment</label>
+                                                    <input type="text" class="form-control" name="comment" value="{{ repayments.comment }}">
+                                                </div>
+                                            </div>
+                                                                                       
+                                            <div class="form-row">
+                                                <div class="form-group col-6 p-4">
+                                                    <label>Payment documentation (if any)</label>
+                                                    <p>Current Document: <b>{{ disbursements.payment_documentation }}</b>  </p>
+                                                    <p><i>Upload any payment confirmation if needed.</i></p>
+                                                    <input type="file" class="form-control" name="payment_documentation" >
+                                                </div>   
+                                            </div>
+                                                                              
+                                            <div class="form-row">
+                                                <div class="form-group col-6 p-4">
+                                                    <label>Application Contract Document</label>
+                                                    <p>Current Document: {% if disbursements.application_contract_document != None %} <b>{{ disbursements.application_contract_document }}</b> </p>
+                                                    <p> {% else %} <b>Nothing Attached </b> </p>
+                                                    {% endif %} 
+                                                    <p><i>Attache a new document below if you want to replace the above file.</i></p>
+                                                    <input type="file" class="form-control" name="application_contract_document"   value="{{ disbursements.application_contract_document }}">
+                                                </div>
+                                            </div>
+                                                
+                                        </div>    
+                                </div>          <!-- /.card-body -->
+
+                                <div class="card-footer">
+                                        <input type="hidden" class="form-control" name="repayment_id" value="{{ repayments.id }}">
+                                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i>   Update/Save Repayment</button>
+                                        <a href="{% url 'manage_repayment' %}" class="btn btn-secondary">Cancel</a>
                                 </div>
-
-
+                                </form>
                             </div>
-                            <!-- /.card-body -->
-
-                            <div class="card-footer">
-
-                                <input type="hidden" class="form-control" name="repayment_id" value="{{ repayments.id }}">
-                                <button type="submit" class="btn btn-primary">Update Repayment</button>
-                                <a href="{% url 'manage_repayment' %}" class="btn btn-secondary">Cancel</a>
-                            </div>
-                        </form>
-
-                    </div>
-                    <!-- /.card -->
-
-                </div>
+                           
+                           
+                    </div> <!-- /.card -->
             </div>
 
         </div><!-- /.container-fluid -->

@@ -78,19 +78,19 @@
 
             <P> 
                 <a class="btn btn-app" href="{% url 'add_customer' %}">
-                    <span class="badge bg-purple">{{ all_customer_count|floatformat:2 }}</span>
+                    <span class="badge bg-purple">{{ all_customer_count|floatformat:0 }}</span>
                     <i class="fas fa-users"></i> Add Customer
                 </a>
                 <a class="btn btn-app" href="{% url 'add_disbursement' %}">
-                    <span class="badge bg-success">{{ all_disbursement_count|floatformat:2 }}</span>
+                    <span class="badge bg-success">{{ all_disbursement_count|floatformat:0 }}</span>
                     <i class="fas fa-arrow-up"></i> Add Disbursement
                 </a>
                 <a class="btn btn-app" href="{% url 'add_repayment' %}">
-                    <span class="badge bg-success">{{ all_repayment_count|floatformat:2 }}</span>
+                    <span class="badge bg-success"> {{ all_repayment_count|floatformat:0 }}</span>
                     <i class="fas fa-coins"></i> Add <b>Loan</b> Repayment
                 </a>
                 <a class="btn btn-app" href="{% url 'add_volume' %}">
-                    <span class="badge bg-success">{{ all_repayment_count|floatformat:2 }}</span>
+                    <span class="badge bg-success">{{ all_grant_count|floatformat:0 }}</span>
                     <i class="fas fa-money-bill"></i> Add <b>Grant/Volume</b> Repayment
                 </a>
                 {% comment %} <a class="btn btn-primary" href="{% url 'add_repayment' %}" role="button">+ Add Repayment</a> <br/>&nbsp; {% endcomment %}

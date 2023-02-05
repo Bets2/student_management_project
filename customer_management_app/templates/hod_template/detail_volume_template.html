@@ -36,7 +36,7 @@
                                 
                                 <span class="info-box-text text-left text-muted"> Email: <b> {{ grant.customer_id.email }}</b> </span>
                                 
-                                <span class="info-box-text text-left text-muted"> Client Phone: <b> {{ grant.customer_id.email }}</b> </span>
+                                <span class="info-box-text text-left text-muted"> Client Phone: <b> {{ grant.customer_id.phone }}</b> </span>
 
                             </div>
                         </div>
@@ -45,11 +45,11 @@
                         <div class="info-box bg-light">
                             <div class="info-box-content">
                                 
-                                <span class="info-box-text text-left text-muted">Total Grant Amount: <b> R {{ grant.disbursement_id.disbursement_amount}}</b></span>
+                                <span class="info-box-text text-left text-muted">Total Grant Amount: <b> R {{ grant.disbursement_id.disbursement_amount|floatformat:2}}</b></span>
                                 
-                                <span class="info-box-text text-left text-muted"> Loan Reason: <b> {{ grant.disbursement_id.disbursement_reason}}</b> </span>
+                                <span class="info-box-text text-left text-muted"> Grant Reason: <b> {{ grant.disbursement_id.disbursement_reason}}</b> </span>
                                 
-                                <span class="info-box-text text-left text-muted"> Expected/Contractual Monthly Repayment Amount: <b> R {{ grant.disbursement_id.disbursement_monthly_repayment_amount}}</b> </span>
+                                <span class="info-box-text text-left text-muted"> Expected/Contractual Monthly Repayment Amount: <b> R {{ grant.disbursement_id.disbursement_monthly_repayment_amount|floatformat:2}}</b> </span>
 
                             </div>
                         </div>
@@ -97,7 +97,7 @@
                         <div class="info-box bg-light">
                             <div class="info-box-content">
                                 <span class="info-box-text text-center text-green">Amount Amortized</span>
-                                <span class="info-box-number text-center text-green mb-0">R{{ grant.amount_amortized }}</span>
+                                <span class="info-box-number text-center text-green mb-0">R{{ grant.amount_amortized|floatformat:2 }}</span>
                             </div>
                         </div>
                     </div>   
@@ -105,7 +105,7 @@
                         <div class="info-box bg-light">
                             <div class="info-box-content">
                                 <span class="info-box-text text-center text-red">Amount Impaired</span>
-                                <span class="info-box-number text-center text-red mb-0">R{{ grant.amount_impaired }}</span>
+                                <span class="info-box-number text-center text-red mb-0">R{{ grant.amount_impaired|floatformat:2 }}</span>
                             </div>
                         </div>
                     </div>                                  

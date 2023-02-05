@@ -403,6 +403,39 @@ class AddRepaymentForm(forms.Form):
     repayment_date = forms.CharField(label="Repayment Date",
                                      max_length=128,
                                      widget=forms.TextInput(attrs={"class": "form-control"}))
+    hd_kg = forms.DecimalField(label="HD KG",
+                               max_digits=10,
+                               decimal_places=2,
+                               widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
+    ld_kg = forms.DecimalField(label="LD KG",
+                               max_digits=10,
+                               decimal_places=2,
+                               widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
+    lld_kg = forms.DecimalField(label="LLD KGt",
+                                max_digits=10,
+                                decimal_places=2,
+                                widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
+    pp_kg = forms.DecimalField(label="PP KG",
+                               max_digits=10,
+                               decimal_places=2,
+                               widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
+    pvc_kg = forms.DecimalField(label="PVC KG",
+                                max_digits=10,
+                                decimal_places=2,
+                                widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
+    ps_kg = forms.DecimalField(label="PS KG",
+                               max_digits=10,
+                               decimal_places=2,
+                               widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
+    pet_kg = forms.DecimalField(label="PET KG",
+                                max_digits=10,
+                                decimal_places=2,
+                                widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
+    other_kg = forms.DecimalField(label="Other KG",
+                                  max_digits=10,
+                                  decimal_places=2,
+                                  widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
+
     actual_volume_tone = forms.DecimalField(label="Actual Volume Tone",
                                             max_digits=10,
                                             decimal_places=2,
@@ -461,6 +494,39 @@ class EditRepaymentForm(forms.Form):
     repayment_date = forms.CharField(label="Repayment Date",
                                      max_length=128,
                                      widget=forms.SelectDateWidget(attrs={"class": "form-control"}))
+
+    hd_kg = forms.DecimalField(label="HD KG",
+                               max_digits=10,
+                               decimal_places=2,
+                               widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
+    ld_kg = forms.DecimalField(label="LD KG",
+                               max_digits=10,
+                               decimal_places=2,
+                               widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
+    lld_kg = forms.DecimalField(label="LLD KGt",
+                                max_digits=10,
+                                decimal_places=2,
+                                widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
+    pp_kg = forms.DecimalField(label="PP KG",
+                               max_digits=10,
+                               decimal_places=2,
+                               widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
+    pvc_kg = forms.DecimalField(label="PVC KG",
+                                max_digits=10,
+                                decimal_places=2,
+                                widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
+    ps_kg = forms.DecimalField(label="PS KG",
+                               max_digits=10,
+                               decimal_places=2,
+                               widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
+    pet_kg = forms.DecimalField(label="PET KG",
+                                max_digits=10,
+                                decimal_places=2,
+                                widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
+    other_kg = forms.DecimalField(label="Other KG",
+                                  max_digits=10,
+                                  decimal_places=2,
+                                  widget=forms.NumberInput(attrs={'id': 'form-control', 'step': "0.01"}))
 
     actual_volume_tone = forms.DecimalField(label="Actual Volume Tone",
                                             max_digits=10,

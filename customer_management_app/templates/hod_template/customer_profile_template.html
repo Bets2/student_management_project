@@ -1,0 +1,409 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+   <b> {{customer.customer_name}} </b>
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+
+<section class="content">
+
+    <div class="post clearfix">  
+    </div>
+    
+    <div class="container-fluid">
+
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+
+            <div class="col-lg-3 col-6">
+            <!-- small box -->
+                <div class="small-box bg-primary">
+                    <div class="inner">
+                    <h4>R {{ customer_total_disbursement_amount|floatformat:2 }}</h4> 
+
+                    <p>Loans: <b>R {{ customer_total_loans|floatformat:2}}</b>  &nbsp &nbsp Grants: <b>R {{ customer_total_grant|floatformat:2}}</b> </p>
+
+                    </div>
+                    <div class="icon">
+                    <i class="ion ion-stats-bars"></i>
+                    </div>
+                    <a href="{% url 'manage_disbursement' %}" class="small-box-footer"><b>Total Disbursements</b>     <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                    <div class="small-box bg-primary">
+                        <div class="inner">
+                        <h4>R{{ total_loan_repayments|floatformat:2 }}</h4> 
+        
+                        <p>Total Loans Paid so far: <b>{{ percentage_loan_paid|floatformat:2 }} %</b></p>
+        
+                        </div>
+                        <div class="icon">
+                        <i class="ion ion-stats-bars"></i>
+                        </div>
+                        <a href="{% url 'manage_disbursement' %}" class="small-box-footer"><b>Loans Paid Total</b>     <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+            </div>
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-primary">
+                        <div class="inner">
+                        <h4>R{{ total_grant_amortized|floatformat:2 }}</h4> 
+        
+                        <p> Total Impaired {{total_grant_impaired|floatformat:2}} </p>
+        
+                        </div>
+                        <div class="icon">
+                        <i class="ion ion-stats-bars"></i>
+                        </div>
+                        <a href="{% url 'manage_disbursement' %}" class="small-box-footer"><b>Total Grants Amortized</b>     <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                    </div>
+        </div>    <!-- ./col -->
+
+        <div class="post clearfix">  
+        </div>
+
+        <div class="post clearfix">  
+            <a class="btn btn-outline-info" onclick="openTab('CustomerDetails')" role="button"><i class="fas fa-hand-holding-usd"></i>  Customer Details</a>
+            <a class="btn btn-outline-info" onclick="openTab('Disbursements')" role="button"><i class="fas fa-hand-holding-usd"></i> View Disbursements</a>
+            <a class="btn btn-outline-info" onclick="openTab('Loans')" role="button"><i class="fas fa-coins"></i> View Loan Repayments</a>
+            <a class="btn btn-outline-info" onclick="openTab('Grants')" role="button"><i class="fas fa-balance-scale-right"></i>  View Grants Amortizations</a>
+            <a href="/manage_customer/" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Exit Detail</a> 
+        </div>
+
+            <div id="CustomerDetails" class="report_tab">
+                <h2>Customer Details</h2>
+
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <!-- general form elements -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Customer Details</h3>
+
+                                </div>
+                                <div class="card-body table-responsive p-3">
+                                    <div class="info-box bg-light">
+                                        <div class="info-box-content">
+                                            
+                                            <span class="info-box-text text-left text-muted">Customer Name: <b> {{ customer.customer_name }} </b></span>
+                                            
+                                            <span class="info-box-text text-left text-muted"> Customer Type: <b> {{ customer.Type }}</b> </span>
+                                            <span class="info-box-text text-left text-muted"> Contact Person: <b> {{ customer.contact_person }}</b> </span>
+                                            <span class="info-box-text text-left text-muted"> Phone: <b> {{ customer.phone}}</b> </span>
+                                            <span class="info-box-text text-left text-muted"> email: <b> {{ customer.email }}</b> </span>
+                                            <span class="info-box-text text-left text-muted"> Address: <b> {{ customer.address }}</b> </span>
+                                            <span class="info-box-text text-left text-muted"> Province : <b> {{ customer.province }}</b> </span>
+                                            <span class="info-box-text text-left text-muted"> BEE Level: <b> {{ customer.bee_level }}</b> </span>
+                                            <span class="info-box-text text-left text-muted"> Customer Status: <b> {{ customer.customer_status }}</b> </span>
+                                            <span class="info-box-text text-left text-muted"> Comment: <b> {{ customer.comment }}</b> </span>
+                                            <span class="info-box-text text-left text-muted"> Created Date: <b> {{ customer.created_at }}</b> </span>
+                                            <span class="info-box-text text-left text-muted"> Last Updated Date: <b> {{ customer.updated_at }}</b> </span>
+                                        </div>
+                                    </div>
+                                </div>   
+                      
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+
+                    </div>
+                </div>  
+
+
+
+
+            </div>
+                
+            <div id="Disbursements" class="report_tab" style="display:none">
+                <h2>Disbursements</h2>
+                <a class="btn btn-outline-success" href="{% url 'add_disbursement' %}" role="button"><i class="fas fa-plus"></i>  Add New Disbursement</a> <br/>&nbsp;
+                {% if messages %}
+                <div class="form-group">
+                <div class="col-12">
+                    {% for message in messages %}
+                    {% if message.tags == "error" %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                    {% elif message.tags == "success" %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                </div>
+                {% endif %}
+                    <!--Disbursements Table-->                   
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <!-- general form elements -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Disbursement Details</h3>
+
+                                    <div class="card-tools">
+                                    <div class="input-group input-group-sm" style="width: 150px;">
+                                        <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                                        <div class="input-group-append">
+                                        <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body table-responsive p-0">
+                                    <table class="table table-hover text-nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Disbursement Code</th>
+                                            <th>Disbursement Type</th>
+                                            <th>Disbursement Date</th>
+                                            <th>Amount</th>
+                                            <th>Total Targets</th>
+                                            <th>Contract Signed Date</th>
+                                            <th>Progress</th>
+                                            <th>%</th>                                    
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for disbursement in disbursements %}
+                                        <tr>
+                                            <td>{{ disbursement.id }}</td>
+                                            
+
+                                            <td>{{ disbursement.disbursement_code }}</td>
+                                            <td>{{ disbursement.disbursement_type }}</td>
+                                            <td>{{ disbursement.disbursement_date }}</td>
+                                            <td>R{{ disbursement.disbursement_amount|floatformat:2 }}</td>
+                                            <td>{{ disbursement.total_target|floatformat:2 }}tone</td>
+                                            <td>{{ disbursement.contract_signed_date }}</td>
+                                            <td>
+                                                <div class="progress progress-xs">
+                                                <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
+                                                </div>
+                                            </td>
+                                            <td><span class="badge bg-primary">55%</span></td>                                    
+                                        
+                                        <td>
+                                            <a href="{% url 'detail_disbursement' disbursement.id %}" class="btn btn-primary">Details</a> 
+                                            <a href="{% url 'edit_disbursement' disbursement.id %}" class="btn btn-success">Edit</a> 
+                                            <a href="{% url 'delete_disbursement' disbursement.id %}" class="btn btn-danger">Delete</a>
+                                        </td>
+                                        </tr>
+                                        {% endfor %}
+                                        
+                                    </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.card-body -->
+                                </div>
+                            <!-- /.card -->
+
+                        </div>
+                    </div>         
+            </div>
+          
+            <div id="Loans" class="report_tab" style="display:none">
+                    <h2>Loan Repayments</h2>
+                    <p><a class="btn btn-outline-success" href="{% url 'add_repayment' %}" role="button"><i class="fas fa-plus"></i>  Add Repayment</a> <br/>&nbsp;</p>
+                            <!--Loans Repayment Table-->
+                        <div class="row">
+
+                            <div class="col-md-12">
+                                <!-- general form elements -->
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Repayment Details</h3>
+
+                                        <div class="card-tools">
+                                        <div class="input-group input-group-sm" style="width: 150px;">
+                                            <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                                            <div class="input-group-append">
+                                            <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                    <!-- /.card-header -->
+                                    <div class="card-body table-responsive p-0">
+                                        <table class="table table-hover text-nowrap">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Customer Name</th>
+
+                                                <th>Repayment Code</th>                              
+                                                <th>Repayment Date</th>
+                                                <th>Amount</th>
+                                                <th>Loan/Grant Amt</th>
+                                                <th>Actual Volume</th>
+                                                <th>Target Monthly Vol</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for repayment in repayments %}
+                                            <tr>
+                                                <td>{{ repayment.id }}</td>
+                                                <td>{{ repayment.customer_id.customer_name }}</td>
+
+                                                <td>{{ repayment.repayment_code }}</td>                    
+                                                <td>{{ repayment.repayment_date }}</td>
+                                                <td>R{{ repayment.repayment_amount|floatformat:2 }}</td>
+                                                <td>R{{ repayment.disbursement_id.disbursement_amount|floatformat:2 }}</td>
+                                                <td>{{ repayment.actual_volume_tone|floatformat:2 }} tones</td>
+                                                <td>{{ repayment.disbursement_id.monthly_target|floatformat:2 }} tones</td>                            
+
+                                                <td>
+                                                    <a href="{% url 'detail_repayment' repayment.id %}" class="btn btn-primary">Details</a> 
+                                                    <a href="{% url 'edit_repayment' repayment.id %}" class="btn btn-success">Edit</a> 
+                                                    <a href="{% url 'delete_repayment' repayment.id %}" class="btn btn-danger">Delete</a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                            
+                                        </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- /.card-body -->
+                                    </div>
+                                <!-- /.card -->
+
+                            </div>
+                        </div>
+            </div>
+          
+            <div id="Grants" class="report_tab" style="display:none">
+                    <h2>Grants Amortization Schedule</h2>
+                    <p><a class="btn btn-outline-success" href="{% url 'add_volume' %}" role="button"><i class="fas fa-plus"></i>  Capture New Volume</a> <br/>&nbsp;</p>
+                                <!--Grants Amortization Table-->
+                            <div class="row">
+
+                                <div class="col-md-12">
+                                    <!-- general form elements -->
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3 class="card-title">Grant Amortization Schedule / Volume Details</h3> &nbsp &nbsp<small>{{customer_name_contains}} Id Filtered</small>
+
+                                            <div class="card-tools">
+                                            <div class="input-group input-group-sm" style="width: 150px;">
+                                                <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                                                <div class="input-group-append">
+                                                <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </div>
+                                        <!-- /.card-header -->
+                                        <div class="card-body table-responsive p-0">
+                                            <table class="table table-hover text-nowrap">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Customer Name</th>
+
+                                                    <th>Disb. Code</th>
+                                                    <th>Grant Amount</th>
+                                                    <th>Report Month-Year</th>
+
+                                                    <th>Vol. Mnthly Target</th>
+                                                    <th>Vol. Mnth Actuals</th>
+                                                    
+                                                    <th>Monthly Amt.</th>
+                                                    <th>Grant Amortized </th>
+                                                    <th>Grant Impaired</th>
+                                                    
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for grant in grants %}
+                                                <tr>
+                                                    <td>{{ grant.id }}</td>
+                                                    <td>{{ grant.customer_id.customer_name }}</td>
+                                                    <td>{{ grant.disbursement_id.disbursement_code }}</td>
+                                                    <td>R{{ grant.disbursement_id.disbursement_amount|floatformat:2 }}</td>
+                                                    <td>{{ grant.volume_report_month }} - {{ grant.volume_report_year }} </td>
+                                                
+                                                    <td>{{ grant.disbursement_id.contract_monthly_target }}</td>
+                                                    <td>{{ grant.total_volume_kg|floatformat:2 }}</td>
+                                                    
+                                                    <td>R{{ grant.disbursement_id.disbursement_monthly_repayment_amount|floatformat:2 }}</td>
+                                                    <td><span class="info-box-text text-center text-green">R{{ grant.amount_amortized|floatformat:2}}</span></td> 
+                                                    <td><span class="info-box-text text-center text-red">R{{ grant.amount_impaired|floatformat:2 }}</span></td>
+
+                                                    <td>
+                                                        <a href="{% url 'detail_volume' grant.id %}" class="btn btn-primary">Details</a> 
+                                                        <a href="{% url 'edit_volume' grant.id %}" class="btn btn-success">Edit</a> 
+                                                        <a href="{% url 'delete_volume' grant.id %}" class="btn btn-danger">Delete</a>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                                
+                                            </tbody>
+                                            </table>
+                                        </div>
+                                        <!-- /.card-body -->
+                                        </div>
+                                    <!-- /.card -->
+
+                                </div>
+                            </div>
+
+            </div>
+
+          
+
+
+          {% block customscript %}
+            <Script>
+                function openTab(cityName) {
+                    var i;
+                    var x = document.getElementsByClassName("report_tab");
+                    for (i = 0; i < x.length; i++) {
+                    x[i].style.display = "none";
+                    }
+                    document.getElementById(cityName).style.display = "block";
+                }
+            </Script>
+
+          {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+    </div> <!-- /.container-fluid -->
+
+
+</section>
+
+{% endblock main_content %}

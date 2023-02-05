@@ -44,7 +44,7 @@ total_disbursement_grant_amount = Disbursements.objects.filter(disbursement_type
 
 # For Repayment KPIs
 all_repayment_count = Repayments.objects.all().count()
-all_repayment_count = Repayments.objects.all().count()
+all_grant_count = GrantManagement.objects.all().count()
 total_repayment_amount = Repayments.objects.all().aggregate(
     Sum('repayment_amount'))['repayment_amount__sum'] or 0.00
 total_repayment_loan_amount = Repayments.objects.aggregate(
@@ -139,6 +139,7 @@ def admin_home(request):
         "total_disbursement_grant_amount": total_disbursement_grant_amount,
 
         "all_repayment_count": all_repayment_count,
+        "all_grant_count": all_grant_count,
         "total_repayment_amount": total_repayment_amount,
         "total_repayment_loan_amount": total_repayment_loan_amount,
         "total_repayment_grant_amount": total_repayment_grant_amount,
@@ -713,6 +714,61 @@ def edit_customer_save(request):
 
             messages.Success(request, "Customer Updated successfully!")
             return redirect('/edit_customer/'+customer_id)
+
+
+@login_required
+def customer_profile(request, customer_id):
+    customer = Customers.objects.get(id=customer_id)
+    disbursement = Disbursements.objects.filter(
+        customer_id=customer_id)
+    repayment = Repayments.objects.filter(customer_id=customer_id)
+    grant = GrantManagement.objects.filter(customer_id=customer_id)
+
+    customer_total_disbursement_amount = Disbursements.objects.filter(
+        customer_id=customer_id).aggregate(Sum('disbursement_amount'))['disbursement_amount__sum'] or 0.00
+
+    query_set_loan = Disbursements.objects.filter(
+        customer_id=customer_id, disbursement_type="Loan")
+    customer_total_loans = query_set_loan.aggregate(
+        Sum('disbursement_amount'))['disbursement_amount__sum'] or 0.00
+
+    query_set_grant = Disbursements.objects.filter(
+        customer_id=customer_id, disbursement_type="Grant")
+    customer_total_grant = query_set_grant.aggregate(
+        Sum('disbursement_amount'))['disbursement_amount__sum'] or 0.00
+
+    total_loan_repayments = Repayments.objects.filter(customer_id=customer_id).aggregate(
+        Sum('repayment_amount'))['repayment_amount__sum'] or 0.00
+
+    if customer_total_disbursement_amount > 0:
+        percentage_loan_paid = (total_loan_repayments /
+                                customer_total_disbursement_amount)*100
+    else:
+        percentage_loan_paid = 0.00
+
+    total_grant_amortized = GrantManagement.objects.filter(
+        customer_id=customer_id).aggregate(Sum('amount_amortized'))['amount_amortized__sum'] or 0.00
+
+    total_grant_impaired = GrantManagement.objects.filter(
+        customer_id=customer_id).aggregate(Sum('amount_impaired'))['amount_impaired__sum'] or 0.00
+
+    context = {
+        "disbursements": disbursement,
+        "id": customer_id,
+        "customer": customer,
+        "repayments": repayment,
+        "grants": grant,
+
+        "customer_total_disbursement_amount": customer_total_disbursement_amount,
+        "customer_total_loans": customer_total_loans,
+        "customer_total_grant": customer_total_grant,
+        "total_loan_repayments": total_loan_repayments,
+        "percentage_loan_paid": percentage_loan_paid,
+        "total_grant_amortized": total_grant_amortized,
+        "total_grant_impaired": total_grant_impaired
+        # "form": form
+    }
+    return render(request, "hod_template/customer_profile_template.html", context)
 
 
 @login_required
@@ -1433,6 +1489,7 @@ def overview(request):
     context = {
         "repayments": repayments,
         "all_repayment_count": all_repayment_count,
+        "all_grant_count": all_grant_count,
         "total_repayment_amount": total_repayment_amount,
         "total_repayment_loan_amount": total_repayment_loan_amount,
         "total_repayment_grant_amount": total_repayment_grant_amount,
@@ -1471,6 +1528,8 @@ def manage_repayment(request):
     if is_valid_queryparam(customer_name_contains) and customer_name_contains != 'Select Customer Name...':
         repayments = repayments.filter(
             customer_id__exact=customer_name_contains)
+    total_disbursement_loan_amount = Disbursements.objects.filter(disbursement_type='Loan').aggregate(
+        Sum('disbursement_amount'))['disbursement_amount__sum'] or 0.00
 
     context = {
         "repayments": repayments,
@@ -1479,6 +1538,7 @@ def manage_repayment(request):
         "total_repayment_grant_amount": total_repayment_grant_amount,
         "total_fund_balance": total_fund_balance,
         "percentage_fund_balance": percentage_fund_balance,
+        "total_disbursement_loan_amount": total_disbursement_loan_amount,
 
         "customer_name_contains": customer_name_contains,
         "customers": customers
@@ -1512,7 +1572,18 @@ def add_repayment_save(request):
         repayment_description = request.POST.get('repayment_description')
         repayment_amount = request.POST.get('repayment_amount')
         repayment_date = request.POST.get('repayment_date')
+
+        hd_kg = request.POST.get('hd_kg')
+        ld_kg = request.POST.get('ld_kg')
+        lld_kg = request.POST.get('lld_kg')
+        pp_kg = request.POST.get('pp_kg')
+        pvc_kg = request.POST.get('pvc_kg')
+        ps_kg = request.POST.get('ps_kg')
+        pet_kg = request.POST.get('pet_kg')
+        other_kg = request.POST.get('other_kg')
+
         actual_volume_tone = request.POST.get('actual_volume_tone')
+
         comment = request.POST.get('comment')
         # payment_documentation = request.POST.get('payment_documentation')
         disbursement_id = request.POST.get('disbursement_id')
@@ -1532,7 +1603,17 @@ def add_repayment_save(request):
         repayment_description = repayment_description
         repayment_amount = repayment_amount
         repayment_date = repayment_date
-        actual_volume_tone = actual_volume_tone
+
+        hd_kg = hd_kg
+        ld_kg = ld_kg
+        lld_kg = lld_kg
+        pp_kg = pp_kg
+        pvc_kg = pvc_kg
+        ps_kg = ps_kg
+        pet_kg = pet_kg
+        other_kg = other_kg
+
+        actual_volume_tone = Decimal(actual_volume_tone)
         comment = comment
         if payment_documentation_url != None:
             payment_documentation = payment_documentation
@@ -1574,6 +1655,15 @@ def add_repayment_save(request):
                                                   repayment_description=repayment_description,
                                                   repayment_amount=repayment_amount,
                                                   repayment_date=repayment_date,
+                                                  hd_kg=hd_kg,
+                                                  ld_kg=ld_kg,
+                                                  lld_kg=lld_kg,
+                                                  pp_kg=pp_kg,
+                                                  pvc_kg=pvc_kg,
+                                                  ps_kg=ps_kg,
+                                                  pet_kg=pet_kg,
+                                                  other_kg=other_kg,
+
                                                   actual_volume_tone=actual_volume_tone,
                                                   comment=comment,
                                                   payment_documentation=payment_documentation_url,
@@ -1594,11 +1684,15 @@ def detail_repayment(request, repayment_id):
     customer = Customers.objects.get(id=repayment.customer_id.id)
     disbursement = Disbursements.objects.get(id=repayment.disbursement_id.id)
 
+    percentage_actual_volume_to_target = (
+        (repayment.actual_volume_tone/disbursement.contract_monthly_target) * 100)
+
     context = {
         'repayments': repayment,
         "id": repayment_id,
         "customer": customer,
-        "disbursement": disbursement
+        "disbursement": disbursement,
+        "percentage_actual_volume_to_target": percentage_actual_volume_to_target
         # "form": form
     }
     return render(request, "hod_template/detail_repayment_template.html", context)
@@ -1620,6 +1714,16 @@ def edit_repayment(request, repayment_id):
     form.fields['repayment_description'].initial = repayment.repayment_description
     form.fields['repayment_amount'].initial = repayment.repayment_amount
     form.fields['repayment_date'].initial = repayment.repayment_date
+
+    form.fields['hd_kg'].initial = repayment.hd_kg
+    form.fields['ld_kg'].initial = repayment.ld_kg
+    form.fields['lld_kg'].initial = repayment.lld_kg
+    form.fields['pp_kg'].initial = repayment.pp_kg
+    form.fields['pvc_kg'].initial = repayment.pvc_kg
+    form.fields['ps_kg'].initial = repayment.ps_kg
+    form.fields['pet_kg'].initial = repayment.pet_kg
+    form.fields['other_kg'].initial = repayment.other_kg
+
     form.fields['actual_volume_tone'].initial = repayment.actual_volume_tone
     form.fields['comment'].initial = repayment.comment
     form.fields['payment_documentation'].initial = repayment.payment_documentation
@@ -1651,7 +1755,21 @@ def edit_repayment_save(request):
             repayment_description = request.POST.get('repayment_description')
             repayment_amount = request.POST.get('repayment_amount')
             repayment_date = request.POST.get('repayment_date') or None
-            actual_volume_tone = request.POST.get('actual_volume_tone')
+
+            hd_kg = request.POST.get('hd_kg')
+            ld_kg = request.POST.get('ld_kg')
+            lld_kg = request.POST.get('lld_kg')
+            pp_kg = request.POST.get('pp_kg')
+            pvc_kg = request.POST.get('pvc_kg')
+            ps_kg = request.POST.get('ps_kg')
+            pet_kg = request.POST.get('pet_kg')
+            other_kg = request.POST.get('other_kg')
+
+            actual_volume_tone = Decimal(hd_kg) + Decimal(ld_kg) + Decimal(lld_kg) + Decimal(pp_kg) + Decimal(pvc_kg) + \
+                Decimal(ps_kg) + Decimal(pet_kg) + \
+                Decimal(other_kg)
+            # actual_volume_tone = request.POST.get('actual_volume_tone')
+
             comment = request.POST.get('comment')
             payment_documentation = request.POST.get('payment_documentation')
             disbursement_id = request.POST.get('disbursement_id')
@@ -1674,7 +1792,16 @@ def edit_repayment_save(request):
             repayment.repayment_description = repayment_description
             repayment.repayment_amount = repayment_amount
             repayment.repayment_date = repayment_date
-            repayment.actual_volume_tone = actual_volume_tone
+            repayment.hd_kg = hd_kg
+            repayment.ld_kg = ld_kg
+            repayment.lld_kg = lld_kg
+            repayment.pp_kg = pp_kg
+            repayment.pvc_kg = pvc_kg
+            repayment.ps_kg = ps_kg
+            repayment.pet_kg = pet_kg
+            repayment.other_kg = other_kg
+
+            repayment.actual_volume_tone = Decimal(actual_volume_tone)
             repayment.comment = comment
             repayment.payment_documentation = payment_documentation
 
@@ -2065,9 +2192,4 @@ def admin_profile_update(request):
 
 @login_required
 def staff_profile(request):
-    pass
-
-
-@login_required
-def customer_profile(requtest):
     pass
